@@ -1,6 +1,16 @@
 #include <SFML/Graphics.hpp>
+#include <iostream>
+#include <sstream>
+#include <vector>
 
+// Cap on maximum frame rate
 #define MAX_FRAME_RATE 60
+
+// Toggles frame rate display.  true = display, false = don't display
+#define FRAME_RATE_DISPLAY false
+
+// # of frames to average over to calculate the frame rate
+#define FRAME_RATE_AVGFRAMES 5
 
 int main(int argc, char** argv)
 {
@@ -28,6 +38,27 @@ int main(int argc, char** argv)
   // force consistent first frame update behavior.  The rest of the frames
   // obviously don't do this.
   bool first_frame = true;
+
+
+  // Initialize all the framerate indicator stuff
+
+  // Initialize the font
+  sf::Font framerate_font;
+  if (!framerate_font.loadFromFile("Arial.ttf"))
+  {
+    std::cerr << "Couldn't load framerate indicator font\n";
+    return 0;
+  }
+
+  // Initialize the framerate indicator
+  sf::Text framerate_indicator;
+  framerate_indicator.setFont(framerate_font);
+  framerate_indicator.setPosition(0, 0);
+  framerate_indicator.setCharacterSize(15);
+  framerate_indicator.setColor(sf::Color::White);
+
+  // Will be used to store the last FRAME_RATE_AVGFRAMES frame times
+  std::vector<sf::Time> frametimes;
 
 
   // start main loop
@@ -60,8 +91,38 @@ int main(int argc, char** argv)
     // UPDATE HERE, pass in update_time * game_time_factor
 
 
+    // Note how long since the last update for the framerate indicator
+    frametimes.push_back(update_time);
+    if (frametimes.size() == FRAME_RATE_AVGFRAMES)
+    {
+      // Average all the frame times
+      double frametime_average = 0;
+      for (std::vector<sf::Time>::iterator i = frametimes.begin();
+	   i != frametimes.end();
+	   i++)
+      {
+	frametime_average += i->asSeconds();
+      }
+      frametime_average /= FRAME_RATE_AVGFRAMES;
+
+      // Convert the average framerate to a text string
+      std::ostringstream fr_to_text;
+      fr_to_text << 1.0 / frametime_average;
+      framerate_indicator.setString(fr_to_text.str());
+
+      // Clear all the frame times
+      frametimes.clear();
+    }
+
+
     // clear screen and fill with blue
     App.clear(sf::Color::Blue);
+
+    // Draw the framerate indicator
+    if (FRAME_RATE_DISPLAY)
+    {
+      App.draw(framerate_indicator);
+    }
 
     // display
     App.display();
