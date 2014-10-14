@@ -29,8 +29,16 @@ void EventManager::triggerEvent(const EventInterface& event)
     return;
   }
 
-  // Now loop over all the delegates, calling them.
-  //EventDelegates::iterator delegate = i->second;
+  // Grab all the delegates associated with this event
+  EventDelegates* event_delegates = &i->second;
+
+  // Loop over them all, calling them
+  for (EventDelegates::iterator ed_iter = event_delegates->begin();
+       ed_iter != event_delegates->end();
+       ed_iter++)
+  {
+    (*ed_iter)(event);
+  }
 }
 
 void EventManager::addDelegate(const EventDelegate& event_delegate,
