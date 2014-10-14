@@ -6,7 +6,9 @@
 #include "EventInterface.hpp"
 #include "EventManager.hpp"
 
-EventManager::EventManager()
+EventManager::EventManager() :
+  process_queue(&event_queue[0]),
+  register_queue(&event_queue[1])
 {
 }
 
