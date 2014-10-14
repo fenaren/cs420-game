@@ -20,6 +20,8 @@ public:
 
   void triggerEvent(const EventInterface& event);
 
+  void processEvents();
+
   void addDelegate(const EventDelegate& event_delegate, EventType event_type);
 
 private:

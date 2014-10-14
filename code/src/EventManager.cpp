@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <list>
 #include <map>
 
@@ -38,6 +39,21 @@ void EventManager::triggerEvent(const EventInterface& event)
        ed_iter++)
   {
     (*ed_iter)(event);
+  }
+}
+
+void EventManager::processEvents()
+{
+  // Turn the register queue into the process queue
+  std::swap(register_queue, process_queue);
+
+  // Process all the events out of the process queue
+  while(!process_queue->empty())
+  {
+    const EventInterface* event = process_queue->front();
+    process_queue->pop_front();
+
+    triggerEvent(*event);
   }
 }
 
