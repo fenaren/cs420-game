@@ -1,7 +1,7 @@
 #if !defined EVENT_INTERFACE_HPP
 #define EVENT_INTERFACE_HPP
 
-#include <sstream>
+//#include <sstream>
 
 #include "EventType.hpp"
 
