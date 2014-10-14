@@ -16,12 +16,25 @@ public:
 
   ~EventManager();
 
+  /* Queue up an event to be triggered the next time processEvents() is
+   * called.  EventManager does NOT take ownership of the event when this is
+   * called (EventManager does not delete the event). */
   void queueEvent(const EventInterface* event);
 
+  /* Instantly trigger the given event */
   void triggerEvent(const EventInterface& event);
 
+  /* Trigger all the events that have been queued with queueEvent().  Calling
+     this empties the queue. */
   void processEvents();
 
+  /* Associate a delegate function with a given event type.  EventManager
+   * copies the specified EventDelegate into its internals when this function
+   * is called.  Best way to use is like this:
+
+   event_manager.addDelegate(EventDelegate(your_event_handler),
+                                           YourEvent::event_type);
+  */
   void addDelegate(const EventDelegate& event_delegate, EventType event_type);
 
 private:
