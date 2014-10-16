@@ -3,6 +3,8 @@
 #include <sstream>
 #include <vector>
 
+#include "GameLogic.hpp"
+
 // Cap on maximum frame rate
 #define MAX_FRAME_RATE 60
 
@@ -61,6 +63,15 @@ int main(int argc, char** argv)
   std::vector<sf::Time> frametimes;
 
 
+  // Create and initialize the game logic
+  GameLogic game_logic;
+  if (!game_logic.initialize())
+  {
+    // Do something smarter than this
+    return 0;
+  }
+
+
   // start main loop
   while(App.isOpen())
   {
@@ -89,6 +100,7 @@ int main(int argc, char** argv)
 
 
     // UPDATE HERE, pass in update_time * game_time_factor
+    game_logic.update(update_time);
 
 
     // Note how long since the last update for the framerate indicator

@@ -1,6 +1,8 @@
 #if !defined GAME_LOGIC_HPP
 #define GAME_LOGIC_HPP
 
+#include <SFML/System/Time.hpp>
+
 #include "EventManager.hpp"
 
 class GameLogic
@@ -17,7 +19,7 @@ public:
 
   /* Called on a per-frame basis.  Causes the GameLogic to do all actions
      necessary on a frame. */
-  void update();
+  void update(const sf::Time& delta_t);
 
   EventManager* getEventManager();
 
