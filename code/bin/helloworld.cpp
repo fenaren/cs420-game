@@ -109,8 +109,10 @@ int main(int argc, char** argv)
     }
 
 
-    // UPDATE HERE, pass in update_time * game_time_factor
+    // UPDATE GAME VIEWS
     human_game_view.update(update_time);
+
+    // UPDATE GAME LOGIC
     game_logic.update(update_time);
 
 
