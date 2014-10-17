@@ -3,7 +3,8 @@
 #include "GameLogic.hpp"
 #include "GameView.hpp"
 
-GameView::GameView()
+GameView::GameView(GameLogic* game_logic) :
+  game_logic(game_logic)
 {
 }
 
@@ -11,10 +12,8 @@ GameView::~GameView()
 {
 }
 
-bool GameView::initialize(GameLogic* game_logic)
+bool GameView::initialize()
 {
-  this->game_logic = game_logic;
-
   return true;
 }
 

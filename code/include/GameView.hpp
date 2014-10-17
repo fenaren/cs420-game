@@ -10,13 +10,13 @@ class GameView
 {
 public:
 
-  GameView();
+  GameView(GameLogic* game_logic);
 
   ~GameView();
 
   /* Does everything necessary to initialize the game view.  Should run
      immediately after GameView construction. */
-  virtual bool initialize(GameLogic* game_logic);
+  virtual bool initialize();
 
   /* Called on a per-frame basis.  Causes the GameView to do all actions
      necessary on a frame. */
