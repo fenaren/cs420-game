@@ -15,9 +15,14 @@ HumanGameView::~HumanGameView()
 
 bool HumanGameView::initialize()
 {
+  GameView::initialize();
+
+  return true;
 }
 
 void HumanGameView::update(const sf::Time& delta_t)
 {
+  GameView::update(delta_t);
+
   // Can use App to draw in the game window
 }
