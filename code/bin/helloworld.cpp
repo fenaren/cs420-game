@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "GameLogic.hpp"
+#include "HumanGameView.hpp"
 
 // Cap on maximum frame rate
 #define MAX_FRAME_RATE 60
@@ -72,6 +73,15 @@ int main(int argc, char** argv)
   }
 
 
+  // Create and initialize the game view
+  HumanGameView human_game_view(&game_logic, &App);
+  if (!human_game_view.initialize())
+  {
+    // Do something smarter than this
+    return 0;
+  }
+
+
   // start main loop
   while(App.isOpen())
   {
@@ -100,6 +110,7 @@ int main(int argc, char** argv)
 
 
     // UPDATE HERE, pass in update_time * game_time_factor
+    human_game_view.update(update_time);
     game_logic.update(update_time);
 
 
