@@ -38,7 +38,8 @@ private:
   // ID # of this actor
   ActorId actor_id;
 
-  // Position of actor in map coordinates
+  // Position of actor in map coordinates, not sure if this is how we want to
+  // represent position
   unsigned int x;
   unsigned int y;
   
