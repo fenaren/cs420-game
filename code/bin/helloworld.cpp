@@ -91,13 +91,13 @@ int main(int argc, char** argv)
 
 
     // process events
-    sf::Event Event;
+    /*sf::Event Event;
     while(App.pollEvent(Event))
     {
       // Exit
       if(Event.type == sf::Event::Closed)
         App.close();
-    }
+    }*/
 
 
     // How much time has passed since the last update?
@@ -140,17 +140,12 @@ int main(int argc, char** argv)
     }
 
 
-    // clear screen and fill with blue
-    App.clear(sf::Color::Blue);
 
     // Draw the framerate indicator
     if (FRAME_RATE_DISPLAY)
     {
       App.draw(framerate_indicator);
     }
-
-    // display
-    App.display();
 
 
     // How much time did this frame's processing take?
