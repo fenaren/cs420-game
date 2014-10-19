@@ -1,1 +1,0 @@
-/Users/localszabo/Documents/CS420/new_git/cs420-game/code/CMakeFiles/helloworld.dir
