@@ -29,12 +29,12 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
     //checks map
     terrain = map.getTerrain(currentx+dirx, currenty+diry);
     
-    //does the move
+    //does the move if terrain is water
     if (terrain == 0){
       currentx+=dirx;
       currenty+=diry;
       ship.setPositionX(currentx);
-      ship.setPositionY(currentx);
+      ship.setPositionY(currenty);
     }
     shipmoved.setX(currentx);
     shipmoved.setY(currenty);
@@ -74,7 +74,7 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
 
 void GameLogic::ActorMovedEventHandler(const EventInterface& event)                         
 { 
-  unsigned int x, y;
+  unsigned int x, y, actorId;
   const ActorMovedEvent* am_event = dynamic_cast<const ActorMovedEvent*>(&event);   
 
   /* dynamic_cast returns 0 if it couldn't successfully convert the EventInterface
@@ -84,6 +84,27 @@ void GameLogic::ActorMovedEventHandler(const EventInterface& event)
   }else{
     x = am_event->getX();
     y = am_event->getY();
+    
+    actorId = am_event->getActorId();
+    
+    if (actorId == 0){
+      ship.setPositionX(x);
+      ship.setPositionY(y);
+    }else if(actorId == 1){
+      port1.setPositionX(x);
+      port1.setPositionY(y);
+    }else if(actorId == 2){
+      port2.setPositionX(x);
+      port2.setPositionY(y);
+    }else if(actorId == 3){
+      port3.setPositionX(x);
+      port3.setPositionY(y);
+    }else if(actorId == 4){
+      port4.setPositionX(x);
+      port4.setPositionY(y);
+    }else{
+      std::cout<<"actorId not found"<<std::endl; 
+    }
   }
 }
 
