@@ -24,6 +24,10 @@ public:
   
   void readInputs(const sf::Time& delta_t);
   
+  void drawMap();
+  
+  void drawActors();
+  
   void drawUI();
 
 private:

@@ -32,6 +32,8 @@ void HumanGameView::update(const sf::Time& delta_t)
   
   App->clear(sf::Color::Black);
   
+  drawMap();
+  drawActors();
   drawUI();
   
   // Can use App to draw in the game window
@@ -64,6 +66,16 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 			break;
 	}
   }
+}
+
+// draws the map
+void HumanGameView::drawMap() {
+	
+}
+
+// draws the actors
+void HumanGameView::drawActors() {
+	
 }
   
 // draws the elements in the UI list
