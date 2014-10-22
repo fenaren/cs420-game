@@ -18,9 +18,9 @@ HumanGameView::~HumanGameView()
 
 bool HumanGameView::initialize()
 {
-  UITextInput *test = new UITextInput();
+  test = new UITextInput();
   test->initialize(sf::Vector2f(150, 200), currentRes, UIElement::Center);
-  uiList.push_back(test);
+  //uiList.push_back(test);
   tempMap.createMap("first_map.txt");
   return true;
 }
@@ -63,6 +63,22 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 				elem->resize(currentRes);
 			}
 			App->setView(sf::View(sf::FloatRect(0, 0, currentRes.x, currentRes.y)));
+			break;
+			
+		  // this code will actually react to transaction request event in the future
+		  case (sf::Event::KeyPressed):
+			if (event.key.code == sf::Keyboard::Space) {
+				if (!menuOpen) {
+					uiList.push_back(test);
+					menuOpen = true;
+				}
+				else {
+					std::vector<UIElement*>::iterator position = std::find(uiList.begin(), uiList.end(), test);
+					if (position != uiList.end())
+						uiList.erase(position);
+					menuOpen = false;
+				}
+			}
 			break;
 	}
   }

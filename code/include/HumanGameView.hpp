@@ -58,6 +58,9 @@ private:
   
   // temporary map to draw from
   Map tempMap;
+  
+  // the dialogue box
+  UITextInput *test;
 };
 
 #endif
