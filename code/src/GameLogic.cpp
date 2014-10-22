@@ -85,8 +85,10 @@ void GameLogic::ActorMovedEventHandler(const EventInterface& event)
     x = am_event->getX();
     y = am_event->getY();
     
+    //check actor id
     actorId = am_event->getActorId();
     
+    //make move
     if (actorId == 0){
       ship.setPositionX(x);
       ship.setPositionY(y);
@@ -107,6 +109,110 @@ void GameLogic::ActorMovedEventHandler(const EventInterface& event)
     }
   }
 }
+
+void GameLogic::TransactionStartEventHandler(const EventInterface& event)
+{
+  const TransactionStartEvent* am_event = dynamic_cast<const TransactionStartEvent*>(&event);
+}
+
+void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
+{
+  unsigned int shipid, portid, price, rum=1;
+  double shipgold, shiprum, portrum;
+  const TransactionCheckEvent* am_event = dynamic_cast<const TransactionCheckEvent*>(&event);
+    
+  shipid = am_event->getShipId();
+  portid = am_event->getPortId();
+  shipgold = am_event->getShipGold();
+  shiprum = am_event->getShipRum();
+  portrum = am_event->getPortRum();
+  
+  price = 11 - portrum;
+  
+  if (shipgold < price || portrum == 0){
+    std::cout<<"Can't buy rum!"<<std::endl;
+    if(portid == 1){
+      const EventInterface* fport1 = &failport1;
+      failport1.setShipGold(shipgold);
+      failport1.setShipRum(shiprum);
+      failport1.setPortRum(portrum);
+      event_manager.queueEvent(fport1);
+    }else if(portid == 2){
+      const EventInterface* fport2 = &failport2;
+      failport2.setShipGold(shipgold);
+      failport2.setShipRum(shiprum);
+      failport2.setPortRum(portrum);
+      event_manager.queueEvent(fport2);
+    }else if(portid == 3){
+      const EventInterface* fport3 = &failport3;
+      failport3.setShipGold(shipgold);
+      failport3.setShipRum(shiprum);
+      failport3.setPortRum(portrum);
+      event_manager.queueEvent(fport3);
+    }else if(portid == 4){
+      const EventInterface* fport4 = &failport4;
+      failport4.setShipGold(shipgold);
+      failport4.setShipRum(shiprum);
+      failport4.setPortRum(portrum);
+      event_manager.queueEvent(fport4);
+    }
+  }else{
+    while (shipgold>price*rum && rum < portrum+1){
+      rum ++;
+    }
+    
+    //update ship gold, ship rum, port rum
+    shipgold -= price*rum;
+    shiprum += rum;
+    portrum -= rum;
+    
+    ship.setRum(shiprum);
+    ship.setGold(shipgold);
+    
+    if(portid==1){
+      port1.setRum(portrum);
+      const EventInterface* sport1 = &successport1;
+      successport1.setShipGold(shipgold);
+      successport1.setShipRum(shiprum);
+      successport1.setPortRum(portrum);
+      event_manager.queueEvent(sport1);
+    }else if(portid ==2){
+      port2.setRum(portrum);
+      const EventInterface* sport2 = &successport2;
+      successport2.setShipGold(shipgold);
+      successport2.setShipRum(shiprum);
+      successport2.setPortRum(portrum);
+      event_manager.queueEvent(sport2);
+    }else if(portid ==3){
+      port3.setRum(portrum);
+      const EventInterface* sport3 = &successport3;
+      successport3.setShipGold(shipgold);
+      successport3.setShipRum(shiprum);
+      successport3.setPortRum(portrum);
+      event_manager.queueEvent(sport3);
+    }else if(portid ==4){
+      port4.setRum(portrum);
+      const EventInterface* sport4 = &successport4;
+      successport4.setShipGold(shipgold);
+      successport4.setShipRum(shiprum);
+      successport4.setPortRum(portrum);
+      event_manager.queueEvent(sport4);
+    }
+  }
+  
+}
+
+void GameLogic::TransactionFailEventHandler(const EventInterface& event)
+{
+  const TransactionFailEvent* am_event = dynamic_cast<const TransactionFailEvent*>(&event);
+}
+
+
+void GameLogic::TransactionSuccessEventHandler(const EventInterface& event)
+{
+  const TransactionSuccessEvent* am_event = dynamic_cast<const TransactionSuccessEvent*>(&event);
+}
+
 
 GameLogic::GameLogic():
   ship(0),

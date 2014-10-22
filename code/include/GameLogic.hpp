@@ -36,6 +36,10 @@ public:
   
   void ShipMoveCmdEventHandler(const EventInterface& event);
   void ActorMovedEventHandler(const EventInterface& event);
+  void TransactionStartEventHandler(const EventInterface& event);
+  void TransactionCheckEventHandler(const EventInterface& event);
+  void TransactionSuccessEventHandler(const EventInterface& event);
+  void TransactionFailEventHandler(const EventInterface& event);
 
   EventManager* getEventManager();
 
