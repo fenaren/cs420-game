@@ -4,12 +4,22 @@
 
 void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)                         
 { 
-  unsigned int currentx, currenty, terrain;
+  unsigned int currentx, currenty, port1x, port1y, port2x, port2y, port3x, port3y, port4x, port4y, terrain;
   int dirx, diry;
   const ShipMoveCmdEvent* am_event = dynamic_cast<const ShipMoveCmdEvent*>(&event);   
   const EventInterface* shipmovedevent = &shipmoved;
+    
   currentx = ship.getPositionX();
   currenty = ship.getPositionY();
+  port1x = port1.getPositionX();
+  port1y = port1.getPositionY();
+  port2x = port2.getPositionX();
+  port2y = port2.getPositionY();
+  port3x = port3.getPositionX();
+  port3y = port3.getPositionY();
+  port4x = port4.getPositionX();
+  port4y = port4.getPositionY();
+  
   if (am_event == 0){ 
     std::cout<<"Failed to cast ShipMoveCmdEvent"<<std::endl;
   }else{
@@ -29,6 +39,12 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
     //queues ActorMovedEvent
     event_manager.queueEvent(shipmovedevent);
     //check if ship on port
+    if(currentx==port1x && currenty ==port1y){
+      
+    }else if(currentx==port2x && currenty ==port2y){
+    }else if(currentx==port3x && currenty ==port3y){
+    }else if(currentx==port4x && currenty ==port4y){
+    }
   }
   
 }
