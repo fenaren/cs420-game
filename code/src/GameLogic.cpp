@@ -227,7 +227,7 @@ GameLogic::GameLogic():
   port3moved(),
   port4moved()
 {
-  if(!map.createMap("map.txt")){
+  if(!map.createMap("./second_map.txt")){
     std::cout<<"Map failed to create"<<std::endl;
   }
   ActorList actor_list;

@@ -5,6 +5,7 @@
 
 #include "GameLogic.hpp"
 #include "HumanGameView.hpp"
+#include "Map.hpp"
 
 // Cap on maximum frame rate
 #define MAX_FRAME_RATE 60
@@ -101,14 +102,14 @@ int main(int argc, char** argv)
     processing_clock.restart();
 
 
-    /*// process events
+    // process events
     sf::Event Event;
     while(App.pollEvent(Event))
     {
       // Exit
       if(Event.type == sf::Event::Closed)
         App.close();
-    }*/
+    }
 
 
     // How much time has passed since the last update?
@@ -157,7 +158,7 @@ int main(int argc, char** argv)
     // Draw the framerate indicator
     if (FRAME_RATE_DISPLAY)
     {
-      App.draw(framerate_indicator);
+      //App.draw(framerate_indicator);
     }
 
     // display
