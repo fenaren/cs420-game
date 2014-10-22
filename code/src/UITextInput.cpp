@@ -11,8 +11,10 @@ void UITextInput::initialize(sf::Vector2f s, sf::Vector2u curRes, Orientation or
 	input = ":";
 	inputText.setFont(font);
 	inputText.setString(input);
-	dialogue = "Rum X Price Y";
+	inputText.setCharacterSize(20);
+	dialogue = "Rum Supply X\nPrice Y";
 	dialogueText.setFont(font);
+	dialogueText.setCharacterSize(20);
 	dialogueText.setString(dialogue);
 }
 
@@ -25,8 +27,10 @@ void UITextInput::resize(sf::Vector2u curRes) {
 }
 
 void UITextInput::inputPush(char c) {
-	input += c;
-	inputText.setString(input);
+	if (input.length() < 7) {
+		input += c;
+		inputText.setString(input);
+	}
 }
 
 void UITextInput::inputPop() {

@@ -10,6 +10,7 @@
 #include "UIElement.hpp"
 #include "UITextInput.hpp"
 #include "Map.hpp"
+#include "ShipMoveCmdEvent.hpp"
 
 class HumanGameView : public GameView
 {

@@ -19,7 +19,7 @@ HumanGameView::~HumanGameView()
 bool HumanGameView::initialize()
 {
   test = new UITextInput();
-  test->initialize(sf::Vector2f(150, 200), currentRes, UIElement::Center);
+  test->initialize(sf::Vector2f(150, 100), currentRes, UIElement::Center);
   //uiList.push_back(test);
   tempMap.createMap("first_map.txt");
   return true;
@@ -113,7 +113,7 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 		x++;
 	if (x != 0 || y != 0) {
-		// queue ship move command here
+		// send shipmovecmdevent here
 	}
   }
 }
