@@ -32,11 +32,13 @@ public:
         
 private:    
 
-    const int map_rows = 6;
+    const int map_rows = 24;
    
-    const int map_cols = 8;
+    const int map_cols = 32;
     
-    int map_array[6][8];
+    int map_array[24][32];
+
+    double tile_size = 25;
 
     // W = 0, L = 1
     enum Terrain {W=0, L=1};

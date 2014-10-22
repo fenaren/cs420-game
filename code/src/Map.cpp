@@ -43,7 +43,7 @@ bool Map::createMap(std::string filename) {
 void Map::drawMap(sf::RenderWindow* App) {
     int x_position = 0;
     int y_position = 0;
-    sf::RectangleShape tile(sf::Vector2f(100,100));
+    sf::RectangleShape tile(sf::Vector2f(tile_size,tile_size));
     for (int row = 0; row < map_rows; row++) 
     {
         for (int col = 0; col < map_cols; col++) 
@@ -57,10 +57,10 @@ void Map::drawMap(sf::RenderWindow* App) {
                 tile.setFillColor(sf::Color::Blue);
             }
             tile.setPosition(x_position, y_position);
-            x_position += 100;
+            x_position += tile_size;
             App->draw(tile);
         }
         x_position = 0;
-        y_position += 100;
+        y_position += tile_size;
     }        
 }
