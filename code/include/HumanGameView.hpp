@@ -32,6 +32,11 @@ public:
 
 private:
 
+  // boolean that represents if a menu is asking for input
+  // so gameview knows whether to read for text input
+  // or game commands
+  bool menuOpen = false;
+
   // Pointer to the game window so this view can draw in it
   sf::RenderWindow* App;
   

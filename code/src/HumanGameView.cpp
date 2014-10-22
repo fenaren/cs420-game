@@ -66,6 +66,23 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 			break;
 	}
   }
+  // handles ship movement;  note: it's not in the normal SFML event manager
+  // because held keys are handled different in SFML than pressed keys
+  if (!menuOpen) {
+	int x = 0;
+	int y = 0;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) 
+		y++;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		x--;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+		y--;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		x++;
+	if (x != 0 || y != 0) {
+		// queue ship move command here
+	}
+  }
 }
 
 // draws the map
