@@ -21,7 +21,8 @@ bool HumanGameView::initialize()
   test = new UITextInput();
   test->initialize(sf::Vector2f(150, 100), currentRes, UIElement::Center);
   //uiList.push_back(test);
-  tempMap.createMap("first_map.txt");
+  tempMap.createMap("second_map.txt");
+  App->setView(sf::View(sf::FloatRect(0, 0, currentRes.x, currentRes.y)));
   return true;
 }
 
