@@ -17,7 +17,7 @@ public:
   virtual bool initialize();
 
   virtual void update(const sf::Time& delta_t);
-
+  
   double getRum() const;
 
   void setRum(double rum);
