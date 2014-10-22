@@ -7,11 +7,9 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
   GameView(game_logic),
   App(App)  
 {
-	currentResX = DEFAULT_RES_X;
-	currentResY = DEFAULT_RES_Y;
-	resRatioX = 1;
-	resRatioY = 1;
-	aspectRatio = DEFAULT_RES_Y / DEFAULT_RES_X;
+	currentRes = DEFAULT_RES;
+	resRatio = sf::Vector2f(1, 1);
+	aspectRatio = DEFAULT_RES.x / DEFAULT_RES.y;
 }
 
 HumanGameView::~HumanGameView()
@@ -21,7 +19,7 @@ HumanGameView::~HumanGameView()
 bool HumanGameView::initialize()
 {
   UITextInput *test = new UITextInput();
-  test->initialize(150, 200, currentResX, currentResY, UIElement::Center);
+  test->initialize(sf::Vector2f(150, 200), currentRes, UIElement::Center);
   uiList.push_back(test);
   tempMap.createMap("first_map.txt");
   return true;
@@ -54,16 +52,17 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 			App->close();
 			break;
 			
-		  // on a resize it updates all the ratios
+		  // on a resize it updates all the ratios and makes sure
+		  // that menu elements are properly oriented
 		  case (sf::Event::Resized):
-			currentResX = event.size.width;
-			currentResY = event.size.height;
-			resRatioX = currentResX / DEFAULT_RES_X;
-			resRatioY = currentResY / DEFAULT_RES_Y;
-			aspectRatio = currentResY / currentResX;
+		    currentRes = sf::Vector2u(event.size.width, event.size.height);
+			resRatio.x = currentRes.x / DEFAULT_RES.x;
+			resRatio.y = currentRes.y / DEFAULT_RES.y;
+			aspectRatio = currentRes.y / currentRes.x;
 			for ( UIElement* elem : uiList ) {
-				elem->resize(currentResX, currentResY);
+				elem->resize(currentRes);
 			}
+			App->setView(sf::View(sf::FloatRect(0, 0, currentRes.x, currentRes.y)));
 			break;
 	}
   }

@@ -10,39 +10,38 @@ UIElement::~UIElement() {
 }
 
 // should be called immediately after creation
-void UIElement::initialize(float sX, float sY, float curX, float curY, Orientation orient) {
-	sizeX = sX;
-	sizeY = sY;
+void UIElement::initialize(sf::Vector2f s, sf::Vector2u curRes, Orientation orient) {
+	size = s;
 	orientation = orient;
-	resize(curX, curY);
+	resize(curRes);
 }
 
 // reorients in screen space on a resize
-void UIElement::resize(float curX, float curY) {
+void UIElement::resize(sf::Vector2u curRes) {
 	switch (orientation) {
 		case TopLeft:
-			posX = 0;
-			posY = 0;
+			pos.x = 0;
+			pos.y = 0;
 			break;
 			
 		case TopRight:
-			posX = curX - sizeX;
-			posY = 0;
+			pos.x = curRes.x - size.x;
+			pos.y = 0;
 			break;
 			
 		case BottomLeft:
-			posX = 0;
-			posY = curY - sizeY;
+			pos.x = 0;
+			pos.y = curRes.y - size.y;
 			break;
 			
 		case BottomRight:
-			posX = curX - sizeX;
-			posY = curY - sizeY;
+			pos.x = curRes.x - size.x;
+			pos.y = curRes.y - size.y;
 			break;
 			
 		case Center:
-			posX = (curX / 2) - (sizeX / 2);
-			posY = (curY / 2) - (sizeY / 2);
+			pos.x = (curRes.x / 2) - (size.x / 2);
+			pos.y = (curRes.y / 2) - (size.y / 2);
 			break;
 	}
 }

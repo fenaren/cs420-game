@@ -42,19 +42,16 @@ private:
   sf::RenderWindow* App;
   
   // float which represents the difference between the default resolution and current
-  float resRatioX;
-  float resRatioY;
+  sf::Vector2f resRatio;
   
   // float which represents the aspect ratio Y/X
   float aspectRatio;
   
   // the defaults for the initial window and on which resRatio will be based
-  const float DEFAULT_RES_X = 800;
-  const float DEFAULT_RES_Y = 600;
+  const sf::Vector2u DEFAULT_RES = sf::Vector2u(800, 600);
   
   // the current resolution
-  float currentResX;
-  float currentResY;
+  sf::Vector2u currentRes;
   
   // a list of UI elements
   std::vector<UIElement*> uiList;

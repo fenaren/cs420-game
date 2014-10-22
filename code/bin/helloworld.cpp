@@ -20,7 +20,7 @@ int main(int argc, char** argv)
   // create main window
   sf::RenderWindow App(sf::VideoMode(800,600,32), "Hello World - SFML");
     
-    Map game_map = Map();
+    /*Map game_map = Map();
     if(!game_map.createMap("first_map.txt"))
     {
         std::cout << "Map failed to create" << std::endl;
@@ -29,7 +29,7 @@ int main(int argc, char** argv)
     {
         game_map.drawMap(&App);
     }
-    App.display();
+    App.display();*/
 
   // How fast is game time relative to real time?
   // 1 = game time is real time
@@ -101,14 +101,14 @@ int main(int argc, char** argv)
     processing_clock.restart();
 
 
-    // process events
+    /*// process events
     sf::Event Event;
     while(App.pollEvent(Event))
     {
       // Exit
       if(Event.type == sf::Event::Closed)
         App.close();
-    }
+    }*/
 
 
     // How much time has passed since the last update?
@@ -152,7 +152,7 @@ int main(int argc, char** argv)
 
 
     // clear screen and fill with blue
-    App.clear(sf::Color::Blue);
+    //App.clear(sf::Color::Blue);
 
     // Draw the framerate indicator
     if (FRAME_RATE_DISPLAY)
@@ -161,7 +161,7 @@ int main(int argc, char** argv)
     }
 
     // display
-    App.display();
+    //App.display();
 
 
     // How much time did this frame's processing take?

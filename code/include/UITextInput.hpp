@@ -6,9 +6,9 @@
 class UITextInput : public UIElement {
 	
 public:
-	void initialize(float posX, float posY, float curX, float curY, Orientation orient);
-	void resize(float curX, float curY);
-	void draw(sf::RenderWindow* window);
+	virtual void initialize(sf::Vector2f s, sf::Vector2u curRes, Orientation orient);
+	virtual void resize(sf::Vector2u curRes);
+	virtual void draw(sf::RenderWindow* window);
 	
 private:
 	sf::RectangleShape rectangle;

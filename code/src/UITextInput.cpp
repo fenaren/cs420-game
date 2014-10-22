@@ -1,18 +1,18 @@
 #include "UITextInput.hpp"
 
-void UITextInput::initialize(float sX, float sY, float curX, float curY, Orientation orient) {
-	UIElement::initialize(sX, sY, curX, curY, orient);
-	rectangle.setPosition(sf::Vector2f(posX, posY));
-	rectangle.setSize(sf::Vector2f(sizeX, sizeY));
+void UITextInput::initialize(sf::Vector2f s, sf::Vector2u curRes, Orientation orient) {
+	UIElement::initialize(s, curRes, orient);
+	rectangle.setPosition(pos);
+	rectangle.setSize(size);
 	rectangle.setOutlineColor(sf::Color::White);
 	rectangle.setOutlineThickness(3);
 	rectangle.setFillColor(sf::Color::Black);
 }
 
-void UITextInput::resize(float curX, float curY) {
-	UIElement::resize(curX, curY);
-	rectangle.setPosition(sf::Vector2f(posX, posY));
-	rectangle.setSize(sf::Vector2f(sizeX, sizeY));
+void UITextInput::resize(sf::Vector2u curRes) {
+	UIElement::resize(curRes);
+	rectangle.setPosition(pos);
+	rectangle.setSize(size);
 }
 
 void UITextInput::draw(sf::RenderWindow* window) {
