@@ -23,6 +23,7 @@ bool HumanGameView::initialize()
   UITextInput *test = new UITextInput();
   test->initialize(150, 200, currentResX, currentResY, UIElement::Center);
   uiList.push_back(test);
+  tempMap.createMap("first_map.txt");
   return true;
 }
 
@@ -87,7 +88,7 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 
 // draws the map
 void HumanGameView::drawMap() {
-	
+	tempMap.drawMap(App);
 }
 
 // draws the actors

@@ -9,6 +9,7 @@
 #include "GameView.hpp"
 #include "UIElement.hpp"
 #include "UITextInput.hpp"
+#include "Map.hpp"
 
 class HumanGameView : public GameView
 {
@@ -57,6 +58,9 @@ private:
   
   // a list of UI elements
   std::vector<UIElement*> uiList;
+  
+  // temporary map to draw from
+  Map tempMap;
 };
 
 #endif
