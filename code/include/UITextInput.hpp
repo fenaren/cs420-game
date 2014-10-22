@@ -10,7 +10,20 @@ public:
 	virtual void resize(sf::Vector2u curRes);
 	virtual void draw(sf::RenderWindow* window);
 	
+	void inputPush(char c);
+	
+	// won't pop the initial read character
+	void inputPop();
+	
+	// returns the int so it can be passed to events
+	int clearInput();
+	
 private:
 	sf::RectangleShape rectangle;
+	std::string input;
+	sf::Font font;
+	sf::Text inputText;
+	std::string dialogue;
+	sf::Text dialogueText;
 };
 #endif

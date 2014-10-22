@@ -65,6 +65,18 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 			App->setView(sf::View(sf::FloatRect(0, 0, currentRes.x, currentRes.y)));
 			break;
 			
+		  // handles text input
+		  case (sf::Event::TextEntered):
+		    if (menuOpen) {
+				if (event.text.unicode >= 48 && event.text.unicode <= 57) {
+					test->inputPush(event.text.unicode);
+				}
+				// handles backspace
+				if (event.text.unicode == 8) 
+					test->inputPop();
+			}
+		    break;
+			
 		  // this code will actually react to transaction request event in the future
 		  case (sf::Event::KeyPressed):
 			if (event.key.code == sf::Keyboard::Space) {
@@ -78,6 +90,11 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 						uiList.erase(position);
 					menuOpen = false;
 				}
+			}
+			// if an input menu is open returns the int and clears it
+			if (event.key.code == sf::Keyboard::Return) {
+				if (menuOpen) 
+					test->clearInput();
 			}
 			break;
 	}
