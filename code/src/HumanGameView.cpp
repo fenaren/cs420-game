@@ -22,7 +22,6 @@ bool HumanGameView::initialize()
   test->initialize(sf::Vector2f(150, 100), currentRes, UIElement::Center);
   //uiList.push_back(test);
   tempMap.createMap("second_map.txt");
-  App->setView(sf::View(sf::FloatRect(0, 0, currentRes.x, currentRes.y)));
   return true;
 }
 
