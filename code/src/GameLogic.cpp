@@ -8,7 +8,7 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
   int dirx, diry;
   const ShipMoveCmdEvent* am_event = dynamic_cast<const ShipMoveCmdEvent*>(&event);   
   const EventInterface* shipmovedevent = &shipmoved;
-    
+  
   currentx = ship.getPositionX();
   currenty = ship.getPositionY();
   port1x = port1.getPositionX();
@@ -25,8 +25,10 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
   }else{
     dirx = am_event->getShipMove().x;
     diry = am_event->getShipMove().y;
+    
     //checks map
     terrain = map.getTerrain(currentx+dirx, currenty+diry);
+    
     //does the move
     if (terrain == 0){
       currentx+=dirx;
@@ -36,14 +38,35 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
     }
     shipmoved.setX(currentx);
     shipmoved.setY(currenty);
+    
     //queues ActorMovedEvent
     event_manager.queueEvent(shipmovedevent);
+    
     //check if ship on port
     if(currentx==port1x && currenty ==port1y){
-      
+      const EventInterface* sport1 = &startport1;
+      startport1.setShipGold(ship.getGold());
+      startport1.setShipRum(ship.getRum());
+      startport1.setPortRum(port1.getRum());
+      event_manager.queueEvent(sport1);
     }else if(currentx==port2x && currenty ==port2y){
+      const EventInterface* sport2 = &startport2;
+      startport2.setShipGold(ship.getGold());
+      startport2.setShipRum(ship.getRum());
+      startport2.setPortRum(port2.getRum());
+      event_manager.queueEvent(sport2);
     }else if(currentx==port3x && currenty ==port3y){
+      const EventInterface* sport3 = &startport3;
+      startport3.setShipGold(ship.getGold());
+      startport3.setShipRum(ship.getRum());
+      startport3.setPortRum(port3.getRum());
+      event_manager.queueEvent(sport3);
     }else if(currentx==port4x && currenty ==port4y){
+      const EventInterface* sport4 = &startport4;
+      startport4.setShipGold(ship.getGold());
+      startport4.setShipRum(ship.getRum());
+      startport4.setPortRum(port4.getRum());
+      event_manager.queueEvent(sport4);
     }
   }
   
@@ -86,12 +109,48 @@ GameLogic::GameLogic():
   actor_list.push_back(&port2);
   actor_list.push_back(&port3);
   actor_list.push_back(&port4);
+  
   shipmoved.setActorId(0);
   port1moved.setActorId(1);
   port2moved.setActorId(2);
   port3moved.setActorId(3);
   port4moved.setActorId(4);
   
+  startport1.setShipId(0);
+  startport1.setPortId(1);
+  startport2.setShipId(0);
+  startport2.setPortId(2);
+  startport3.setShipId(0);
+  startport3.setPortId(3);
+  startport4.setShipId(0);
+  startport4.setPortId(4);
+  
+  checkport1.setShipId(0);
+  checkport1.setPortId(1);
+  checkport2.setShipId(0);
+  checkport2.setPortId(2);
+  checkport3.setShipId(0);
+  checkport3.setPortId(3);
+  checkport4.setShipId(0);
+  checkport4.setPortId(4);
+  
+  successport1.setShipId(0);
+  successport1.setPortId(1);
+  successport2.setShipId(0);
+  successport2.setPortId(2);
+  successport3.setShipId(0);
+  successport3.setPortId(3);
+  successport4.setShipId(0);
+  successport4.setPortId(4);
+  
+  failport1.setShipId(0);
+  failport1.setPortId(1);
+  failport2.setShipId(0);
+  failport2.setPortId(2);
+  failport3.setShipId(0);
+  failport3.setPortId(3);
+  failport4.setShipId(0);
+  failport4.setPortId(4);
 }
 
 GameLogic::~GameLogic()

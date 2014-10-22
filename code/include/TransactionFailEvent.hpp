@@ -13,7 +13,7 @@ public:
 
   TransactionFailEvent();
 
-  TransactionFailEvent(ActorId ship_id, ActorId port_id, unsigned int ship_gold, unsigned int ship_rum, unsigned int port_rum);
+  TransactionFailEvent(ActorId ship_id, ActorId port_id, double ship_gold, double ship_rum, double port_rum);
 
   ~TransactionFailEvent();
 
@@ -32,22 +32,22 @@ public:
   ActorId getPortId() const;
 
   /* Ship gold setter */
-  void setShipGold(unsigned int x);
+  void setShipGold(double x);
 
   /* Ship gold getter */
-  unsigned int getShipGold() const;
+  double getShipGold() const;
 
   /* Ship rum setter */
-  void setShipRum(unsigned int y);
+  void setShipRum(double y);
 
   /* Ship rum getter */
-  unsigned int getShipRum() const;
+  double getShipRum() const;
   
   /* Port rum setter */
-  void setPortRum(unsigned int y);
+  void setPortRum(double y);
 
   /* Port rum getter */
-  unsigned int getPortRum() const;
+  double getPortRum() const;
 
   /* TransactionFailEvent's event type */
   static const EventType event_type;
@@ -58,9 +58,9 @@ private:
   ActorId ship_id, port_id;
 
   /* Rum and gold of actors associated with this event */
-  unsigned int ship_gold;
-  unsigned int ship_rum;
-  unsigned int port_rum;
+  double ship_gold;
+  double ship_rum;
+  double port_rum;
 };
 
 inline EventType TransactionFailEvent::getEventType() const
@@ -88,32 +88,32 @@ inline ActorId TransactionFailEvent::getPortId() const
   return port_id;
 }
 
-inline void TransactionFailEvent::setShipGold(unsigned int x)
+inline void TransactionFailEvent::setShipGold(double x)
 {
   this->ship_gold = x;
 }
 
-inline unsigned int TransactionFailEvent::getShipGold() const
+inline double TransactionFailEvent::getShipGold() const
 {
   return ship_gold;
 }
 
-inline void TransactionFailEvent::setShipRum(unsigned int y)
+inline void TransactionFailEvent::setShipRum(double y)
 {
   this->ship_rum = y;
 }
 
-inline unsigned int TransactionFailEvent::getShipRum() const
+inline double TransactionFailEvent::getShipRum() const
 {
   return ship_rum;
 }
 
-inline void TransactionFailEvent::setPortRum(unsigned int y)
+inline void TransactionFailEvent::setPortRum(double y)
 {
   this->port_rum= y;
 }
 
-inline unsigned int TransactionFailEvent::getPortRum() const
+inline double TransactionFailEvent::getPortRum() const
 {
   return port_rum;
 }
