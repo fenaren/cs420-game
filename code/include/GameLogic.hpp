@@ -33,6 +33,9 @@ public:
   /* Called on a per-frame basis.  Causes the GameLogic to do all actions
      necessary on a frame. */
   void update(const sf::Time& delta_t);
+  
+  void ShipMoveCmdEventHandler(const EventInterface& event);
+  void ActorMovedEventHandler(const EventInterface& event);
 
   EventManager* getEventManager();
 
@@ -42,6 +45,8 @@ private:
   typedef std::list<const Actor*> ActorList;
   Ship ship;
   Port port1, port2, port3, port4;
+  Map map;
+  ActorMovedEvent shipmoved, port1moved, port2moved, port3moved, port4moved;
 };
 
 inline EventManager* GameLogic::getEventManager()

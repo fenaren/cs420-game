@@ -28,6 +28,6 @@ void ShipMoveCmdEvent::setShipMove(sf::Vector2i sMove) {
 // (0, 1) move up, (0, -1) move down
 // (1, 1) move up-right, (-1, 1) move up-left
 // (1, -1) move down-right, (-1, -1) move down-left
-sf::Vector2i ShipMoveCmdEvent::getShipMove() {
+sf::Vector2i ShipMoveCmdEvent::getShipMove() const{
   return shipMove;
 }

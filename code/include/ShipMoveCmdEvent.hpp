@@ -18,7 +18,7 @@ class ShipMoveCmdEvent : public EventInterface {
     
     // setters and getters
     void setShipMove(sf::Vector2i sMove);
-    sf::Vector2i getShipMove();
+    sf::Vector2i getShipMove() const;
 
 private:
     // vector representing a relative ship move
