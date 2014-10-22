@@ -22,7 +22,7 @@ int main(int argc, char** argv)
   sf::RenderWindow App(sf::VideoMode(800,600,32), "Hello World - SFML");
     
     Map game_map = Map();
-    if(!game_map.createMap("first_map.txt"))
+    if(!game_map.createMap("second_map.txt"))
     {
         std::cout << "Map failed to create" << std::endl;
     }
