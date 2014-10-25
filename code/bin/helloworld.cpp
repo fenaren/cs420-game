@@ -21,8 +21,8 @@ int main(int argc, char** argv)
   // create main window
   sf::RenderWindow App(sf::VideoMode(800,600,32), "Hello World - SFML");
     
-    Map game_map = Map();
-    if(!game_map.createMap("second_map.txt"))
+    /*Map game_map = Map();
+    if(!game_map.createMap("first_map.txt"))
     {
         std::cout << "Map failed to create" << std::endl;
     }
@@ -30,7 +30,7 @@ int main(int argc, char** argv)
     {
         game_map.drawMap(&App);
     }
-    App.display();
+    App.display();*/
 
   // How fast is game time relative to real time?
   // 1 = game time is real time
