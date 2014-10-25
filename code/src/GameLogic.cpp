@@ -209,6 +209,7 @@ GameLogic::~GameLogic()
 
 bool GameLogic::initialize()
 {
+  // Register the proper handler for when the ship move command is triggered
   event_manager.addDelegate(
     EventDelegate(std::bind(&GameLogic::ShipMoveCmdEventHandler,
 			    this,
