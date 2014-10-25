@@ -14,6 +14,21 @@ EventManager::EventManager() :
 
 EventManager::~EventManager()
 {
+  // Loop over the process queue, deleting all the events
+  for (EventQueue::iterator i = process_queue->begin();
+       i != process_queue->end();
+       i++)
+  {
+    delete *i;
+  }
+
+  // Loop over the register queue, deleting all the events
+  for (EventQueue::iterator i = register_queue->begin();
+       i != register_queue->end();
+       i++)
+  {
+    delete *i;
+  }
 }
 
 void EventManager::queueEvent(const EventInterface* event)

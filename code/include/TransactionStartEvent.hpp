@@ -13,7 +13,11 @@ public:
 
   TransactionStartEvent();
 
-  TransactionStartEvent(ActorId ship_id, ActorId port_id, double ship_gold, double ship_rum, double port_rum);
+  TransactionStartEvent(ActorId ship_id,
+			ActorId port_id,
+			double ship_gold,
+			double ship_rum,
+			double port_rum);
 
   virtual ~TransactionStartEvent();
 
