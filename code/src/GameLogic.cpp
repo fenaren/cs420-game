@@ -1,7 +1,9 @@
 #include <SFML/System/Time.hpp>
+#include <functional>
 #include <iostream>
 
 #include "GameLogic.hpp"
+#include "ShipMoveCmdEvent.hpp"
 
 void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
 { 
@@ -27,23 +29,23 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
   }else{
     dirx = smc_event->getShipMove().x;
     diry = smc_event->getShipMove().y;
-    
+
     //checks map
     terrain = map.getTerrain(currentx+dirx, currenty+diry);
     
     //does the move if terrain is water
-    if (terrain == 0){
+    if (terrain == Map::WATER){
       currentx+=dirx;
       currenty+=diry;
       ship.setPositionX(currentx);
       ship.setPositionY(currenty);
-    }
 
-    //queues ActorMovedEvent for the ship
-    ActorMovedEvent* am_event = new ActorMovedEvent(ship.getActorId(),
-						    ship.getPositionX(),
-						    ship.getPositionY());
-    event_manager.queueEvent(am_event);
+      //queues ActorMovedEvent for the ship
+      ActorMovedEvent* am_event = new ActorMovedEvent(ship.getActorId(),
+						      ship.getPositionX(),
+						      ship.getPositionY());
+      event_manager.queueEvent(am_event);
+    }
 
 
     // If the ship is on a port a transaction is starting.  Signal that this
@@ -60,28 +62,37 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
       // Set up the event with the appropriate data
       ts_event->setPortId(port1.getActorId());
       ts_event->setPortRum(port1.getRum());
+
+      // Queue the transaction start, event manager takes ownership
+      event_manager.queueEvent(ts_event);
     }
     else if(currentx==port2x && currenty ==port2y)
     {
       // Set up the event with the appropriate data
       ts_event->setPortId(port2.getActorId());
       ts_event->setPortRum(port2.getRum());
+
+      // Queue the transaction start, event manager takes ownership
+      event_manager.queueEvent(ts_event);
     }
     else if(currentx==port3x && currenty ==port3y)
     {
       // Set up the event with the appropriate data
       ts_event->setPortId(port3.getActorId());
       ts_event->setPortRum(port3.getRum());
+
+      // Queue the transaction start, event manager takes ownership
+      event_manager.queueEvent(ts_event);
     }
     else if(currentx==port4x && currenty ==port4y)
     {
       // Set up the event with the appropriate data
       ts_event->setPortId(port4.getActorId());
       ts_event->setPortRum(port4.getRum());
-    }
 
-    // Queue the transaction start, event manager takes ownership
-    event_manager.queueEvent(ts_event);
+      // Queue the transaction start, event manager takes ownership
+      event_manager.queueEvent(ts_event);
+    }
   }  
 }
 
@@ -184,7 +195,6 @@ GameLogic::GameLogic():
   if(!map.createMap("./second_map.txt")){
     std::cout<<"Map failed to create"<<std::endl;
   }
-
   ActorList actor_list;
   actor_list.push_back(&ship);
   actor_list.push_back(&port1);
@@ -199,16 +209,19 @@ GameLogic::~GameLogic()
 
 bool GameLogic::initialize()
 {
-  /*event_manager.addDelegate(ActorMovedEventHandler, ActorMovedEvent().getEventType());
-  event_manager.addDelegate(ShipMoveCmdEventHandler, ShipMoveCmdEvent().getEventType());*/
+  event_manager.addDelegate(
+    EventDelegate(std::bind(&GameLogic::ShipMoveCmdEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    ShipMoveCmdEvent::event_type);
+
   return true;
 }
 
 void GameLogic::update(const sf::Time& delta_t)
-{
+{  
   // Trigger all queued events
   event_manager.processEvents();
-  
 }
 
 
