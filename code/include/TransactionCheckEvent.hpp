@@ -15,7 +15,7 @@ public:
 
   TransactionCheckEvent(ActorId ship_id, ActorId port_id, double ship_gold, double ship_rum, double port_rum);
 
-  ~TransactionCheckEvent();
+  virtual ~TransactionCheckEvent();
 
   virtual EventType getEventType() const;
 

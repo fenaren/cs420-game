@@ -15,7 +15,7 @@ public:
 
   ActorMovedEvent(ActorId actor_id, unsigned int x, unsigned int y);
 
-  ~ActorMovedEvent();
+  virtual ~ActorMovedEvent();
 
   virtual EventType getEventType() const;
 
