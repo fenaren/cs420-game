@@ -23,10 +23,10 @@ bool Map::createMap(std::string filename) {
         {
             for (int col = 0; col < map_cols; col++) {
                 if (line[col] == 'L') {
-                    map_array[row][col] = 0;
+                    map_array[row][col] = LAND;
                 }
                 else if (line[col] == 'W') {
-                    map_array[row][col] = 1;
+                    map_array[row][col] = WATER;
                 }
             }
             row++;
@@ -48,7 +48,7 @@ void Map::drawMap(sf::RenderWindow* App) {
     {
         for (int col = 0; col < map_cols; col++) 
         {
-            if (map_array[row][col] == 0)
+            if (map_array[row][col] == LAND)
             {
                 tile.setFillColor(sf::Color::Green);
             }

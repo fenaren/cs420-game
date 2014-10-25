@@ -29,6 +29,12 @@ public:
     int get_map_row_size();
 
     int get_map_col_size();
+
+    enum Terrain
+    {
+      WATER = 0,
+      LAND  = 1
+    };
         
 private:    
 
@@ -39,9 +45,6 @@ private:
     int map_array[24][32];
 
     double tile_size = 25;
-
-    // W = 0, L = 1
-    enum Terrain {W=0, L=1};
 };
 
 inline int* Map::getMap()
