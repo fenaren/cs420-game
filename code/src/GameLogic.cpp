@@ -1,4 +1,5 @@
 #include <SFML/System/Time.hpp>
+#include <fstream>
 #include <functional>
 #include <iostream>
 
@@ -170,7 +171,11 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
 }
 
 GameLogic::GameLogic() :
-  ship(0)
+  ship(0),
+  port1(1),
+  port2(2),
+  port3(3),
+  port4(4)
 {
   // Initialize the map
   if(!map.createMap("./second_map.txt")){
@@ -182,7 +187,10 @@ GameLogic::GameLogic() :
   ship->setGold(0);
   ship->setRum(1);
   ship->setMaxRum(10);
-  ship->setRumRate(0);  
+  ship->setRumRate(0);
+
+  // Create and initialize all the ports
+  std::ifstream ports_init_file("./ports.txt");
 }
 
 GameLogic::~GameLogic()
