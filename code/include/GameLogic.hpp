@@ -2,6 +2,7 @@
 #define GAME_LOGIC_HPP
 
 #include <SFML/System/Time.hpp>
+#include <vector>
 
 #include "EventInterface.hpp"
 #include "EventManager.hpp"
@@ -26,20 +27,38 @@ public:
   /* Called on a per-frame basis.  Causes the GameLogic to do all actions
      necessary on a frame. */
   void update(const sf::Time& delta_t);
-  
-  void ShipMoveCmdEventHandler(const EventInterface& event);
-  void TransactionCheckEventHandler(const EventInterface& event);
 
+  // Returns a pointer to the event manager.  Allows things external to the game
+  // logic to queue events in the game logic.
   EventManager* getEventManager();
+
+
+  // EVENT HANDLERS
+
+  // Handles the ShipMoveCmdEvent.  This should cause the game logic to act as
+  // if the user command the ship to move.  Move ship, collide with terrain,
+  // start transactions, etc.
+  void ShipMoveCmdEventHandler(const EventInterface& event);
+
+  // Handles the TransactionCheckEvent.  This takes transaction request data
+  // from the game view and applies game mechanics to complete the transaction.
+  // Transactions can succeed or fail depending on the transaction parameters,
+  // and this will queue the appropriate events in those cases.
+  void TransactionCheckEventHandler(const EventInterface& event);
 
 private:
 
-  typedef std::list<const Actor*> ActorList;
+  // Define a couple types to make working with our containers easier
+  typedef std::vector<const Actor*> ActorList;
+  typedef std::vector<const Port*>  PortsList;
 
+  // The game logic's event manager
   EventManager event_manager;
 
-  Ship ship;
-  Port port1, port2, port3, port4;
+  // Convenience pointer to the player' ship
+  Ship* ship;
+
+  // The game map.  Contains terrain data.
   Map map;
 };
 

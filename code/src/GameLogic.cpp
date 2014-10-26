@@ -18,8 +18,8 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
   const ShipMoveCmdEvent* smc_event =
     dynamic_cast<const ShipMoveCmdEvent*>(&event);   
   
-  currentx = ship.getPositionX();
-  currenty = ship.getPositionY();
+  currentx = ship->getPositionX();
+  currenty = ship->getPositionY();
   port1x = port1.getPositionX();
   port1y = port1.getPositionY();
   port2x = port2.getPositionX();
@@ -42,13 +42,13 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
     if (terrain == Map::WATER){
       currentx+=dirx;
       currenty+=diry;
-      ship.setPositionX(currentx);
-      ship.setPositionY(currenty);
+      ship->setPositionX(currentx);
+      ship->setPositionY(currenty);
 
       //queues ActorMovedEvent for the ship
-      ActorMovedEvent* am_event = new ActorMovedEvent(ship.getActorId(),
-						      ship.getPositionX(),
-						      ship.getPositionY());
+      ActorMovedEvent* am_event = new ActorMovedEvent(ship->getActorId(),
+						      ship->getPositionX(),
+						      ship->getPositionY());
       event_manager.queueEvent(am_event);
     }
 
@@ -57,9 +57,9 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
     // is happening with the TransactionStartEvent.
 
     TransactionStartEvent* ts_event = new TransactionStartEvent();
-    ts_event->setShipId(ship.getActorId());
-    ts_event->setShipGold(ship.getGold());
-    ts_event->setShipRum(ship.getRum());
+    ts_event->setShipId(ship->getActorId());
+    ts_event->setShipGold(ship->getGold());
+    ts_event->setShipRum(ship->getRum());
     
     //check if ship on port
     if(currentx==port1x && currenty ==port1y)
@@ -123,7 +123,7 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
 
     // This transaction has failed so signal this with a TransactionFailEvent
     TransactionFailEvent* tfail_event =
-      new TransactionFailEvent(ship.getActorId(),
+      new TransactionFailEvent(ship->getActorId(),
 			       portid,
 			       shipgold,
 			       shiprum,
@@ -142,12 +142,12 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
     shiprum += rum;
     portrum -= rum;
     
-    ship.setRum(shiprum);
-    ship.setGold(shipgold);
+    ship->setRum(shiprum);
+    ship->setGold(shipgold);
 
     // This transaction succeeds so signal that with the TransactionSuccessEvent
     TransactionSuccessEvent* tsuccess_event =
-      new TransactionSuccessEvent(ship.getActorId(),
+      new TransactionSuccessEvent(ship->getActorId(),
 				  portid,
 				  shipgold,
 				  shiprum,
@@ -169,21 +169,25 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
   
 }
 
-GameLogic::GameLogic():
-  ship(0),
-  port1(1),
-  port2(2),
-  port3(3),
-  port4(4),
-  map()
+GameLogic::GameLogic() :
+  ship(0)
 {
+  // Initialize the map
   if(!map.createMap("./second_map.txt")){
     std::cout<<"Map failed to create"<<std::endl;
   }
+
+  // Create and initialize the ship
+  ship = new Ship(0);
+  ship->setGold(0);
+  ship->setRum(1);
+  ship->setMaxRum(10);
+  ship->setRumRate(0);  
 }
 
 GameLogic::~GameLogic()
 {
+  delete ship;
 }
 
 bool GameLogic::initialize()
@@ -203,6 +207,3 @@ void GameLogic::update(const sf::Time& delta_t)
   // Trigger all queued events
   event_manager.processEvents();
 }
-
-
-
