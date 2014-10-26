@@ -44,7 +44,7 @@ void Map::drawMap(sf::RenderWindow* App) {
     int x_position = 0;
     int y_position = 0;
     sf::Texture texture;
-    if (!texture.loadFromFile("sprites.png")) {
+    if (!texture.loadFromFile("./data/sprites.png")) {
         std::cout << "ERROR TEXTURE" << std::endl;
     }
     sf::Sprite land_sprite;
@@ -54,7 +54,6 @@ void Map::drawMap(sf::RenderWindow* App) {
     land_sprite.setTextureRect(sf::IntRect(106,50,25,25));
     water_sprite.setTextureRect(sf::IntRect(106,25,25,25));
 
-//    sf::RectangleShape tile(sf::Vector2f(tile_size,tile_size));
     for (int y = 0; y < map_size_y; y++) 
     {
         for (int x = 0; x < map_size_x; x++) 
@@ -63,17 +62,13 @@ void Map::drawMap(sf::RenderWindow* App) {
             {
                 land_sprite.setPosition(sf::Vector2f(x_position, y_position));
                 App->draw(land_sprite);
-//              tile.setFillColor(sf::Color::Green);
             }
             else
             {
                 water_sprite.setPosition(sf::Vector2f(x_position, y_position));
                 App->draw(water_sprite);
-//              tile.setFillColor(sf::Color::Blue);
             }
-            //tile.setPosition(x_position, y_position);
             x_position += tile_size;
-//            App->draw(tile);
         }
         x_position = 0;
         y_position += tile_size;
