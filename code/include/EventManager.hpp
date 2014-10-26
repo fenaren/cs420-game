@@ -17,8 +17,8 @@ public:
   ~EventManager();
 
   /* Queue up an event to be triggered the next time processEvents() is
-   * called.  EventManager does NOT take ownership of the event when this is
-   * called (EventManager does not delete the event). */
+   * called.  EventManager DOES take ownership of the event when this is
+   * called (EventManager DOES delete the event). */
   void queueEvent(const EventInterface* event);
 
   /* Instantly trigger the given event */

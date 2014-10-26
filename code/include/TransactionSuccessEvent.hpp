@@ -15,7 +15,7 @@ public:
 
   TransactionSuccessEvent(ActorId ship_id, ActorId port_id, double ship_gold, double ship_rum, double port_rum);
 
-  ~TransactionSuccessEvent();
+  virtual ~TransactionSuccessEvent();
 
   virtual EventType getEventType() const;
 

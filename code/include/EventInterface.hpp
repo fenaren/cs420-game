@@ -12,7 +12,7 @@ public:
 
   EventInterface();
 
-  ~EventInterface();
+  virtual ~EventInterface();
 
   /* Derived classes implement this to return a unique identifier for the type
      of event they represent */

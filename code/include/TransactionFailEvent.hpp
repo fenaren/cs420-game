@@ -15,7 +15,7 @@ public:
 
   TransactionFailEvent(ActorId ship_id, ActorId port_id, double ship_gold, double ship_rum, double port_rum);
 
-  ~TransactionFailEvent();
+  virtual ~TransactionFailEvent();
 
   virtual EventType getEventType() const;
 

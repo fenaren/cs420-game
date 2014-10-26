@@ -35,7 +35,6 @@ public:
   void update(const sf::Time& delta_t);
   
   void ShipMoveCmdEventHandler(const EventInterface& event);
-  void ActorMovedEventHandler(const EventInterface& event);
   void TransactionStartEventHandler(const EventInterface& event);
   void TransactionCheckEventHandler(const EventInterface& event);
   void TransactionSuccessEventHandler(const EventInterface& event);
@@ -50,11 +49,6 @@ private:
   Ship ship;
   Port port1, port2, port3, port4;
   Map map;
-  ActorMovedEvent shipmoved, port1moved, port2moved, port3moved, port4moved;
-  TransactionStartEvent startport1, startport2, startport3, startport4;
-  TransactionCheckEvent checkport1, checkport2, checkport3, checkport4;
-  TransactionSuccessEvent successport1, successport2, successport3, successport4;
-  TransactionFailEvent failport1, failport2, failport3, failport4;
 };
 
 inline EventManager* GameLogic::getEventManager()
