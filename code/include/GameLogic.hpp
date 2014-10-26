@@ -3,20 +3,13 @@
 
 #include <SFML/System/Time.hpp>
 
+#include "EventInterface.hpp"
 #include "EventManager.hpp"
-#include "EventDelegate.hpp"
 
 #include "Actor.hpp"
 #include "Ship.hpp"
 #include "Map.hpp"
 #include "Port.hpp"
-
-#include "ActorMovedEvent.hpp"
-#include "ShipMoveCmdEvent.hpp"
-#include "TransactionCheckEvent.hpp"
-#include "TransactionFailEvent.hpp"
-#include "TransactionSuccessEvent.hpp"
-#include "TransactionStartEvent.hpp"
 
 class GameLogic
 {
@@ -44,8 +37,10 @@ public:
 
 private:
 
-  EventManager event_manager;
   typedef std::list<const Actor*> ActorList;
+
+  EventManager event_manager;
+
   Ship ship;
   Port port1, port2, port3, port4;
   Map map;

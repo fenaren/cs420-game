@@ -2,8 +2,13 @@
 #include <functional>
 #include <iostream>
 
+#include "ActorMovedEvent.hpp"
 #include "GameLogic.hpp"
 #include "ShipMoveCmdEvent.hpp"
+#include "TransactionCheckEvent.hpp"
+#include "TransactionFailEvent.hpp"
+#include "TransactionStartEvent.hpp"
+#include "TransactionSuccessEvent.hpp"
 
 void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
 { 
@@ -195,12 +200,6 @@ GameLogic::GameLogic():
   if(!map.createMap("./second_map.txt")){
     std::cout<<"Map failed to create"<<std::endl;
   }
-  ActorList actor_list;
-  actor_list.push_back(&ship);
-  actor_list.push_back(&port1);
-  actor_list.push_back(&port2);
-  actor_list.push_back(&port3);
-  actor_list.push_back(&port4);
 }
 
 GameLogic::~GameLogic()
