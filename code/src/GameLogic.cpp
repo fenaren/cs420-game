@@ -169,20 +169,6 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
   
 }
 
-void GameLogic::TransactionFailEventHandler(const EventInterface& event)
-{
-  const TransactionFailEvent* tfail_event =
-    dynamic_cast<const TransactionFailEvent*>(&event);
-}
-
-
-void GameLogic::TransactionSuccessEventHandler(const EventInterface& event)
-{
-  const TransactionSuccessEvent* tsuccess_event =
-    dynamic_cast<const TransactionSuccessEvent*>(&event);
-}
-
-
 GameLogic::GameLogic():
   ship(0),
   port1(1),
