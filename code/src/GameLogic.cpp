@@ -101,12 +101,6 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
   }  
 }
 
-void GameLogic::TransactionStartEventHandler(const EventInterface& event)
-{
-  const TransactionStartEvent* tstart_event =
-    dynamic_cast<const TransactionStartEvent*>(&event);
-}
-
 void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
 {
   unsigned int shipid, portid, price, rum=1;
