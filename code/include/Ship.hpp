@@ -12,7 +12,7 @@ public:
 
   Ship(ActorId actor_id);
 
-  ~Ship();
+  virtual ~Ship();
 
   virtual bool initialize();
 

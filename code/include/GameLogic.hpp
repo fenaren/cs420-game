@@ -2,12 +2,13 @@
 #define GAME_LOGIC_HPP
 
 #include <SFML/System/Time.hpp>
-#include <vector>
+#include <map>
 
 #include "EventInterface.hpp"
 #include "EventManager.hpp"
 
 #include "Actor.hpp"
+#include "ActorId.hpp"
 #include "Ship.hpp"
 #include "Map.hpp"
 #include "Port.hpp"
@@ -49,8 +50,12 @@ public:
 private:
 
   // Define a couple types to make working with our containers easier
-  typedef std::vector<const Actor*> ActorList;
-  typedef std::vector<const Port*>  PortsList;
+  typedef std::map<ActorId, const Actor*> ActorList;
+  typedef std::map<ActorId, const Port*>  PortsList;
+
+  // Containers for actors and other things
+  ActorList actors;
+  PortsList ports;
 
   // The game logic's event manager
   EventManager event_manager;

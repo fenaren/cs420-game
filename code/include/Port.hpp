@@ -13,7 +13,7 @@ public:
 
   Port(ActorId actor_id);
 
-  ~Port();
+  virtual ~Port();
 
   virtual bool initialize();
 

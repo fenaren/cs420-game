@@ -2,6 +2,8 @@
 #include <fstream>
 #include <functional>
 #include <iostream>
+#include <sstream>
+#include <string>
 
 #include "ActorMovedEvent.hpp"
 #include "GameLogic.hpp"
@@ -177,25 +179,142 @@ GameLogic::GameLogic() :
   port3(3),
   port4(4)
 {
+  // Used for assigning actor IDs throughout this constructor
+  unsigned int actor_id = 0;
+
+
   // Initialize the map
   if(!map.createMap("./second_map.txt")){
     std::cout<<"Map failed to create"<<std::endl;
   }
 
+
   // Create and initialize the ship
-  ship = new Ship(0);
+  ship = new Ship(actor_id++);
+  ship->setPositionX(0);
+  ship->setPositionY(0);
   ship->setGold(0);
   ship->setRum(1);
   ship->setMaxRum(10);
   ship->setRumRate(0);
 
+  // Push the ship onto the list of actors
+  actors[ship->getActorId()] = ship;
+
+
   // Create and initialize all the ports
+
+  // Open the port init file
   std::ifstream ports_init_file("./ports.txt");
+
+  // Make sure the file was opened properly
+  if (!ports_init_file.fail())
+  {
+    // Loop over all the lines in the file, initializing ports
+
+    // Delimits tokens in the init file
+    char delimiter = ',';
+    std::string line;
+    while (!ports_init_file.eof())
+    {
+      // Grab a line and store in 'line'
+      std::getline(ports_init_file, line);
+
+      // Push the entire line into a stream so it can be parsed by delimiter
+      std::istringstream line_stream(line);
+
+      // All the different parameters that can be read out of the file
+      std::string name;
+      unsigned int position_x = 0;
+      unsigned int position_y = 0;
+      double move_time = 0.0;
+      double rum       = 0.0;
+      double max_rum   = 0.0;
+      double rum_rate  = 0.0;
+
+      // Grab everything up to the first delimiter
+      std::getline(line_stream, name, delimiter);
+
+      // The name is the first thing on each line, so it could be the name OR it
+      // could be the start of comment line.  Search from the start of the name
+      // looking for something that's not a space.  If the first character is a #
+      // then the line is a comment so we should skip it.  As a side effect trim
+      // any leading whitespace off the name field.
+      bool pound_found = false;
+      for (unsigned int i = 0; i < name.size(); i++)
+      {
+	if (name[i] != ' ')
+	{
+	  if (name[i] == '#')
+	  {
+	    pound_found = true;
+	  }
+
+	  // Go ahead and trim leading whitespace
+	  name = name.substr(i);
+	  break;
+	}
+      }
+
+      if (pound_found)
+      {
+	continue;
+      }
+    
+      // Used for consuming delimiters below
+      std::string notused;
+
+      // Grab the rest of the data
+      line_stream >> position_x;
+      std::getline(line_stream, notused, delimiter);
+      line_stream >> position_y;
+      std::getline(line_stream, notused, delimiter);
+      line_stream >> move_time;
+      std::getline(line_stream, notused, delimiter);
+      line_stream >> rum;
+      std::getline(line_stream, notused, delimiter);
+      line_stream >> max_rum;
+      std::getline(line_stream, notused, delimiter);
+      line_stream >> rum_rate;
+
+      // Check the failbit, if it's set then the reads above didn't complete
+      // correctly, so we don't want to make a port based on it.
+      if (line_stream.fail())
+      {
+	continue;
+      }
+
+      // At this point we know we have a good set of port data, so go ahead and
+      // start making the Port
+      Port* port = new Port(actor_id++);
+      port->setPositionX(position_x);
+      port->setPositionY(position_y);
+      port->setMoveTime(move_time);
+      port->setRum(rum);
+      port->setMaxRum(max_rum);
+      port->setRumRate(rum_rate);
+      port->setName(name);
+
+      // Push this actor onto the actor list
+      actors[port->getActorId()] = port;
+
+      // Push this port onto the port list
+      ports[port->getActorId()] = port;
+    }
+  }
+  else
+    std::cout << "file not found \n";
 }
 
 GameLogic::~GameLogic()
 {
-  delete ship;
+  // Iterate over all the actors, deleting them
+  for (ActorList::iterator i = actors.begin();
+       i != actors.end();
+       i++)
+  {
+    delete i->second;
+  }
 }
 
 bool GameLogic::initialize()
