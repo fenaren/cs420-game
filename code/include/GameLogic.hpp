@@ -70,7 +70,6 @@ private:
 
   // Convenience pointer to the player' ship
   Ship* ship;
-  Port port1, port2, port3, port4;
 
   // The game map.  Contains terrain data.
   Map map;
