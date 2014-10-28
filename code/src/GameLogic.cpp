@@ -22,7 +22,7 @@ GameLogic::GameLogic() :
 
 
   // Initialize the map
-  if(!map.createMap("./second_map.txt")){
+  if(!map.createMap("./data/second_map.txt")){
     std::cout<<"Map failed to create"<<std::endl;
   }
 
@@ -43,7 +43,7 @@ GameLogic::GameLogic() :
   // Create and initialize all the ports
 
   // Open the port init file
-  std::ifstream ports_init_file("./ports.txt");
+  std::ifstream ports_init_file("./data/ports.txt");
 
   // Make sure the file was opened properly
   if (!ports_init_file.fail())
