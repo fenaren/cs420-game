@@ -40,7 +40,7 @@ bool Map::createMap(std::string filename) {
     map_file.close();
 }
 
-void Map::drawMap(sf::RenderWindow* App) {
+/* void Map::drawMap(sf::RenderWindow* App) {
     int x_position = 0;
     int y_position = 0;
     sf::Texture texture;
@@ -73,4 +73,4 @@ void Map::drawMap(sf::RenderWindow* App) {
         x_position = 0;
         y_position += tile_size;
     }        
-}
+} */
