@@ -336,4 +336,12 @@ void GameLogic::update(const sf::Time& delta_t)
 {  
   // Trigger all queued events
   event_manager.processEvents();
+
+  // Update all actors
+  for (ActorList::iterator i = actors.begin();
+       i != actors.end();
+       i++)
+  {
+    i->second->update(delta_t);
+  }
 }

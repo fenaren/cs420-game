@@ -50,8 +50,8 @@ public:
 private:
 
   // Define a couple types to make working with our containers easier
-  typedef std::map<ActorId, const Actor*> ActorList;
-  typedef std::map<ActorId, const Port*>  PortsList;
+  typedef std::map<ActorId, Actor*> ActorList;
+  typedef std::map<ActorId, Port*>  PortsList;
 
   // Containers for actors and other things
   ActorList actors;
