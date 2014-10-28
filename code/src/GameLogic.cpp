@@ -303,7 +303,10 @@ GameLogic::GameLogic() :
     }
   }
   else
-    std::cout << "file not found \n";
+  {
+    // Just print out some error text if the ports init file wasn't found
+    std::cerr << "Port init file not found\n";
+  }
 }
 
 GameLogic::~GameLogic()
