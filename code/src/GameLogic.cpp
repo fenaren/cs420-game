@@ -166,6 +166,13 @@ bool GameLogic::initialize()
 			    this,
 			    std::placeholders::_1)),
     ShipMoveCmdEvent::event_type);
+  
+  // Register the proper handler for when the transaction check is triggered
+  event_manager.addDelegate(
+    EventDelegate(std::bind(&GameLogic::TransactionCheckEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    TransactionCheckEvent::event_type);
 
   return true;
 }
@@ -299,6 +306,5 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
 
     // Set the rum of the port that was interacted with
     ports[portid]->setRum(portrum);
-  }
-  
+  }  
 }

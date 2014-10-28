@@ -26,9 +26,9 @@ public:
 
     void drawMap(sf::RenderWindow *App);
 
-    int get_map_row_size();
+    int get_map_size_x();
 
-    int get_map_col_size();
+    int get_map_size_y();
 
     enum Terrain
     {
@@ -38,11 +38,11 @@ public:
         
 private:    
 
-    const int map_rows = 24;
+    const int map_size_x = 32;
    
-    const int map_cols = 32;
+    const int map_size_y = 24;
     
-    int map_array[24][32];
+    int map_array[32][24];
 
     double tile_size = 25;
 };
@@ -57,14 +57,14 @@ inline int Map::getTerrain(int x, int y) const
     return map_array[x][y];
 }
 
-inline int Map::get_map_row_size()
+inline int Map::get_map_size_x()
 {
-    return map_rows;
+    return map_size_x;
 }
 
-inline int Map::get_map_col_size()
+inline int Map::get_map_size_y()
 {
-    return map_cols;
+    return map_size_y;
 }
 
 #endif
