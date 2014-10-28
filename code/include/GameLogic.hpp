@@ -21,6 +21,12 @@ public:
 
   ~GameLogic();
 
+
+  // Define a couple types to make working with our containers easier
+  typedef std::map<ActorId, Actor*> ActorList;
+  typedef std::map<ActorId, Port*>  PortsList;
+
+
   /* Does everything necessary to initialize the game logic.  Should run
      immediately after GameLogic construction. */
   bool initialize();
@@ -32,6 +38,12 @@ public:
   // Returns a pointer to the event manager.  Allows things external to the game
   // logic to queue events in the game logic.
   EventManager* getEventManager();
+
+  const ActorList& getActorList() const;
+
+  const PortsList& getPortsList() const;
+
+  const Ship* getShip() const;
 
 
   // EVENT HANDLERS
@@ -48,10 +60,6 @@ public:
   void TransactionCheckEventHandler(const EventInterface& event);
 
 private:
-
-  // Define a couple types to make working with our containers easier
-  typedef std::map<ActorId, Actor*> ActorList;
-  typedef std::map<ActorId, Port*>  PortsList;
 
   // Containers for actors and other things
   ActorList actors;
@@ -71,6 +79,21 @@ private:
 inline EventManager* GameLogic::getEventManager()
 {
   return &event_manager;
+}
+
+inline const GameLogic::ActorList& GameLogic::getActorList() const
+{
+  return actors;
+}
+
+inline const GameLogic::PortsList& GameLogic::getPortsList() const
+{
+  return ports;
+}
+
+inline const Ship* GameLogic::getShip() const
+{
+  return ship;
 }
 
 #endif
