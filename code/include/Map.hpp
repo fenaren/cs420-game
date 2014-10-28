@@ -24,8 +24,6 @@ public:
     
     int getTerrain(int x, int y) const;
 
-    //void drawMap(sf::RenderWindow *App);
-
     int get_map_size_x();
 
     int get_map_size_y();

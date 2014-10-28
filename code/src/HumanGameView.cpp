@@ -7,7 +7,6 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
   GameView(game_logic),
   App(App)  
 {
-	sf::Texture texture;
 	if (!texture.loadFromFile("./data/sprites.png")) {
 		std::cout << "ERROR TEXTURE" << std::endl;
 	}
@@ -25,7 +24,9 @@ bool HumanGameView::initialize()
   test = new UITextInput();
   test->initialize(sf::Vector2f(150, 100), currentRes, UIElement::Center);
   //uiList.push_back(test);
-  tempMap.createMap("./data/second_map.txt");
+  if (!tempMap.createMap("./data/second_map.txt")) {
+	std::cout << "ERROR MAP" << std::endl;
+  }
   return true;
 }
 
@@ -153,8 +154,6 @@ void HumanGameView::drawMap() {
         	x_position = 0;
         	y_position += tile_size;
     	}
-
-	//tempMap.drawMap(App);
 }
 
 // draws the actors
