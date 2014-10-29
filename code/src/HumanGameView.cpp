@@ -119,6 +119,8 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 		x++;
 	if (x != 0 || y != 0) {
 		// send shipmovecmdevent here
+		ShipMoveCmdEvent* sm_event = new ShipMoveCmdEvent(sf::Vector2i(x, y));
+		getEventManager()->queueEvent(sm_event);
 	}
   }
 }
