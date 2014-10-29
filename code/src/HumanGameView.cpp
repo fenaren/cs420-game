@@ -86,6 +86,7 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 		  case (sf::Event::KeyPressed):
 			if (event.key.code == sf::Keyboard::Space) {
 				if (!menuOpen) {
+					test->resize(currentRes);
 					uiList.push_back(test);
 					menuOpen = true;
 				}
@@ -166,7 +167,6 @@ void HumanGameView::drawActors() {
 	testActor.setFillColor(sf::Color::Red);
 	testActor.setSize(sf::Vector2f(25, 25));
 	for (std::map<ActorId, Actor*>::iterator i = actors.begin(); i != actors.end(); i++) {
-		if (i->second->get)
 		testActor.setPosition(sf::Vector2f(i->second->getPositionX() * tileSize, i->second->getPositionY() * tileSize));
 		App->draw(testActor);
 	}
