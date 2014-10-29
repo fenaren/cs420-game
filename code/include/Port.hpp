@@ -2,6 +2,7 @@
 #define PORT_HPP
 
 #include <SFML/System/Time.hpp>
+#include <string>
 
 #include "Actor.hpp"
 #include "ActorId.hpp"
@@ -12,7 +13,7 @@ public:
 
   Port(ActorId actor_id);
 
-  ~Port();
+  virtual ~Port();
 
   virtual bool initialize();
 
@@ -32,6 +33,12 @@ public:
 
   bool isBuyPort() const;
 
+  // Returns the name of this port
+  const std::string& getName() const;
+
+  // Sets the name of this port
+  void setName(const std::string& name);
+
 private:
 
   double rum;
@@ -39,6 +46,9 @@ private:
   double max_rum;
 
   double rum_rate;
+
+  // The name of this port
+  std::string name;
   
 };
 
@@ -75,6 +85,16 @@ inline void Port::setRumRate(double rum_rate)
 inline bool Port::isBuyPort() const
 {
   return rum_rate > 0;
+}
+
+inline const std::string& Port::getName() const
+{
+  return name;
+}
+
+inline void Port::setName(const std::string& name)
+{
+  this->name = name;
 }
 
 #endif
