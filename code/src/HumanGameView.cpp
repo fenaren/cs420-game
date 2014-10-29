@@ -110,11 +110,11 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 	int x = 0;
 	int y = 0;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) 
-		y++;
+		y--;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		x--;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-		y--;
+		y++;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 		x++;
 	if (x != 0 || y != 0) {
