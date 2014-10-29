@@ -102,14 +102,14 @@ int main(int argc, char** argv)
     processing_clock.restart();
 
 
-    // process events
+    /*// process events
     sf::Event Event;
     while(App.pollEvent(Event))
     {
       // Exit
       if(Event.type == sf::Event::Closed)
         App.close();
-    }
+    }*/
 
 
     // How much time has passed since the last update?
