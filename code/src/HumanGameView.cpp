@@ -121,7 +121,7 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 	if (x != 0 || y != 0) {
 		// send shipmovecmdevent here
 		ShipMoveCmdEvent* sm_event = new ShipMoveCmdEvent(sf::Vector2i(x, y));
-		getEventManager()->queueEvent(sm_event);
+		getGameLogic()->getEventManager()->queueEvent(sm_event);
 	}
   }
 }
