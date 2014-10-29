@@ -167,8 +167,12 @@ void HumanGameView::drawActors() {
 	testActor.setFillColor(sf::Color::Red);
 	testActor.setSize(sf::Vector2f(25, 25));
 	for (std::map<ActorId, Actor*>::iterator i = actors.begin(); i != actors.end(); i++) {
+		if (i->first == 0)
+			testActor.setFillColor(sf::Color::Yellow);
 		testActor.setPosition(sf::Vector2f(i->second->getPositionX() * tileSize, i->second->getPositionY() * tileSize));
 		App->draw(testActor);
+		if (i->first == 0)
+			testActor.setFillColor(sf::Color::Red);
 	}
 }
   
