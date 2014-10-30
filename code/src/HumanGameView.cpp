@@ -86,6 +86,7 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 		  case (sf::Event::KeyPressed):
 			if (event.key.code == sf::Keyboard::Space) {
 				if (!menuOpen) {
+					test->resize(currentRes);
 					uiList.push_back(test);
 					menuOpen = true;
 				}
@@ -110,15 +111,17 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 	int x = 0;
 	int y = 0;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) 
-		y++;
+		y--;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		x--;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-		y--;
+		y++;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 		x++;
 	if (x != 0 || y != 0) {
 		// send shipmovecmdevent here
+		ShipMoveCmdEvent* sm_event = new ShipMoveCmdEvent(sf::Vector2i(x, y));
+		getGameLogic()->getEventManager()->queueEvent(sm_event);
 	}
   }
 }
@@ -158,7 +161,19 @@ void HumanGameView::drawMap() {
 
 // draws the actors
 void HumanGameView::drawActors() {
-	
+	std::map<ActorId, Actor*> actors = getGameLogic()->getActorList();
+	int tileSize = tempMap.get_tile_size();
+	sf::RectangleShape testActor;
+	testActor.setFillColor(sf::Color::Red);
+	testActor.setSize(sf::Vector2f(25, 25));
+	for (std::map<ActorId, Actor*>::iterator i = actors.begin(); i != actors.end(); i++) {
+		if (i->first == 0)
+			testActor.setFillColor(sf::Color::Yellow);
+		testActor.setPosition(sf::Vector2f(i->second->getPositionX() * tileSize, i->second->getPositionY() * tileSize));
+		App->draw(testActor);
+		if (i->first == 0)
+			testActor.setFillColor(sf::Color::Red);
+	}
 }
   
 // draws the elements in the UI list
