@@ -103,7 +103,13 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 					test->clearInput();
 			}
 			break;
-	}
+
+		default:
+		{
+		  // Do nothing; OSX compiler complains if nothing happens after
+		  // default, so the empty brackets are required
+		}
+	 }
   }
   // handles ship movement;  note: it's not in the normal SFML event manager
   // because held keys are handled different in SFML than pressed keys
