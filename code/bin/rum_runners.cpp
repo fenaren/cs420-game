@@ -124,24 +124,35 @@ int main(int argc, char** argv)
       update_time = sf::seconds(0.0);
     }
 
-
+    // Pull event_manager from GameLogic
+    EventManager* event_manager;
+    event_manager = game_logic.getEventManager();
+    // Add delegates bound to each event type
+    // PauseStartHandler: pauses game at TransactionStartEvent
+     event_manager.addDelegate(
+    EventDelegate(std::bind(&GameLogic::PauseStartHandler,
+			    this,
+			    std::placeholders::_1)),
+    TransactionStartEvent::event_type);
+     // UnpauseFailHandler: unpauses game after TransactionFailEvent
+     event_manager.addDelegate(
+    EventDelegate(std::bind(&GameLogic::UnpauseFailHandler,
+			    this,
+			    std::placeholders::_1)),
+    TransactionFailEvent::event_type);
+     // UnpauseSuccessHandler: unpauses game after TransactionSuccessEvent
+     event_manager.addDelegate(
+    EventDelegate(std::bind(&GameLogic::UnpauseSuccessHandler,
+			    this,
+			    std::placeholders::_1)),
+    TransactionSuccessEvent::event_type);
+     
     // UPDATE GAME VIEWS
     human_game_view.update(update_time);
 
     // UPDATE GAME LOGIC
     game_logic.update(update_time);
  
-    // Check for TransactionEvent
-    EventManager* event_manager;
-    event_manager = game_logic.getEventManager();
-    // Check event type; if TransactionStartEvent, do TransactionStartHandler
-     /*if(event_manager.    
-	TransactionStartEventHandler(event);
-     if(event_manager.
-       TransactionFailEventHandler(event);
-     if(event_manager.
-       TransactionSuccessEventHandler(event);*/
-    
     // Note how long since the last update for the framerate indicator
     frametimes.push_back(update_time);
     if (frametimes.size() == FRAME_RATE_AVGFRAMES)
@@ -202,7 +213,7 @@ int main(int argc, char** argv)
 }
 
 //Pauses game during TransactionStartEvent
-void PauseGameHandler(const EventInterface& event)
+void PauseStartHandler(const EventInterface& event)
 {
   const TransactionStartEvent* tfail_event =
     dynamic_cast<const TransactionStartEvent*>(&event);
@@ -210,7 +221,7 @@ void PauseGameHandler(const EventInterface& event)
 }
 
 //Un-pauses game after TransactionFailEvent
-void TransactionFailEventHandler(const EventInterface& event)
+void UnpauseFailHandler(const EventInterface& event)
 {
   const TransactionFailEvent* tfail_event =
     dynamic_cast<const TransactionFailEvent*>(&event);
@@ -218,7 +229,7 @@ void TransactionFailEventHandler(const EventInterface& event)
 }
 
 //Un-pauses game after TransactionSuccessEvent
-void TransactionSuccessEventHandler(const EventInterface& event)
+void UnpauseSuccessHandler(const EventInterface& event)
 {
   const TransactionSuccessEvent* tsuccess_event =
     dynamic_cast<const TransactionSuccessEvent*>(&event);
