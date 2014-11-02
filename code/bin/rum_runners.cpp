@@ -6,6 +6,9 @@
 #include "GameLogic.hpp"
 #include "HumanGameView.hpp"
 #include "Map.hpp"
+#include "TransactionFailEvent.hpp"
+#include "TransactionStartEvent.hpp"
+#include "TransactionSuccessEvent.hpp"
 
 // Cap on maximum frame rate
 #define MAX_FRAME_RATE 60
@@ -24,7 +27,7 @@
   // 0 = game time is paused
   // >1 = game time is faster than real time
   // <0 = game time runs in reverse
-#define game_time_factor = 1.0;
+double game_time_factor 1.0;
 
 
 int main(int argc, char** argv)
@@ -129,20 +132,20 @@ int main(int argc, char** argv)
     event_manager = game_logic.getEventManager();
     // Add delegates bound to each event type
     // PauseStartHandler: pauses game at TransactionStartEvent
-     event_manager.addDelegate(
-    EventDelegate(std::bind(&GameLogic::PauseStartHandler,
+     event_manager->addDelegate(
+    EventDelegate(std::bind(PauseStartHandler,
 			    this,
 			    std::placeholders::_1)),
     TransactionStartEvent::event_type);
      // UnpauseFailHandler: unpauses game after TransactionFailEvent
-     event_manager.addDelegate(
-    EventDelegate(std::bind(&GameLogic::UnpauseFailHandler,
+     event_manager->addDelegate(
+    EventDelegate(std::bind(UnpauseFailHandler,
 			    this,
 			    std::placeholders::_1)),
     TransactionFailEvent::event_type);
      // UnpauseSuccessHandler: unpauses game after TransactionSuccessEvent
-     event_manager.addDelegate(
-    EventDelegate(std::bind(&GameLogic::UnpauseSuccessHandler,
+     event_manager->addDelegate(
+    EventDelegate(std::bind(UnpauseSuccessHandler,
 			    this,
 			    std::placeholders::_1)),
     TransactionSuccessEvent::event_type);
@@ -215,7 +218,7 @@ int main(int argc, char** argv)
 //Pauses game during TransactionStartEvent
 void PauseStartHandler(const EventInterface& event)
 {
-  const TransactionStartEvent* tfail_event =
+  const TransactionStartEvent* tstart_event =
     dynamic_cast<const TransactionStartEvent*>(&event);
     game_time_factor = 0.0;
 }
