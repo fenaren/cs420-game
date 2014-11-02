@@ -16,6 +16,17 @@
 // # of frames to average over to calculate the frame rate
 #define FRAME_RATE_AVGFRAMES 5
 
+
+
+  // How fast is game time relative to real time?
+  // 1 = game time is real time
+  // (0 1) = game time is slower than real time
+  // 0 = game time is paused
+  // >1 = game time is faster than real time
+  // <0 = game time runs in reverse
+  double game_time_factor = 1.0;
+
+
 int main(int argc, char** argv)
 {
   // create main window
@@ -32,13 +43,6 @@ int main(int argc, char** argv)
     }
     App.display();*/
 
-  // How fast is game time relative to real time?
-  // 1 = game time is real time
-  // (0 1) = game time is slower than real time
-  // 0 = game time is paused
-  // >1 = game time is faster than real time
-  // <0 = game time runs in reverse
-  double game_time_factor = 1.0;
 
   // Clocks for managing frame time.  'processing_clock' is used to determine
   // how long the processing required by the game takes, 'update_clock' is used
@@ -126,8 +130,18 @@ int main(int argc, char** argv)
 
     // UPDATE GAME LOGIC
     game_logic.update(update_time);
-
-
+ 
+    // Check for TransactionEvent
+    EventManager* event_manager;
+    event_manager = game_logic.getEventManager();
+    // Check event type; if TransactionStartEvent, do TransactionStartHandler
+     /*if(event_manager.    
+	TransactionStartEventHandler(event);
+     if(event_manager.
+       TransactionFailEventHandler(event);
+     if(event_manager.
+       TransactionSuccessEventHandler(event);*/
+    
     // Note how long since the last update for the framerate indicator
     frametimes.push_back(update_time);
     if (frametimes.size() == FRAME_RATE_AVGFRAMES)
@@ -185,4 +199,28 @@ int main(int argc, char** argv)
 
   // Done.
   return 0;
+}
+
+
+void TransactionStartEventHandler(const EventInterface& event)
+{
+  const TransactionStartEvent* tfail_event =
+    dynamic_cast<const TransactionStartEvent*>(&event);
+    game_time_factor = 0.0;
+}
+
+
+void TransactionFailEventHandler(const EventInterface& event)
+{
+  const TransactionFailEvent* tfail_event =
+    dynamic_cast<const TransactionFailEvent*>(&event);
+    game_time_factor = 1.0;
+}
+
+
+void TransactionSuccessEventHandler(const EventInterface& event)
+{
+  const TransactionSuccessEvent* tsuccess_event =
+    dynamic_cast<const TransactionSuccessEvent*>(&event);
+    game_time_factor = 1.0;
 }
