@@ -24,7 +24,7 @@
   // 0 = game time is paused
   // >1 = game time is faster than real time
   // <0 = game time runs in reverse
-  double game_time_factor = 1.0;
+#define game_time_factor = 1.0;
 
 
 int main(int argc, char** argv)
@@ -201,15 +201,15 @@ int main(int argc, char** argv)
   return 0;
 }
 
-
-void TransactionStartEventHandler(const EventInterface& event)
+//Pauses game during TransactionStartEvent
+void PauseGameHandler(const EventInterface& event)
 {
   const TransactionStartEvent* tfail_event =
     dynamic_cast<const TransactionStartEvent*>(&event);
     game_time_factor = 0.0;
 }
 
-
+//Un-pauses game after TransactionFailEvent
 void TransactionFailEventHandler(const EventInterface& event)
 {
   const TransactionFailEvent* tfail_event =
@@ -217,7 +217,7 @@ void TransactionFailEventHandler(const EventInterface& event)
     game_time_factor = 1.0;
 }
 
-
+//Un-pauses game after TransactionSuccessEvent
 void TransactionSuccessEventHandler(const EventInterface& event)
 {
   const TransactionSuccessEvent* tsuccess_event =
