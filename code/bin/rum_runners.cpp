@@ -159,21 +159,15 @@ int main(int argc, char** argv)
     // Add delegates bound to each event type
     // PauseStartHandler: pauses game at TransactionStartEvent
      event_manager->addDelegate(
-    EventDelegate(std::bind(PauseStartHandler,
-			    game_logic,
-			    std::placeholders::_1)),
+    EventDelegate(PauseStartHandler),
     TransactionStartEvent::event_type);
      // UnpauseFailHandler: unpauses game after TransactionFailEvent
      event_manager->addDelegate(
-    EventDelegate(std::bind(UnpauseFailHandler,
-			    game_logic,
-			    std::placeholders::_1)),
+    EventDelegate(UnpauseFailHandler),
     TransactionFailEvent::event_type);
      // UnpauseSuccessHandler: unpauses game after TransactionSuccessEvent
      event_manager->addDelegate(
-    EventDelegate(std::bind(UnpauseSuccessHandler,
-			    game_logic,
-			    std::placeholders::_1)),
+    EventDelegate(UnpauseSuccessHandler),
     TransactionSuccessEvent::event_type);
      
     // UPDATE GAME VIEWS
