@@ -25,9 +25,9 @@ void ShipMoveCmdEvent::setShipMove(sf::Vector2i sMove) {
 
 // returns the vector representing the requested ship move
 // note: (1, 0) move right, (-1, 0) move left
-// (0, 1) move up, (0, -1) move down
-// (1, 1) move up-right, (-1, 1) move up-left
-// (1, -1) move down-right, (-1, -1) move down-left
+// (0, -1) move up, (0, 1) move down
+// (1, -1) move up-right, (-1, -1) move up-left
+// (1, 1) move down-right, (-1, 1) move down-left
 sf::Vector2i ShipMoveCmdEvent::getShipMove() const{
   return shipMove;
 }

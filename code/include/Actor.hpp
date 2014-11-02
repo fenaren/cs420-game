@@ -11,7 +11,7 @@ public:
 
   Actor(ActorId actor_id);
 
-  ~Actor();
+  virtual ~Actor();
 
   virtual bool initialize() = 0;
 

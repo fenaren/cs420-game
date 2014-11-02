@@ -59,6 +59,9 @@ private:
   
   // temporary map to draw from
   Map tempMap;
+
+  // texture to draw sprites from
+  sf::Texture texture;
   
   // the dialogue box
   UITextInput *test;
