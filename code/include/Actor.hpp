@@ -15,7 +15,7 @@ public:
 
   virtual bool initialize() = 0;
 
-  virtual void update(const sf::Time& delta_t) = 0;
+  virtual void update(const sf::Time& delta_t);
 
   ActorId getActorId() const;
 
@@ -33,6 +33,10 @@ public:
 
   void setMoveTime(double move_time);
 
+  double getMinMoveTime() const;
+
+  void setMinMoveTime(double min_move_time);
+
 private:
 
   // ID # of this actor
@@ -43,8 +47,12 @@ private:
   unsigned int x;
   unsigned int y;
   
-  // How long between moves is allowed for this actor
+  // How long it's been since the last time this actor was allowed to move
   double move_time;
+
+  // The amount of time that has to pass before this actor will be allowed to
+  // move
+  double min_move_time;
 };
 
 inline ActorId Actor::getActorId() const
@@ -85,6 +93,16 @@ inline double Actor::getMoveTime() const
 inline void Actor::setMoveTime(double move_time)
 {
   this->move_time = move_time;
+}
+
+inline double Actor::getMinMoveTime() const
+{
+  return min_move_time;
+}
+
+inline void Actor::setMinMoveTime(double min_move_time)
+{
+  this->min_move_time = min_move_time;
 }
 
 #endif

@@ -31,6 +31,7 @@ GameLogic::GameLogic() :
   ship = new Ship(actor_id++);
   ship->setPositionX(10);
   ship->setPositionY(11);
+  ship->setMinMoveTime(1.0);
   ship->setGold(0);
   ship->setRum(1);
   ship->setMaxRum(10);
@@ -65,10 +66,10 @@ GameLogic::GameLogic() :
       std::string name;
       unsigned int position_x = 0;
       unsigned int position_y = 0;
-      double move_time = 0.0;
-      double rum       = 0.0;
-      double max_rum   = 0.0;
-      double rum_rate  = 0.0;
+      double min_move_time    = 0.0;
+      double rum              = 0.0;
+      double max_rum          = 0.0;
+      double rum_rate         = 0.0;
 
       // Grab everything up to the first delimiter
       std::getline(line_stream, name, delimiter);
@@ -107,7 +108,7 @@ GameLogic::GameLogic() :
       std::getline(line_stream, notused, delimiter);
       line_stream >> position_y;
       std::getline(line_stream, notused, delimiter);
-      line_stream >> move_time;
+      line_stream >> min_move_time;
       std::getline(line_stream, notused, delimiter);
       line_stream >> rum;
       std::getline(line_stream, notused, delimiter);
@@ -127,7 +128,7 @@ GameLogic::GameLogic() :
       Port* port = new Port(actor_id++);
       port->setPositionX(position_x);
       port->setPositionY(position_y);
-      port->setMoveTime(move_time);
+      port->setMinMoveTime(min_move_time);
       port->setRum(rum);
       port->setMaxRum(max_rum);
       port->setRumRate(rum_rate);
@@ -206,8 +207,15 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
   unsigned int new_pos_y = ship->getPositionY() + smc_event->getShipMove().y;
 
   // does the move if target terrain is water (this ship can only move on water)
-  if (map.getTerrain(new_pos_x, new_pos_y) == Map::WATER)
+  // AND if enough time has passed
+  if (map.getTerrain(new_pos_x, new_pos_y) == Map::WATER &&
+      new_pos_x < map.get_map_size_x() &&
+      new_pos_y < map.get_map_size_y() &&
+      ship->getMoveTime() > ship->getMinMoveTime())
   {
+    // Reset the ship's move time, it's just about to move
+    ship->setMoveTime(0.0);
+
     // Set the ship position
     ship->setPositionX(new_pos_x);
     ship->setPositionY(new_pos_y);
