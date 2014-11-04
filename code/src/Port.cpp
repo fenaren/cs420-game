@@ -22,4 +22,5 @@ bool Port::initialize()
 
 void Port::update(const sf::Time& delta_t)
 {
+  Actor::update(delta_t);
 }

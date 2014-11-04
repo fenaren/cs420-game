@@ -23,4 +23,5 @@ bool Ship::initialize()
 
 void Ship::update(const sf::Time& delta_t)
 {
+  Actor::update(delta_t);
 }
