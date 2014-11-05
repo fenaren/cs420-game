@@ -28,31 +28,19 @@
   // 0 = game time is paused
   // >1 = game time is faster than real time
   // <0 = game time runs in reverse
-#define GAME_TIME_FACTOR 1.0;
+double GAME_TIME_FACTOR = 1.0;
 
 
 //Pauses game during TransactionStartEvent
 void PauseStartHandler(const EventInterface& event)
 {
-  const TransactionStartEvent* tstart_event =
-    dynamic_cast<const TransactionStartEvent*>(&event);
-    GAME_TIME_FACTOR(0.0);
+    GAME_TIME_FACTOR = 0.0;
 }
 
-//Un-pauses game after TransactionFailEvent
-void UnpauseFailHandler(const EventInterface& event)
+//Un-pauses game after TransactionFailEvent or TransactionSuccessEvent
+void TransactionEndHandler(const EventInterface& event)
 {
-  const TransactionFailEvent* tfail_event =
-    dynamic_cast<const TransactionFailEvent*>(&event);
-    GAME_TIME_FACTOR(1.0);
-}
-
-//Un-pauses game after TransactionSuccessEvent
-void UnpauseSuccessHandler(const EventInterface& event)
-{
-  const TransactionSuccessEvent* tsuccess_event =
-    dynamic_cast<const TransactionSuccessEvent*>(&event);
-    GAME_TIME_FACTOR(1.0);
+    GAME_TIME_FACTOR = 1.0;
 }
 
 
@@ -163,11 +151,11 @@ int main(int argc, char** argv)
     TransactionStartEvent::event_type);
      // UnpauseFailHandler: unpauses game after TransactionFailEvent
      event_manager->addDelegate(
-    EventDelegate(UnpauseFailHandler),
+    EventDelegate(TransactionEndHandler),
     TransactionFailEvent::event_type);
      // UnpauseSuccessHandler: unpauses game after TransactionSuccessEvent
      event_manager->addDelegate(
-    EventDelegate(UnpauseSuccessHandler),
+    EventDelegate(TransactionEndHandler),
     TransactionSuccessEvent::event_type);
      
     // UPDATE GAME VIEWS
