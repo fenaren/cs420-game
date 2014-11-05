@@ -201,7 +201,9 @@ void HumanGameView::drawUI() {
 
 // handles transaction fails
 void HumanGameView::transactionFailEventHandler(const EventInterface& event) {
-	
+	std::ostringstream oss;
+	oss << "Incorrect Amount!\nSupply: " << tc_portrum << "\nPrice: " << (11 - tc_portrum);
+	test->setDialogue(oss.str());
 }
 
 // handles transaction successes
@@ -226,4 +228,7 @@ void HumanGameView::transactionStartEventHandler(const EventInterface& event) {
     tc_shipgold = ts_event->getShipGold();
     tc_shiprum = ts_event->getShipRum();
     tc_portrum = ts_event->getPortRum();
+	std::ostringstream oss;
+	oss << "Supply: " << tc_portrum << "\nPrice: " << (11 - tc_portrum);
+	test->setDialogue(oss.str());
 }
