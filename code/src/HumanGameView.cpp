@@ -1,6 +1,4 @@
-#include <SFML/Graphics.hpp>
 #include <iostream>
-#include "GameLogic.hpp"
 #include "HumanGameView.hpp"
 
 HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
@@ -23,10 +21,24 @@ bool HumanGameView::initialize()
 {
   test = new UITextInput();
   test->initialize(sf::Vector2f(150, 100), currentRes, UIElement::Center);
-  //uiList.push_back(test);
   if (!tempMap.createMap("./data/second_map.txt")) {
 	std::cout << "ERROR MAP" << std::endl;
   }
+  getGameLogic()->getEventManager()->addDelegate(
+    EventDelegate(std::bind(&HumanGameView::transactionFailEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    TransactionFailEvent::event_type);
+	getGameLogic()->getEventManager()->addDelegate(
+    EventDelegate(std::bind(&HumanGameView::transactionSuccessEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    TransactionSuccessEvent::event_type);
+	getGameLogic()->getEventManager()->addDelegate(
+    EventDelegate(std::bind(&HumanGameView::transactionStartEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    TransactionStartEvent::event_type);
   return true;
 }
 
@@ -84,23 +96,16 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 			
 		  // this code will actually react to transaction request event in the future
 		  case (sf::Event::KeyPressed):
-			if (event.key.code == sf::Keyboard::Space) {
-				if (!menuOpen) {
-					test->resize(currentRes);
-					uiList.push_back(test);
-					menuOpen = true;
-				}
-				else {
-					std::vector<UIElement*>::iterator position = std::find(uiList.begin(), uiList.end(), test);
-					if (position != uiList.end())
-						uiList.erase(position);
-					menuOpen = false;
-				}
-			}
+			
 			// if an input menu is open returns the int and clears it
 			if (event.key.code == sf::Keyboard::Return) {
-				if (menuOpen) 
-					test->clearInput();
+				if (menuOpen) {
+					double tempdouble = test->clearInput();
+					if (tempdouble >= 0) {
+						TransactionCheckEvent* tc_event = new TransactionCheckEvent(tc_shipid, tc_portid, tc_shipgold, tc_shiprum, tc_portrum, tempdouble);
+						getGameLogic()->getEventManager()->queueEvent(tc_event);
+					}
+				}
 			}
 			break;
 
@@ -192,4 +197,33 @@ void HumanGameView::drawUI() {
 	for ( UIElement* elem : uiList ) {
 		elem->draw(App);
 	}
+}
+
+// handles transaction fails
+void HumanGameView::transactionFailEventHandler(const EventInterface& event) {
+	
+}
+
+// handles transaction successes
+void HumanGameView::transactionSuccessEventHandler(const EventInterface& event) {
+	std::vector<UIElement*>::iterator position = std::find(uiList.begin(), uiList.end(), test);
+	if (position != uiList.end())
+		uiList.erase(position);
+	menuOpen = false;
+}
+
+// handles transaction start
+void HumanGameView::transactionStartEventHandler(const EventInterface& event) {
+	if (!menuOpen) {
+		test->resize(currentRes);
+		uiList.push_back(test);
+		menuOpen = true;
+	}
+	const TransactionStartEvent* ts_event =
+		dynamic_cast<const TransactionStartEvent*>(&event);
+	tc_shipid = ts_event->getShipId();
+    tc_portid = ts_event->getPortId();
+    tc_shipgold = ts_event->getShipGold();
+    tc_shiprum = ts_event->getShipRum();
+    tc_portrum = ts_event->getPortRum();
 }
