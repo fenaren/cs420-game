@@ -103,7 +103,13 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 					test->clearInput();
 			}
 			break;
-	}
+
+		default:
+		{
+		  // Do nothing; OSX compiler complains if nothing happens after
+		  // default, so the empty brackets are required
+		}
+	 }
   }
   // handles ship movement;  note: it's not in the normal SFML event manager
   // because held keys are handled different in SFML than pressed keys
@@ -163,16 +169,21 @@ void HumanGameView::drawMap() {
 void HumanGameView::drawActors() {
 	std::map<ActorId, Actor*> actors = getGameLogic()->getActorList();
 	int tileSize = tempMap.get_tile_size();
-	sf::RectangleShape testActor;
-	testActor.setFillColor(sf::Color::Red);
-	testActor.setSize(sf::Vector2f(25, 25));
-	for (std::map<ActorId, Actor*>::iterator i = actors.begin(); i != actors.end(); i++) {
-		if (i->first == 0)
-			testActor.setFillColor(sf::Color::Yellow);
-		testActor.setPosition(sf::Vector2f(i->second->getPositionX() * tileSize, i->second->getPositionY() * tileSize));
-		App->draw(testActor);
-		if (i->first == 0)
-			testActor.setFillColor(sf::Color::Red);
+	sf::Sprite ship_sprite;
+	ship_sprite.setTexture(texture);
+	ship_sprite.setTextureRect(sf::IntRect(0,0,25,25));
+	sf::Sprite port_sprite;
+	port_sprite.setTexture(texture);
+	port_sprite.setTextureRect(sf::IntRect(105,0,25,25));
+	for (std::map<ActorId, Actor*>::reverse_iterator i = actors.rbegin(); i != actors.rend(); i++) {
+		if (i->first == 0) {
+			ship_sprite.setPosition(sf::Vector2f(i->second->getPositionX() * tileSize, i->second->getPositionY() * tileSize));
+			App->draw(ship_sprite);
+		}
+		else {
+			port_sprite.setPosition(sf::Vector2f(i->second->getPositionX() * tileSize, i->second->getPositionY() * tileSize));
+			App->draw(port_sprite);
+		}
 	}
 }
   
