@@ -230,12 +230,20 @@ void HumanGameView::calculateMapWindowData()
     map_tl_wcoords.x = 0.0;
     map_tl_wcoords.y =
       (currentRes.y - (static_cast<double>(currentRes.y) / ar_ratio)) / 2.0;
+
+    map_tile_size = static_cast<unsigned int>(
+      static_cast<double>(window_size.x) /
+      static_cast<double>(tempMap.get_map_size_x()));
   }
   else if (ar_ratio < 1.0)
   {
     map_tl_wcoords.x =
       (currentRes.x - (static_cast<double>(currentRes.x) * ar_ratio)) / 2.0;;
     map_tl_wcoords.y = 0.0;
+
+    map_tile_size = static_cast<unsigned int>(
+      static_cast<double>(window_size.y) /
+      static_cast<double>(tempMap.get_map_size_y()));
   }
 }
 
