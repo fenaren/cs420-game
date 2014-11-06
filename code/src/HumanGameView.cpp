@@ -193,3 +193,49 @@ void HumanGameView::drawUI() {
 		elem->draw(App);
 	}
 }
+
+void HumanGameView::calculateMapWindowData()
+{
+  // We need to know the aspect ratio of the map (here we're assuming maps are
+  // always rectangular) to calculate where the left edge of the map should
+  // start
+  double map_aspect_ratio =
+    static_cast<double>(tempMap.get_map_size_x()) /
+    static_cast<double>(tempMap.get_map_size_y());
+
+  // If the map's aspect ratio is less than the window's, then there will be
+  // sidebars.  If the two aspect ratios are equal, the map will fit perfectly
+  // in the window and there will be no sidebars or horizontal bars.  If the
+  // map's aspect ratio is greater than the window's, there will be horizontal
+  // bars.
+
+  // For now assume the top-left map coordinate is 0,0.  This will be updated
+  // later if it isn't the case
+  map_tl_wcoords.x = 0;
+  map_tl_wcoords.y = 0;
+
+  // The ratio between the two aspect ratios
+  double ar_ratio = map_aspect_ratio / aspectRatio;
+
+  if (ar_ratio > 1.0)
+  {
+    map_tl_wcoords.x = 0.0;
+    map_tl_wcoords.y =
+      static_cast<unsigned int>(
+	static_cast<double>(currentRes.y) / ar_ratio / 2.0);
+  }
+  else if (ar_ratio < 1.0)
+  {
+    map_tl_wcoords.x =
+      static_cast<unsigned int>(
+	static_cast<double>(currentRes.x) / ar_ratio / 2.0);
+    map_tl_wcoords.y = 0.0;
+  }
+
+  std::cout << map_tl_wcoords.x << " " << map_tl_wcoords.y << "\n";
+}
+
+void HumanGameView::mapToWindow(const sf::Vector2u& map_coords,
+				sf::Vector2u&       window_coords)
+{
+}
