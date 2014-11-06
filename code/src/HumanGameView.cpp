@@ -39,7 +39,7 @@ void HumanGameView::update(const sf::Time& delta_t)
   drawMap();
   drawActors();
   drawUI();
-  
+
   // Can use App to draw in the game window
   
   App->display();
@@ -203,6 +203,14 @@ void HumanGameView::calculateMapWindowData()
     static_cast<double>(tempMap.get_map_size_x()) /
     static_cast<double>(tempMap.get_map_size_y());
 
+  // Get the current size of the window
+  sf::Vector2u window_size = App->getSize();
+
+  // What's the aspect ratio of the window?
+  double window_aspect_ratio =
+    static_cast<double>(window_size.x) / static_cast<double>(window_size.y);
+
+
   // If the map's aspect ratio is less than the window's, then there will be
   // sidebars.  If the two aspect ratios are equal, the map will fit perfectly
   // in the window and there will be no sidebars or horizontal bars.  If the
@@ -215,24 +223,20 @@ void HumanGameView::calculateMapWindowData()
   map_tl_wcoords.y = 0;
 
   // The ratio between the two aspect ratios
-  double ar_ratio = map_aspect_ratio / aspectRatio;
+  double ar_ratio = map_aspect_ratio / window_aspect_ratio;
 
   if (ar_ratio > 1.0)
   {
     map_tl_wcoords.x = 0.0;
     map_tl_wcoords.y =
-      static_cast<unsigned int>(
-	static_cast<double>(currentRes.y) / ar_ratio / 2.0);
+      (currentRes.y - (static_cast<double>(currentRes.y) / ar_ratio)) / 2.0;
   }
   else if (ar_ratio < 1.0)
   {
     map_tl_wcoords.x =
-      static_cast<unsigned int>(
-	static_cast<double>(currentRes.x) / ar_ratio / 2.0);
+      (currentRes.x - (static_cast<double>(currentRes.x) * ar_ratio)) / 2.0;;
     map_tl_wcoords.y = 0.0;
   }
-
-  std::cout << map_tl_wcoords.x << " " << map_tl_wcoords.y << "\n";
 }
 
 void HumanGameView::mapToWindow(const sf::Vector2u& map_coords,
