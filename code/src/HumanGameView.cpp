@@ -217,30 +217,47 @@ void HumanGameView::calculateMapWindowData()
   // map's aspect ratio is greater than the window's, there will be horizontal
   // bars.
 
-  // For now assume the top-left map coordinate is 0,0.  This will be updated
-  // later if it isn't the case
-  map_tl_wcoords.x = 0;
-  map_tl_wcoords.y = 0;
 
   // The ratio between the two aspect ratios
   double ar_ratio = map_aspect_ratio / window_aspect_ratio;
 
   if (ar_ratio > 1.0)
   {
+    // The constraining window dimension is the horizontal dimension
+
+    // Update map top-left location
     map_tl_wcoords.x = 0.0;
     map_tl_wcoords.y =
       (currentRes.y - (static_cast<double>(currentRes.y) / ar_ratio)) / 2.0;
 
+    // Update map tile size
     map_tile_size = static_cast<unsigned int>(
       static_cast<double>(window_size.x) /
       static_cast<double>(tempMap.get_map_size_x()));
   }
   else if (ar_ratio < 1.0)
   {
+    // The constraining window dimension is the vertical dimension
+
+    // Update the top-left location
     map_tl_wcoords.x =
-      (currentRes.x - (static_cast<double>(currentRes.x) * ar_ratio)) / 2.0;;
+      (currentRes.x - (static_cast<double>(currentRes.x) * ar_ratio)) / 2.0;
     map_tl_wcoords.y = 0.0;
 
+    // Update the map tile size
+    map_tile_size = static_cast<unsigned int>(
+      static_cast<double>(window_size.y) /
+      static_cast<double>(tempMap.get_map_size_y()));
+  }
+  else
+  {
+    // The window dimensions perfectly match the map dimensions.
+
+    // Update the top-left location
+    map_tl_wcoords.x = 0;
+    map_tl_wcoords.y = 0;
+
+    // Update the map tile size
     map_tile_size = static_cast<unsigned int>(
       static_cast<double>(window_size.y) /
       static_cast<double>(tempMap.get_map_size_y()));
