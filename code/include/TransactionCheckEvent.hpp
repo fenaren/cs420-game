@@ -13,7 +13,7 @@ public:
 
   TransactionCheckEvent();
 
-  TransactionCheckEvent(ActorId ship_id, ActorId port_id, double ship_gold, double ship_rum, double port_rum);
+  TransactionCheckEvent(ActorId ship_id, ActorId port_id, double ship_gold, double ship_rum, double port_rum, double rum_request);
 
   virtual ~TransactionCheckEvent();
 
@@ -48,6 +48,12 @@ public:
 
   /* Port rum getter */
   double getPortRum() const;
+  
+  /* Request Rum setter */
+  void setRumRequest(double y);
+
+  /* Request Rum getter*/
+  double getRumRequest() const;
 
   /* TransactionCheckEvent's event type */
   static const EventType event_type;
@@ -61,6 +67,7 @@ private:
   double ship_gold;
   double ship_rum;
   double port_rum;
+  double rum_request;
 };
 
 inline EventType TransactionCheckEvent::getEventType() const
@@ -116,6 +123,16 @@ inline void TransactionCheckEvent::setPortRum(double y)
 inline double TransactionCheckEvent::getPortRum() const
 {
   return port_rum;
+}
+
+inline void TransactionCheckEvent::setRumRequest(double y)
+{
+  this->rum_request= y;
+}
+
+inline double TransactionCheckEvent::getRumRequest() const
+{
+  return rum_request;
 }
 
 
