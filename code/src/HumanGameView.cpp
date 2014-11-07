@@ -51,6 +51,7 @@ void HumanGameView::update(const sf::Time& delta_t)
   App->clear(sf::Color::Black);
 
   calculateMapWindowData();
+
   drawMap();
   drawActors();
   drawUI();
@@ -58,7 +59,6 @@ void HumanGameView::update(const sf::Time& delta_t)
   // Can use App to draw in the game window
   
   App->display();
-  
 }
 
 // reads the inputs from the window and act on them accordingly
@@ -333,9 +333,11 @@ bool HumanGameView::windowToMap(const sf::Vector2u& window_coords,
 {
   sf::Vector2u window_size = App->getSize();
 
-  // No conversion possible if input isn't in the window
-  if (window_coords.x > window_size.x - 1 ||
-      window_coords.y > window_size.y - 1)
+  // No conversion possible if input isn't over the map
+  if (window_coords.x < map_tl_wcoords.x ||
+      window_coords.y < map_tl_wcoords.y ||
+      window_coords.x > window_size.x - map_tl_wcoords.x ||
+      window_coords.y > window_size.y - map_tl_wcoords.y)
   {
     return false;
   }
