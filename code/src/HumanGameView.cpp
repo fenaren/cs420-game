@@ -3,7 +3,9 @@
 
 HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
   GameView(game_logic),
-  App(App)  
+  map_tl_wcoords(0, 0),
+  map_tile_size(0),
+  App(App)
 {
 	if (!texture.loadFromFile("./data/sprites.png")) {
 		std::cout << "ERROR TEXTURE" << std::endl;
@@ -47,7 +49,8 @@ void HumanGameView::update(const sf::Time& delta_t)
   readInputs(delta_t);
   
   App->clear(sf::Color::Black);
-  
+
+  calculateMapWindowData();
   drawMap();
   drawActors();
   drawUI();
@@ -301,7 +304,8 @@ void HumanGameView::calculateMapWindowData()
     map_tl_wcoords.x = 0;
     map_tl_wcoords.y = 0;
 
-    // Update the map tile size
+    // Update the map tile size; this is the same as the ar_ratio < 1.0 case
+    // above
     map_tile_size = static_cast<unsigned int>(
       static_cast<double>(window_size.y) /
       static_cast<double>(tempMap.get_map_size_y()));
@@ -310,5 +314,11 @@ void HumanGameView::calculateMapWindowData()
 
 void HumanGameView::mapToWindow(const sf::Vector2u& map_coords,
 				sf::Vector2u&       window_coords)
+{
+  
+}
+
+void HumanGameView::windowToMap(const sf::Vector2u& window_coords,
+				sf::Vector2u&       map_coords)
 {
 }
