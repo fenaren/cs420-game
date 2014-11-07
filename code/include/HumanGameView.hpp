@@ -49,9 +49,9 @@ private:
   void calculateMapWindowData();
 
   // Takes a coordinate pair (map_coords) denoting a location on the game map
-  // and returns a coordinate pair (window_coords) denoting where that location
-  // is in the window, given current map and window sizes.  Depends on the
-  // results of the last run of calculateMapWindowData().
+  // and returns a coordinate pair (window_coords) denoting where the top-left
+  // point of that map location is in the window, given current map and window
+  // sizes.  Depends on the results of the last run of calculateMapWindowData().
   void mapToWindow(const sf::Vector2u& map_coords, sf::Vector2u& window_coords); 
 
   // Takes a coordinate pair (window_coords) denoting a location in the window
