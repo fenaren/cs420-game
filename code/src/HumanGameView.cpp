@@ -1,6 +1,4 @@
-#include <SFML/Graphics.hpp>
 #include <iostream>
-#include "GameLogic.hpp"
 #include "HumanGameView.hpp"
 
 HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
@@ -23,10 +21,24 @@ bool HumanGameView::initialize()
 {
   test = new UITextInput();
   test->initialize(sf::Vector2f(150, 100), currentRes, UIElement::Center);
-  //uiList.push_back(test);
   if (!tempMap.createMap("./data/second_map.txt")) {
 	std::cout << "ERROR MAP" << std::endl;
   }
+  getGameLogic()->getEventManager()->addDelegate(
+    EventDelegate(std::bind(&HumanGameView::transactionFailEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    TransactionFailEvent::event_type);
+	getGameLogic()->getEventManager()->addDelegate(
+    EventDelegate(std::bind(&HumanGameView::transactionSuccessEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    TransactionSuccessEvent::event_type);
+	getGameLogic()->getEventManager()->addDelegate(
+    EventDelegate(std::bind(&HumanGameView::transactionStartEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    TransactionStartEvent::event_type);
   return true;
 }
 
@@ -84,23 +96,16 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 			
 		  // this code will actually react to transaction request event in the future
 		  case (sf::Event::KeyPressed):
-			if (event.key.code == sf::Keyboard::Space) {
-				if (!menuOpen) {
-					test->resize(currentRes);
-					uiList.push_back(test);
-					menuOpen = true;
-				}
-				else {
-					std::vector<UIElement*>::iterator position = std::find(uiList.begin(), uiList.end(), test);
-					if (position != uiList.end())
-						uiList.erase(position);
-					menuOpen = false;
-				}
-			}
+			
 			// if an input menu is open returns the int and clears it
 			if (event.key.code == sf::Keyboard::Return) {
-				if (menuOpen) 
-					test->clearInput();
+				if (menuOpen) {
+					double tempdouble = test->clearInput();
+					if (tempdouble >= 0) {
+						TransactionCheckEvent* tc_event = new TransactionCheckEvent(tc_shipid, tc_portid, tc_shipgold, tc_shiprum, tc_portrum, tempdouble);
+						getGameLogic()->getEventManager()->queueEvent(tc_event);
+					}
+				}
 			}
 			break;
 
@@ -167,24 +172,29 @@ void HumanGameView::drawMap() {
 
 // draws the actors
 void HumanGameView::drawActors() {
-	std::map<ActorId, Actor*> actors = getGameLogic()->getActorList();
 	int tileSize = tempMap.get_tile_size();
-	sf::Sprite ship_sprite;
-	ship_sprite.setTexture(texture);
-	ship_sprite.setTextureRect(sf::IntRect(0,0,25,25));
+	
 	sf::Sprite port_sprite;
 	port_sprite.setTexture(texture);
 	port_sprite.setTextureRect(sf::IntRect(105,0,25,25));
-	for (std::map<ActorId, Actor*>::reverse_iterator i = actors.rbegin(); i != actors.rend(); i++) {
-		if (i->first == 0) {
-			ship_sprite.setPosition(sf::Vector2f(i->second->getPositionX() * tileSize, i->second->getPositionY() * tileSize));
-			App->draw(ship_sprite);
+	std::map<ActorId, Port*> ports = getGameLogic()->getPortsList();
+	for (std::map<ActorId, Port*>::iterator i = ports.begin(); i != ports.end(); i++) {
+		if(i->second->isBuyPort()){
+			port_sprite.setColor(sf::Color::Red);
 		}
 		else {
-			port_sprite.setPosition(sf::Vector2f(i->second->getPositionX() * tileSize, i->second->getPositionY() * tileSize));
-			App->draw(port_sprite);
+			port_sprite.setColor(sf::Color::Yellow);
 		}
+		port_sprite.setPosition(sf::Vector2f(i->second->getPositionX() * tileSize, i->second->getPositionY() * tileSize));
+		App->draw(port_sprite);
 	}
+
+	sf::Sprite ship_sprite;
+	ship_sprite.setTexture(texture);
+	ship_sprite.setTextureRect(sf::IntRect(0,0,25,25));
+	const Ship* ship = getGameLogic()->getShip();
+	ship_sprite.setPosition(sf::Vector2f(ship->getPositionX() * tileSize, ship->getPositionY() * tileSize));
+	App->draw(ship_sprite);
 }
   
 // draws the elements in the UI list
@@ -192,6 +202,40 @@ void HumanGameView::drawUI() {
 	for ( UIElement* elem : uiList ) {
 		elem->draw(App);
 	}
+}
+
+// handles transaction fails
+void HumanGameView::transactionFailEventHandler(const EventInterface& event) {
+	std::ostringstream oss;
+	oss << "Incorrect Amount!\nSupply: " << tc_portrum << "\nPrice: " << (11 - tc_portrum);
+	test->setDialogue(oss.str());
+}
+
+// handles transaction successes
+void HumanGameView::transactionSuccessEventHandler(const EventInterface& event) {
+	std::vector<UIElement*>::iterator position = std::find(uiList.begin(), uiList.end(), test);
+	if (position != uiList.end())
+		uiList.erase(position);
+	menuOpen = false;
+}
+
+// handles transaction start
+void HumanGameView::transactionStartEventHandler(const EventInterface& event) {
+	if (!menuOpen) {
+		test->resize(currentRes);
+		uiList.push_back(test);
+		menuOpen = true;
+	}
+	const TransactionStartEvent* ts_event =
+		dynamic_cast<const TransactionStartEvent*>(&event);
+	tc_shipid = ts_event->getShipId();
+    tc_portid = ts_event->getPortId();
+    tc_shipgold = ts_event->getShipGold();
+    tc_shiprum = ts_event->getShipRum();
+    tc_portrum = ts_event->getPortRum();
+	std::ostringstream oss;
+	oss << "Supply: " << tc_portrum << "\nPrice: " << (11 - tc_portrum);
+	test->setDialogue(oss.str());
 }
 
 void HumanGameView::calculateMapWindowData()

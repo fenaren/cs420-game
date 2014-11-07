@@ -26,6 +26,10 @@ void UITextInput::resize(sf::Vector2u curRes) {
 	dialogueText.setPosition(pos);
 }
 
+void UITextInput::setDialogue(std::string str) {
+	dialogueText.setString(str);
+}
+
 void UITextInput::inputPush(char c) {
 	if (input.length() < 7) {
 		input += c;

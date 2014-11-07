@@ -6,6 +6,10 @@
 #include "GameLogic.hpp"
 #include "HumanGameView.hpp"
 #include "Map.hpp"
+#include "TransactionFailEvent.hpp"
+#include "TransactionStartEvent.hpp"
+#include "TransactionSuccessEvent.hpp"
+#include "EventInterface.hpp"
 
 // Cap on maximum frame rate
 #define MAX_FRAME_RATE 60
@@ -15,6 +19,30 @@
 
 // # of frames to average over to calculate the frame rate
 #define FRAME_RATE_AVGFRAMES 5
+
+
+
+  // How fast is game time relative to real time?
+  // 1 = game time is real time
+  // (0 1) = game time is slower than real time
+  // 0 = game time is paused
+  // >1 = game time is faster than real time
+  // <0 = game time runs in reverse
+double GAME_TIME_FACTOR = 1.0;
+
+
+//Pauses game during TransactionStartEvent
+void PauseStartHandler(const EventInterface& event)
+{
+    GAME_TIME_FACTOR = 0.0;
+}
+
+//Un-pauses game after TransactionFailEvent or TransactionSuccessEvent
+void TransactionEndHandler(const EventInterface& event)
+{
+    GAME_TIME_FACTOR = 1.0;
+}
+
 
 int main(int argc, char** argv)
 {
@@ -32,13 +60,6 @@ int main(int argc, char** argv)
     }
     App.display();*/
 
-  // How fast is game time relative to real time?
-  // 1 = game time is real time
-  // (0 1) = game time is slower than real time
-  // 0 = game time is paused
-  // >1 = game time is faster than real time
-  // <0 = game time runs in reverse
-  double game_time_factor = 1.0;
 
   // Clocks for managing frame time.  'processing_clock' is used to determine
   // how long the processing required by the game takes, 'update_clock' is used
@@ -120,14 +141,29 @@ int main(int argc, char** argv)
       update_time = sf::seconds(0.0);
     }
 
-
+    // Pull event_manager from GameLogic
+    EventManager* event_manager;
+    event_manager = game_logic.getEventManager();
+    // Add delegates bound to each event type
+    // PauseStartHandler: pauses game at TransactionStartEvent
+     event_manager->addDelegate(
+    EventDelegate(PauseStartHandler),
+    TransactionStartEvent::event_type);
+     // UnpauseFailHandler: unpauses game after TransactionFailEvent
+     event_manager->addDelegate(
+    EventDelegate(TransactionEndHandler),
+    TransactionFailEvent::event_type);
+     // UnpauseSuccessHandler: unpauses game after TransactionSuccessEvent
+     event_manager->addDelegate(
+    EventDelegate(TransactionEndHandler),
+    TransactionSuccessEvent::event_type);
+     
     // UPDATE GAME VIEWS
     human_game_view.update(update_time);
 
     // UPDATE GAME LOGIC
     game_logic.update(update_time);
-
-
+ 
     // Note how long since the last update for the framerate indicator
     frametimes.push_back(update_time);
     if (frametimes.size() == FRAME_RATE_AVGFRAMES)
@@ -186,3 +222,4 @@ int main(int argc, char** argv)
   // Done.
   return 0;
 }
+

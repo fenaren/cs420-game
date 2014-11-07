@@ -254,7 +254,7 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
 void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
 {
   unsigned int shipid, portid, price, rum=1;
-  double shipgold, shiprum, portrum;
+  double shipgold, shiprum, portrum, rumrequest;
 
   const TransactionCheckEvent* tcheck_event =
     dynamic_cast<const TransactionCheckEvent*>(&event);
@@ -270,14 +270,43 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
   shipgold = tcheck_event->getShipGold();
   shiprum = tcheck_event->getShipRum();
   portrum = tcheck_event->getPortRum();
+  rumrequest = tcheck_event->getRumRequest();
   
   price = 11 - portrum;
   
-  if (shipgold < price || portrum == 0)
+  if (ports[portid]->isBuyPort() && rumrequest <= portrum && rumrequest * price <= shipgold)
   {
-    std::cout<<"Can't buy rum!"<<std::endl;
+      ship->setGold(shipgold - (price * rumrequest));
+	  ship->setRum(shiprum + rumrequest);
+	  ports[portid]->setRum(portrum - rumrequest);
+	  // This transaction succeeds so signal that with the TransactionSuccessEvent
+    TransactionSuccessEvent* tsuccess_event =
+      new TransactionSuccessEvent(ship->getActorId(),
+				  portid,
+				  shipgold,
+				  shiprum,
+				  portrum);
 
-    // This transaction has failed so signal this with a TransactionFailEvent
+    // Queue the event, event manager takes ownership
+    event_manager.queueEvent(tsuccess_event);
+  }
+  else if (!ports[portid]->isBuyPort() && rumrequest <= shiprum)
+  {
+      ship->setGold(shipgold + (price * rumrequest));
+	  ship->setRum(shiprum - rumrequest);
+	  ports[portid]->setRum(portrum + rumrequest);
+	  // This transaction succeeds so signal that with the TransactionSuccessEvent
+    TransactionSuccessEvent* tsuccess_event =
+      new TransactionSuccessEvent(ship->getActorId(),
+				  portid,
+				  shipgold,
+				  shiprum,
+				  portrum);
+
+    // Queue the event, event manager takes ownership
+    event_manager.queueEvent(tsuccess_event);
+  }
+  else{
     TransactionFailEvent* tfail_event =
       new TransactionFailEvent(ship->getActorId(),
 			       portid,
@@ -288,31 +317,4 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
     // Queue the event, event manager takes ownership
     event_manager.queueEvent(tfail_event);
   }
-  else{
-    while (shipgold>price*rum && rum < portrum+1){
-      rum ++;
-    }
-    
-    //update ship gold, ship rum, port rum
-    shipgold -= price*rum;
-    shiprum += rum;
-    portrum -= rum;
-    
-    ship->setRum(shiprum);
-    ship->setGold(shipgold);
-
-    // This transaction succeeds so signal that with the TransactionSuccessEvent
-    TransactionSuccessEvent* tsuccess_event =
-      new TransactionSuccessEvent(ship->getActorId(),
-				  portid,
-				  shipgold,
-				  shiprum,
-				  portrum);
-
-    // Queue the event, event manager takes ownership
-    event_manager.queueEvent(tsuccess_event);
-
-    // Set the rum of the port that was interacted with
-    ports[portid]->setRum(portrum);
-  }  
 }

@@ -11,6 +11,10 @@
 #include "UITextInput.hpp"
 #include "Map.hpp"
 #include "ShipMoveCmdEvent.hpp"
+#include "TransactionCheckEvent.hpp"
+#include "TransactionFailEvent.hpp"
+#include "TransactionStartEvent.hpp"
+#include "TransactionSuccessEvent.hpp"
 
 class HumanGameView : public GameView
 {
@@ -31,6 +35,12 @@ public:
   void drawActors();
   
   void drawUI();
+  
+  void transactionFailEventHandler(const EventInterface& event);
+  void transactionSuccessEventHandler(const EventInterface& event);
+  void transactionStartEventHandler(const EventInterface& event);
+
+
 
 private:
 
@@ -80,6 +90,13 @@ private:
   
   // the dialogue box
   UITextInput *test;
+  
+  // temp ints for storing transaction event data
+  ActorId tc_shipid;
+  ActorId tc_portid;
+  int tc_shipgold;
+  int tc_shiprum;
+  int tc_portrum;
 };
 
 #endif

@@ -9,6 +9,7 @@ public:
 	virtual void initialize(sf::Vector2f s, sf::Vector2u curRes, Orientation orient);
 	virtual void resize(sf::Vector2u curRes);
 	virtual void draw(sf::RenderWindow* window);
+	virtual void setDialogue(std::string str);
 	
 	void inputPush(char c);
 	
