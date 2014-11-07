@@ -11,6 +11,9 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
 	currentRes = DEFAULT_RES;
 	resRatio = sf::Vector2f(1, 1);
 	aspectRatio = DEFAULT_RES.x / DEFAULT_RES.y;
+	lastShipX = 10;
+	lastShipY = 11;
+	shipSpriteY = 0;
 }
 
 HumanGameView::~HumanGameView()
