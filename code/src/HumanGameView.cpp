@@ -312,13 +312,36 @@ void HumanGameView::calculateMapWindowData()
   }
 }
 
-void HumanGameView::mapToWindow(const sf::Vector2u& map_coords,
+bool HumanGameView::mapToWindow(const sf::Vector2u& map_coords,
 				sf::Vector2u&       window_coords)
 {
-  
+  // No conversion possible if input isn't on the map
+  if (map_coords.x > tempMap.get_map_size_x() - 1 ||
+      map_coords.y > tempMap.get_map_size_y() - 1)
+  {
+    return false;
+  }
+
+  window_coords.x = map_coords.x * map_tile_size + map_tl_wcoords.x;
+  window_coords.y = map_coords.y * map_tile_size + map_tl_wcoords.y;
+
+  return true;
 }
 
-void HumanGameView::windowToMap(const sf::Vector2u& window_coords,
+bool HumanGameView::windowToMap(const sf::Vector2u& window_coords,
 				sf::Vector2u&       map_coords)
 {
+  sf::Vector2u window_size = App->getSize();
+
+  // No conversion possible if input isn't in the window
+  if (window_coords.x > window_size.x - 1 ||
+      window_coords.y > window_size.y - 1)
+  {
+    return false;
+  }
+
+  map_coords.x = (window_coords.x - map_tl_wcoords.x) / map_tile_size;
+  map_coords.y = (window_coords.y - map_tl_wcoords.y) / map_tile_size;
+
+  return true;
 }
