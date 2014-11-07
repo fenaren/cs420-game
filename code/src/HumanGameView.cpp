@@ -191,10 +191,31 @@ void HumanGameView::drawActors() {
 
 	sf::Sprite ship_sprite;
 	ship_sprite.setTexture(texture);
-	ship_sprite.setTextureRect(sf::IntRect(0,0,25,25));
 	const Ship* ship = getGameLogic()->getShip();
+
+	// ship moved left
+	if (lastShipX > ship->getPositionX()) {
+		shipSpriteY = 25;
+	}
+	// ship moved right
+	else if (lastShipX < ship->getPositionX()) {
+		shipSpriteY = 50;
+	}
+	// ship moved up
+	else if (lastShipY > ship->getPositionY()) {
+		shipSpriteY = 75;
+	}
+	// ship moved down
+	else if (lastShipY < ship->getPositionY()) {
+		shipSpriteY = 0;
+	}
+
+	ship_sprite.setTextureRect(sf::IntRect(0,shipSpriteY,25,25));
 	ship_sprite.setPosition(sf::Vector2f(ship->getPositionX() * tileSize, ship->getPositionY() * tileSize));
 	App->draw(ship_sprite);
+
+	lastShipX = ship->getPositionX();
+	lastShipY = ship->getPositionY();
 }
   
 // draws the elements in the UI list
