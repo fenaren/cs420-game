@@ -115,6 +115,24 @@ int main(int argc, char** argv)
   }
 
 
+  // Pull event_manager from GameLogic
+  EventManager* event_manager;
+  event_manager = game_logic.getEventManager();
+  // Add delegates bound to each event type
+  // PauseStartHandler: pauses game at TransactionStartEvent
+  event_manager->addDelegate(
+    EventDelegate(PauseStartHandler),
+    TransactionStartEvent::event_type);
+  // UnpauseFailHandler: unpauses game after TransactionFailEvent
+  event_manager->addDelegate(
+    EventDelegate(TransactionEndHandler),
+    TransactionFailEvent::event_type);
+  // UnpauseSuccessHandler: unpauses game after TransactionSuccessEvent
+  event_manager->addDelegate(
+    EventDelegate(TransactionEndHandler),
+    TransactionSuccessEvent::event_type);
+
+
   // start main loop
   while(App.isOpen())
   {
@@ -141,22 +159,6 @@ int main(int argc, char** argv)
       update_time = sf::seconds(0.0);
     }
 
-    // Pull event_manager from GameLogic
-    EventManager* event_manager;
-    event_manager = game_logic.getEventManager();
-    // Add delegates bound to each event type
-    // PauseStartHandler: pauses game at TransactionStartEvent
-     event_manager->addDelegate(
-    EventDelegate(PauseStartHandler),
-    TransactionStartEvent::event_type);
-     // UnpauseFailHandler: unpauses game after TransactionFailEvent
-     event_manager->addDelegate(
-    EventDelegate(TransactionEndHandler),
-    TransactionFailEvent::event_type);
-     // UnpauseSuccessHandler: unpauses game after TransactionSuccessEvent
-     event_manager->addDelegate(
-    EventDelegate(TransactionEndHandler),
-    TransactionSuccessEvent::event_type);
      
     // UPDATE GAME VIEWS
     human_game_view.update(update_time);
