@@ -100,6 +100,9 @@ private:
   
   // the dialogue box
   UITextInput *test;
+
+  // scale sprite to appropriate size when resizing window
+  float spriteScale;
   
   // temp ints for storing transaction event data
   ActorId tc_shipid;
