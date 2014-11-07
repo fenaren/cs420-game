@@ -44,6 +44,31 @@ public:
 
 private:
 
+  // Calculates where the top-left corner of the map is in window coordinates
+  // (map_tl_wcoords) and what the map tile size is in pixels (map_tile_size).
+  void calculateMapWindowData();
+
+  // Takes a coordinate pair (map_coords) denoting a location on the game map
+  // and returns a coordinate pair (window_coords) denoting where the top-left
+  // point of that map location is in the window, given current map and window
+  // sizes.  Depends on the results of the last run of
+  // calculateMapWindowData().  Returns true if the transformation was
+  // successful, false otherwise.
+  bool mapToWindow(const sf::Vector2u& map_coords, sf::Vector2u& window_coords); 
+
+  // Takes a coordinate pair (window_coords) denoting a location in the window
+  // and returns a coordinate pair (map_coords) denoting where that location
+  // is on the map, given current map and window sizes.  Depends on the results
+  // of the last run of calculateMapWindowData().  Returns true if the
+  // transformation was successful, false otherwise.
+  bool windowToMap(const sf::Vector2u& window_coords, sf::Vector2u& map_coords);
+
+  // Location of the top-left corner of the map in window coordinates
+  sf::Vector2u map_tl_wcoords;
+
+  // Side length of map tiles in pixels
+  unsigned int map_tile_size;
+
   // boolean that represents if a menu is asking for input
   // so gameview knows whether to read for text input
   // or game commands

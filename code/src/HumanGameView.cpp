@@ -3,7 +3,9 @@
 
 HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
   GameView(game_logic),
-  App(App)  
+  map_tl_wcoords(0, 0),
+  map_tile_size(0),
+  App(App)
 {
 	if (!texture.loadFromFile("./data/sprites.png")) {
 		std::cout << "ERROR TEXTURE" << std::endl;
@@ -47,15 +49,16 @@ void HumanGameView::update(const sf::Time& delta_t)
   readInputs(delta_t);
   
   App->clear(sf::Color::Black);
-  
+
+  calculateMapWindowData();
+
   drawMap();
   drawActors();
   drawUI();
-  
+
   // Can use App to draw in the game window
   
   App->display();
-  
 }
 
 // reads the inputs from the window and act on them accordingly
@@ -236,4 +239,111 @@ void HumanGameView::transactionStartEventHandler(const EventInterface& event) {
 	std::ostringstream oss;
 	oss << "Supply: " << tc_portrum << "\nPrice: " << (11 - tc_portrum);
 	test->setDialogue(oss.str());
+}
+
+void HumanGameView::calculateMapWindowData()
+{
+  // We need to know the aspect ratio of the map (here we're assuming maps are
+  // always rectangular) to calculate where the left edge of the map should
+  // start
+  double map_aspect_ratio =
+    static_cast<double>(tempMap.get_map_size_x()) /
+    static_cast<double>(tempMap.get_map_size_y());
+
+  // Get the current size of the window
+  sf::Vector2u window_size = App->getSize();
+
+  // What's the aspect ratio of the window?
+  double window_aspect_ratio =
+    static_cast<double>(window_size.x) / static_cast<double>(window_size.y);
+
+
+  // If the map's aspect ratio is less than the window's, then there will be
+  // sidebars.  If the two aspect ratios are equal, the map will fit perfectly
+  // in the window and there will be no sidebars or horizontal bars.  If the
+  // map's aspect ratio is greater than the window's, there will be horizontal
+  // bars.
+
+
+  // The ratio between the two aspect ratios
+  double ar_ratio = map_aspect_ratio / window_aspect_ratio;
+
+  if (ar_ratio > 1.0)
+  {
+    // The constraining window dimension is the horizontal dimension
+
+    // Update map top-left location
+    map_tl_wcoords.x = 0.0;
+    map_tl_wcoords.y =
+      (currentRes.y - (static_cast<double>(currentRes.y) / ar_ratio)) / 2.0;
+
+    // Update map tile size
+    map_tile_size = static_cast<unsigned int>(
+      static_cast<double>(window_size.x) /
+      static_cast<double>(tempMap.get_map_size_x()));
+  }
+  else if (ar_ratio < 1.0)
+  {
+    // The constraining window dimension is the vertical dimension
+
+    // Update the top-left location
+    map_tl_wcoords.x =
+      (currentRes.x - (static_cast<double>(currentRes.x) * ar_ratio)) / 2.0;
+    map_tl_wcoords.y = 0.0;
+
+    // Update the map tile size
+    map_tile_size = static_cast<unsigned int>(
+      static_cast<double>(window_size.y) /
+      static_cast<double>(tempMap.get_map_size_y()));
+  }
+  else
+  {
+    // The window dimensions perfectly match the map dimensions.
+
+    // Update the top-left location
+    map_tl_wcoords.x = 0;
+    map_tl_wcoords.y = 0;
+
+    // Update the map tile size; this is the same as the ar_ratio < 1.0 case
+    // above
+    map_tile_size = static_cast<unsigned int>(
+      static_cast<double>(window_size.y) /
+      static_cast<double>(tempMap.get_map_size_y()));
+  }
+}
+
+bool HumanGameView::mapToWindow(const sf::Vector2u& map_coords,
+				sf::Vector2u&       window_coords)
+{
+  // No conversion possible if input isn't on the map
+  if (map_coords.x > tempMap.get_map_size_x() - 1 ||
+      map_coords.y > tempMap.get_map_size_y() - 1)
+  {
+    return false;
+  }
+
+  window_coords.x = map_coords.x * map_tile_size + map_tl_wcoords.x;
+  window_coords.y = map_coords.y * map_tile_size + map_tl_wcoords.y;
+
+  return true;
+}
+
+bool HumanGameView::windowToMap(const sf::Vector2u& window_coords,
+				sf::Vector2u&       map_coords)
+{
+  sf::Vector2u window_size = App->getSize();
+
+  // No conversion possible if input isn't over the map
+  if (window_coords.x < map_tl_wcoords.x ||
+      window_coords.y < map_tl_wcoords.y ||
+      window_coords.x > window_size.x - map_tl_wcoords.x ||
+      window_coords.y > window_size.y - map_tl_wcoords.y)
+  {
+    return false;
+  }
+
+  map_coords.x = (window_coords.x - map_tl_wcoords.x) / map_tile_size;
+  map_coords.y = (window_coords.y - map_tl_wcoords.y) / map_tile_size;
+
+  return true;
 }
