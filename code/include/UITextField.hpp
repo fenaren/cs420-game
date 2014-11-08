@@ -25,11 +25,17 @@ public:
 
   void setPosition(const sf::Vector2f& position);
 
+  const sf::Vector2f& getPosition() const;
+
   void setCharacterSize(unsigned int size);
+
+  unsigned int getCharacterSize() const;
 
   void setText(const std::string& text);
 
-  void loadFontFromFile(const std::string& font);
+  void setColor(const sf::Color& color);
+
+  bool loadFontFromFile(const std::string& font);
 
 private:
 
@@ -45,14 +51,29 @@ inline void UITextField::setPosition(const sf::Vector2f& position)
   text.setPosition(position);
 }
 
+inline const sf::Vector2f& UITextField::getPosition() const
+{
+  return text.getPosition();
+}
+
 inline void UITextField::setCharacterSize(unsigned int size)
 {
   text.setCharacterSize(size);
 }
 
+inline unsigned int UITextField::getCharacterSize() const
+{
+  return text.getCharacterSize();
+}
+
 inline void UITextField::setText(const std::string& text)
 {
   this->text.setString(text);
+}
+
+inline void UITextField::setColor(const sf::Color& color)
+{
+  text.setColor(color);
 }
 
 #endif

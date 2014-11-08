@@ -38,12 +38,15 @@ void UITextField::resize(sf::Vector2u curRes)
 {
 }
 
-void UITextField::loadFontFromFile(const std::string& font)
+bool UITextField::loadFontFromFile(const std::string& font)
 {
   if (!this->font.loadFromFile(font))
   {
     std::cerr << "Couldn't load UITextField font\n";
+    return false;
   }
 
   text.setFont(this->font);
+
+  return true;
 }
