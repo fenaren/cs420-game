@@ -5,6 +5,7 @@
 
 #include "UIElement.hpp"
 
+// This class represents a simple text field.
 class UITextField : public UIElement
 {
 public:
