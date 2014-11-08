@@ -1,5 +1,7 @@
 #include <iostream>
+
 #include "HumanGameView.hpp"
+#include "UITextField.hpp"
 
 HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
   GameView(game_logic),
@@ -30,21 +32,36 @@ bool HumanGameView::initialize()
   if (!tempMap.createMap("./data/second_map.txt")) {
 	std::cout << "ERROR MAP" << std::endl;
   }
+
   getGameLogic()->getEventManager()->addDelegate(
     EventDelegate(std::bind(&HumanGameView::transactionFailEventHandler,
 			    this,
 			    std::placeholders::_1)),
     TransactionFailEvent::event_type);
-	getGameLogic()->getEventManager()->addDelegate(
+
+  getGameLogic()->getEventManager()->addDelegate(
     EventDelegate(std::bind(&HumanGameView::transactionSuccessEventHandler,
 			    this,
 			    std::placeholders::_1)),
     TransactionSuccessEvent::event_type);
-	getGameLogic()->getEventManager()->addDelegate(
+
+  getGameLogic()->getEventManager()->addDelegate(
     EventDelegate(std::bind(&HumanGameView::transactionStartEventHandler,
 			    this,
 			    std::placeholders::_1)),
     TransactionStartEvent::event_type);
+
+  // Grab a shortcut to the ports list
+  const GameLogic::PortsList* ports_list = &getGameLogic()->getPortsList();
+
+  // Set up text fields for all the ports, their data will be displayed in these
+  for (GameLogic::PortsList::const_iterator i = ports_list->begin();
+       i != ports_list->end();
+       i++)
+  {
+
+  }
+
   return true;
 }
 

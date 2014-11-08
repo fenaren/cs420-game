@@ -9,6 +9,7 @@
 #include "GameView.hpp"
 #include "UIElement.hpp"
 #include "UITextInput.hpp"
+#include "UITextField.hpp"
 #include "Map.hpp"
 #include "ShipMoveCmdEvent.hpp"
 #include "TransactionCheckEvent.hpp"
@@ -114,6 +115,14 @@ private:
   int tc_shipgold;
   int tc_shiprum;
   int tc_portrum;
+
+  // UI data on the ship and ports
+
+  // Displays ship UI data
+  UITextField ship_ui_data;
+
+  // Displays port UI data
+  std::vector<UITextField*> port_ui_data;
 };
 
 #endif
