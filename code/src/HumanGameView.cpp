@@ -20,6 +20,7 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
 
 HumanGameView::~HumanGameView()
 {
+  delete test;
 }
 
 bool HumanGameView::initialize()
