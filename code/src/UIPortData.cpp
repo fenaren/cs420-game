@@ -1,5 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <sstream>
+#include <string>
 
 #include "UIPortData.hpp"
 
@@ -11,6 +13,10 @@ UIPortData::UIPortData() :
 
   // Port data initially displayed in 10 pixel size
   setCharacterSize(10);
+
+  // Defaults
+  setRum(0);
+  setGold(0);
 }
 
 UIPortData::~UIPortData()
@@ -55,7 +61,7 @@ void UIPortData::setCharacterSize(unsigned int size)
   gold_field.setCharacterSize(size);
 
   // Changing character means the gold field will need to be repositioned, so
-  // just call setPosition to the currently location and that will happen
+  // just call setPosition to the currentl location and that will happen
   setPosition(getPosition());
 }
 
@@ -70,4 +76,24 @@ void UIPortData::loadFontFromFile(const std::string& font)
   {
     std::cerr << "Couldn't load UIPortData gold font\n";
   }
+}
+
+void UIPortData::setRum(unsigned int rum)
+{
+  // Convert the given number into a string
+  std::ostringstream num_to_str;
+  num_to_str << rum;
+
+  // Plow everything into the rum field
+  rum_field.setText(num_to_str.str() + " R");
+}
+
+void UIPortData::setGold(unsigned int gold)
+{
+  // Convert the given number into a string
+  std::ostringstream num_to_str;
+  num_to_str << gold;
+
+  // Plow everything into the rum field
+  gold_field.setText(num_to_str.str() + " G");
 }

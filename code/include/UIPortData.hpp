@@ -33,6 +33,10 @@ public:
 
   void loadFontFromFile(const std::string& font);
 
+  void setRum(unsigned int rum);
+
+  void setGold(unsigned int gold);
+
 private:
 
   // Text field for displaying rum amount
