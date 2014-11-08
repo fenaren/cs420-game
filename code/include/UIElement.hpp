@@ -7,7 +7,7 @@ class UIElement {
 
 	public:
 		UIElement();
-		~UIElement();
+		virtual ~UIElement();
 		
 		enum Orientation {TopLeft, TopRight, BottomLeft, BottomRight, Center};
 		
