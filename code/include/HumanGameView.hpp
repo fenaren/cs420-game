@@ -97,6 +97,13 @@ private:
 
   // texture to draw sprites from
   sf::Texture texture;
+
+  // last known ship position, for animation
+  unsigned int lastShipX;
+  unsigned int lastShipY;
+  
+  // position in sprite sheet for ship animation
+  unsigned int shipSpriteY;
   
   // the dialogue box
   UITextInput *test;
