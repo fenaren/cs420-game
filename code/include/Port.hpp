@@ -31,6 +31,8 @@ public:
 
   void setRumRate(double rum_rate);
 
+  double getRumPrice() const;
+
   bool const isBuyPort() const;
 
   // Returns the name of this port
@@ -80,6 +82,11 @@ inline double Port::getRumRate() const
 inline void Port::setRumRate(double rum_rate)
 {
   this->rum_rate = rum_rate;
+}
+
+inline double Port::getRumPrice() const
+{
+  return max_rum - rum + 1.0;
 }
 
 inline const bool Port::isBuyPort() const
