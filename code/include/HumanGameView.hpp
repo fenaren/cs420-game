@@ -32,6 +32,8 @@ public:
   virtual void update(const sf::Time& delta_t);
   
   void readInputs(const sf::Time& delta_t);
+
+  void updateUI();
   
   void drawMap();
   
@@ -42,8 +44,6 @@ public:
   void transactionFailEventHandler(const EventInterface& event);
   void transactionSuccessEventHandler(const EventInterface& event);
   void transactionStartEventHandler(const EventInterface& event);
-
-
 
 private:
 

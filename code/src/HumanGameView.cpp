@@ -92,6 +92,8 @@ void HumanGameView::update(const sf::Time& delta_t)
 
   drawMap();
   drawActors();
+
+  updateUI();
   drawUI();
 
   // Can use App to draw in the game window
@@ -176,6 +178,16 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 		getGameLogic()->getEventManager()->queueEvent(sm_event);
 	}
   }
+}
+
+void HumanGameView::updateUI()
+{
+  // Update all the UI elements
+  for (UIElement* elem : uiList)
+  {
+    elem->update(this);
+  }
+
 }
 
 // draws the map
