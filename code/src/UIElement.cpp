@@ -1,3 +1,4 @@
+#include "HumanGameView.hpp"
 #include "UIElement.hpp"
 #include <iostream>
 
@@ -14,6 +15,10 @@ void UIElement::initialize(sf::Vector2f s, sf::Vector2u curRes, Orientation orie
 	size = s;
 	orientation = orient;
 	resize(curRes);
+}
+
+void UIElement::update(const HumanGameView* hgv)
+{
 }
 
 // reorients in screen space on a resize

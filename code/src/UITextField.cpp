@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
+#include "HumanGameView.hpp"
 #include "UITextField.hpp"
 
 UITextField::UITextField() :
@@ -31,6 +32,10 @@ void UITextField::draw(sf::RenderWindow* window)
 void UITextField::initialize(sf::Vector2f s,
 			     sf::Vector2u curRes,
 			     Orientation orient)
+{
+}
+
+void UITextField::update(const HumanGameView* hgv)
 {
 }
 
