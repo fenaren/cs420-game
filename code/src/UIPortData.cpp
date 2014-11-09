@@ -3,12 +3,14 @@
 #include <sstream>
 #include <string>
 
+#include "ActorId.hpp"
 #include "GameLogic.hpp"
 #include "HumanGameView.hpp"
 #include "UIPortData.hpp"
 
-UIPortData::UIPortData() :
-  UIElement()
+UIPortData::UIPortData(ActorId actor_id) :
+  UIElement(),
+  actor_id(actor_id)
 {
   // Port data displayed in white
   setColor(sf::Color::White);
@@ -39,9 +41,19 @@ void UIPortData::initialize(sf::Vector2f s,
 
 void UIPortData::update(HumanGameView* hgv)
 {
-  // Grab a convenience pointer back to the port list in the game logic
-  const GameLogic::PortsList* ports_list = &hgv->getGameLogic()->getPortsList();
-  //const PortList* port
+  // Grab a convenience pointer back to the port we're interested in
+  const Port* port = hgv->getGameLogic()->getPortsList().at(actor_id);
+
+  // Convert port position into vector
+  sf::Vector2f map_position(port->getPositionX(), port->getPositionY());
+
+  sf::Vector2f window_position;
+  hgv->mapToWindow(map_position, window_position);
+
+  setPosition(window_position);
+
+  setGold(port->getRumPrice());
+  setRum(port->getRum());
 }
 
 void UIPortData::resize(sf::Vector2u curRes)

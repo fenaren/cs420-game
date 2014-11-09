@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "ActorId.hpp"
 #include "UIElement.hpp"
 #include "UITextField.hpp"
 
@@ -16,7 +17,7 @@ class UIPortData : public UIElement
 {
 public:
 
-  UIPortData();
+  UIPortData(ActorId actor_id);
 
   virtual ~UIPortData();
 
@@ -48,6 +49,9 @@ public:
   void setGold(unsigned int gold);
 
 private:
+
+  // The actor this is associated with
+  ActorId actor_id;
 
   // Text field for displaying rum amount
   UITextField rum_field;

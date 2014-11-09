@@ -45,12 +45,6 @@ public:
   void transactionSuccessEventHandler(const EventInterface& event);
   void transactionStartEventHandler(const EventInterface& event);
 
-private:
-
-  // Calculates where the top-left corner of the map is in window coordinates
-  // (map_tl_wcoords) and what the map tile size is in pixels (map_tile_size).
-  void calculateMapWindowData();
-
   // Takes a coordinate pair (map_coords) denoting a location on the game map
   // and returns a coordinate pair (window_coords) denoting where the top-left
   // point of that map location is in the window, given current map and window
@@ -65,6 +59,12 @@ private:
   // of the last run of calculateMapWindowData().  Returns true if the
   // transformation was successful, false otherwise.
   bool windowToMap(const sf::Vector2f& window_coords, sf::Vector2f& map_coords);
+
+private:
+
+  // Calculates where the top-left corner of the map is in window coordinates
+  // (map_tl_wcoords) and what the map tile size is in pixels (map_tile_size).
+  void calculateMapWindowData();
 
   // Location of the top-left corner of the map in window coordinates
   sf::Vector2u map_tl_wcoords;

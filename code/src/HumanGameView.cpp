@@ -24,12 +24,12 @@ HumanGameView::~HumanGameView()
 {
   delete test;
 
-  // Delete all the UI elements associated with the ports
-  for (std::map<ActorId, UIPortData*>::iterator i = port_ui_data.begin();
-       i != port_ui_data.end();
+  // Delete all the UI elements
+  for (std::vector<UIElement*>::iterator i = uiList.begin();
+       i != uiList.end();
        i++)
   {
-    delete i->second;
+    delete *i;
   }
 }
 
@@ -69,11 +69,7 @@ bool HumanGameView::initialize()
        i++)
   {
     // Make a new UIPortData for this port
-    UIPortData* new_ui_port_data = new UIPortData();
-
-    // Hold on to the new UI port data element by creating a mapping for it in
-    // the structure for this purpose
-    port_ui_data[i->first] = new_ui_port_data;
+    UIPortData* new_ui_port_data = new UIPortData(i->first);
 
     // Add the port data to the UI list
     uiList.push_back(new_ui_port_data);
