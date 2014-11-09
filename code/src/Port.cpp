@@ -23,13 +23,14 @@ bool Port::initialize()
 void Port::update(const sf::Time& delta_t)
 {
   Actor::update(delta_t);
-  if(delta_t.asSeconds() !=0.0){
-    while(rum < max_rum && rum >= 0.0)
-	rum += rum_rate*delta_t.asSeconds();
+  if(delta_t.asSeconds() != 0.0)
+  {
+    rum += rum_rate*delta_t.asSeconds();
+
     //fail-safe to prevent rum from exceeding max or min
     if(rum < 0.0)
 	rum = 0.0;
     if(rum > max_rum)
-	rum = 10.0;
+	rum = max_rum;
   }
 }
