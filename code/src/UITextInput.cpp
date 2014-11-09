@@ -1,3 +1,4 @@
+#include "HumanGameView.hpp"
 #include "UITextInput.hpp"
 
 void UITextInput::initialize(sf::Vector2f s, sf::Vector2u curRes, Orientation orient) {
@@ -16,6 +17,10 @@ void UITextInput::initialize(sf::Vector2f s, sf::Vector2u curRes, Orientation or
 	dialogueText.setFont(font);
 	dialogueText.setCharacterSize(20);
 	dialogueText.setString(dialogue);
+}
+
+void UITextInput::update(HumanGameView* hgv)
+{
 }
 
 void UITextInput::resize(sf::Vector2u curRes) {

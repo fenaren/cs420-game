@@ -1,5 +1,8 @@
 #include <iostream>
+
 #include "HumanGameView.hpp"
+#include "UITextField.hpp"
+#include "UIShipData.hpp"
 
 HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
   GameView(game_logic),
@@ -20,6 +23,15 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
 
 HumanGameView::~HumanGameView()
 {
+  delete test;
+
+  // Delete all the UI elements
+  for (std::vector<UIElement*>::iterator i = uiList.begin();
+       i != uiList.end();
+       i++)
+  {
+    delete *i;
+  }
 }
 
 bool HumanGameView::initialize()
@@ -29,21 +41,48 @@ bool HumanGameView::initialize()
   if (!tempMap.createMap("./data/second_map.txt")) {
 	std::cout << "ERROR MAP" << std::endl;
   }
+
   getGameLogic()->getEventManager()->addDelegate(
     EventDelegate(std::bind(&HumanGameView::transactionFailEventHandler,
 			    this,
 			    std::placeholders::_1)),
     TransactionFailEvent::event_type);
-	getGameLogic()->getEventManager()->addDelegate(
+
+  getGameLogic()->getEventManager()->addDelegate(
     EventDelegate(std::bind(&HumanGameView::transactionSuccessEventHandler,
 			    this,
 			    std::placeholders::_1)),
     TransactionSuccessEvent::event_type);
-	getGameLogic()->getEventManager()->addDelegate(
+
+  getGameLogic()->getEventManager()->addDelegate(
     EventDelegate(std::bind(&HumanGameView::transactionStartEventHandler,
 			    this,
 			    std::placeholders::_1)),
     TransactionStartEvent::event_type);
+
+
+  // Push the UI ship data element onto the element list
+  uiList.push_back(new UIShipData());
+
+
+  // Grab a shortcut to the ports list
+  const GameLogic::PortsList* ports_list = &getGameLogic()->getPortsList();
+
+  // Set up text fields for all the ports, their data will be displayed in these
+  for (GameLogic::PortsList::const_iterator i = ports_list->begin();
+       i != ports_list->end();
+       i++)
+  {
+    // Make a new UIPortData for this port
+    UIPortData* new_ui_port_data = new UIPortData(i->first);
+
+    // Set all the port names here, they're not going to change during runtime
+    new_ui_port_data->setName(i->second->getName());
+
+    // Add the port data to the UI list
+    uiList.push_back(new_ui_port_data);
+  }
+
   return true;
 }
 
@@ -57,6 +96,8 @@ void HumanGameView::update(const sf::Time& delta_t)
 
   drawMap();
   drawActors();
+
+  updateUI();
   drawUI();
 
   // Can use App to draw in the game window
@@ -140,6 +181,15 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 		ShipMoveCmdEvent* sm_event = new ShipMoveCmdEvent(sf::Vector2i(x, y));
 		getGameLogic()->getEventManager()->queueEvent(sm_event);
 	}
+  }
+}
+
+void HumanGameView::updateUI()
+{
+  // Update all the UI elements
+  for (UIElement* elem : uiList)
+  {
+    elem->update(this);
   }
 }
 
@@ -336,8 +386,8 @@ void HumanGameView::calculateMapWindowData()
   }
 }
 
-bool HumanGameView::mapToWindow(const sf::Vector2u& map_coords,
-				sf::Vector2u&       window_coords)
+bool HumanGameView::mapToWindow(const sf::Vector2f& map_coords,
+				sf::Vector2f&       window_coords)
 {
   // No conversion possible if input isn't on the map
   if (map_coords.x > tempMap.get_map_size_x() - 1 ||
@@ -352,8 +402,8 @@ bool HumanGameView::mapToWindow(const sf::Vector2u& map_coords,
   return true;
 }
 
-bool HumanGameView::windowToMap(const sf::Vector2u& window_coords,
-				sf::Vector2u&       map_coords)
+bool HumanGameView::windowToMap(const sf::Vector2f& window_coords,
+				sf::Vector2f&       map_coords)
 {
   sf::Vector2u window_size = App->getSize();
 
