@@ -29,6 +29,8 @@ public:
 
   void setCharacterSize(unsigned int size);
 
+  unsigned int getCharacterSize() const;
+
   void setColor(const sf::Color& color);
 
   void loadFontFromFile(const std::string& font);
@@ -51,6 +53,13 @@ inline const sf::Vector2f& UIPortData::getPosition() const
   // The rum field draws at the top-left of this UI element so its position is
   // the position of the whole thing
   return rum_field.getPosition();
+}
+
+inline unsigned int UIPortData::getCharacterSize() const
+{
+  // Both fields are supposed to be set to the same character size, so just
+  // return the size from one of them
+  return rum_field.getCharacterSize();
 }
 
 inline void UIPortData::setColor(const sf::Color& color)
