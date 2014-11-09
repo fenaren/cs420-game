@@ -19,8 +19,12 @@ UIPortData::UIPortData(ActorId actor_id) :
   setCharacterSize(10);
 
   // Defaults
+  setName("UIPortData");
   setRum(0);
   setGold(0);
+
+  // The name field is always bold
+  name_field.setStyle(sf::Text::Bold);
 }
 
 UIPortData::~UIPortData()
@@ -29,6 +33,7 @@ UIPortData::~UIPortData()
 
 void UIPortData::draw(sf::RenderWindow* window)
 {
+  name_field.draw(window);
   rum_field.draw(window);
   gold_field.draw(window);
 }
@@ -60,24 +65,26 @@ void UIPortData::resize(sf::Vector2u curRes)
 {
 }
 
-
 void UIPortData::setPosition(const sf::Vector2f& position)
 {
-  // The rum field is displayed on top so it should be set to this position
-  rum_field.setPosition(position);
+  // The name field is displayed on top so it should be set to this position
+  name_field.setPosition(position);
 
-  // The gold field is displayed below the rum field.  Where this is depends on
-  // the current character size.
+  // The other fields are displayed below the name field.  Where they are
+  // depends on the current character size
 
-  // Grab current rum field position and set the gold field to be below it
-  sf::Vector2f new_gold_field_position = rum_field.getPosition();
-  new_gold_field_position.y += rum_field.getCharacterSize();
-  gold_field.setPosition(new_gold_field_position);
+  // Grab current name field position and set the other fields to be below it
+  sf::Vector2f new_field_position = name_field.getPosition();
+  new_field_position.y += name_field.getCharacterSize();
+  rum_field.setPosition(new_field_position);
+  new_field_position.y += name_field.getCharacterSize();
+  gold_field.setPosition(new_field_position);
 }
 
 void UIPortData::setCharacterSize(unsigned int size)
 {
   // First off just set the field character sizes
+  name_field.setCharacterSize(size);
   rum_field.setCharacterSize(size);
   gold_field.setCharacterSize(size);
 
@@ -88,6 +95,11 @@ void UIPortData::setCharacterSize(unsigned int size)
 
 void UIPortData::loadFontFromFile(const std::string& font)
 {
+  if (!name_field.loadFontFromFile(font))
+  {
+    std::cerr << "Couldn't load UIPortData name font\n";
+  }
+
   if (!rum_field.loadFontFromFile(font))
   {
     std::cerr << "Couldn't load UIPortData rum font\n";

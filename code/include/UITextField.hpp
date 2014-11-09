@@ -43,6 +43,8 @@ public:
 
   void setColor(const sf::Color& color);
 
+  void setStyle(sf::Text::Style style);
+
   bool loadFontFromFile(const std::string& font);
 
 private:
@@ -82,6 +84,11 @@ inline void UITextField::setText(const std::string& text)
 inline void UITextField::setColor(const sf::Color& color)
 {
   text.setColor(color);
+}
+
+inline void UITextField::setStyle(sf::Text::Style style)
+{
+  text.setStyle(style);
 }
 
 #endif

@@ -44,6 +44,8 @@ public:
 
   void loadFontFromFile(const std::string& font);
 
+  void setName(const std::string& name);
+
   void setRum(unsigned int rum);
 
   void setGold(unsigned int gold);
@@ -52,6 +54,9 @@ private:
 
   // The actor this is associated with
   ActorId actor_id;
+
+  // Text field for displaying the port's name
+  UITextField name_field;
 
   // Text field for displaying rum amount
   UITextField rum_field;
@@ -62,22 +67,28 @@ private:
 
 inline const sf::Vector2f& UIPortData::getPosition() const
 {
-  // The rum field draws at the top-left of this UI element so its position is
+  // The name field draws at the top-left of this UI element so its position is
   // the position of the whole thing
-  return rum_field.getPosition();
+  return name_field.getPosition();
 }
 
 inline unsigned int UIPortData::getCharacterSize() const
 {
   // Both fields are supposed to be set to the same character size, so just
   // return the size from one of them
-  return rum_field.getCharacterSize();
+  return name_field.getCharacterSize();
 }
 
 inline void UIPortData::setColor(const sf::Color& color)
 {
+  name_field.setColor(color);
   rum_field.setColor(color);
   gold_field.setColor(color);
+}
+
+inline void UIPortData::setName(const std::string& name)
+{
+  name_field.setText(name);
 }
 
 #endif

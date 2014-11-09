@@ -71,6 +71,9 @@ bool HumanGameView::initialize()
     // Make a new UIPortData for this port
     UIPortData* new_ui_port_data = new UIPortData(i->first);
 
+    // Set all the port names here, they're not going to change during runtime
+    new_ui_port_data->setName(i->second->getName());
+
     // Add the port data to the UI list
     uiList.push_back(new_ui_port_data);
   }
