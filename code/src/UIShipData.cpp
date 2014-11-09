@@ -10,6 +10,7 @@ UIShipData::UIShipData() :
   gold(0)
 {
   // Defaults
+  setPosition(sf::Vector2f(0, 0));
   setColor(sf::Color::White);
   setStyle(sf::Text::Bold);
 }
@@ -28,6 +29,12 @@ void UIShipData::update(HumanGameView* hgv)
 {
   // Adjust for prettiness
   setCharacterSize(static_cast<double>(hgv->getMapTileSize()) * 0.75);
+
+  // Grab convenience pointer to ship
+  const Ship* ship = hgv->getGameLogic()->getShip();
+
+  setRum(ship->getRum());
+  setGold(ship->getGold());
 
   updateText();
 }
