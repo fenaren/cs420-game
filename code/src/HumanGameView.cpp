@@ -2,6 +2,7 @@
 
 #include "HumanGameView.hpp"
 #include "UITextField.hpp"
+#include "UIShipData.hpp"
 
 HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
   GameView(game_logic),
@@ -58,6 +59,10 @@ bool HumanGameView::initialize()
 			    this,
 			    std::placeholders::_1)),
     TransactionStartEvent::event_type);
+
+
+  // Push the UI ship data element onto the element list
+  uiList.push_back(new UIShipData());
 
 
   // Grab a shortcut to the ports list

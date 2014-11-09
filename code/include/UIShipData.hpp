@@ -31,9 +31,17 @@ public:
   virtual void draw(sf::RenderWindow* window);
 
 
+  void setPosition(const sf::Vector2f& position);
+
+  void setCharacterSize(unsigned int size);
+
   void setGold(unsigned int gold);
 
   void setRum(unsigned int rum);
+
+  void setColor(const sf::Color& color);
+
+  void setStyle(sf::Text::Style style);
 
 private:
 
@@ -49,6 +57,16 @@ private:
   unsigned int rum;
 };
 
+inline void UIShipData::setPosition(const sf::Vector2f& position)
+{
+  text.setPosition(position);
+}
+
+inline void UIShipData::setCharacterSize(unsigned int size)
+{
+  text.setCharacterSize(size);
+}
+
 inline void UIShipData::setGold(unsigned int gold)
 {
   this->gold = gold;
@@ -57,6 +75,16 @@ inline void UIShipData::setGold(unsigned int gold)
 inline void UIShipData::setRum(unsigned int rum)
 {
   this->rum = rum;
+}
+
+inline void UIShipData::setColor(const sf::Color& color)
+{
+  text.setColor(color);
+}
+
+inline void UIShipData::setStyle(sf::Text::Style style)
+{
+  text.setStyle(style);
 }
 
 #endif
