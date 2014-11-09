@@ -3,12 +3,15 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Time.hpp>
+#include <map>
 #include <vector>
 
+#include "ActorId.hpp"
 #include "GameLogic.hpp"
 #include "GameView.hpp"
 #include "UIElement.hpp"
 #include "UITextInput.hpp"
+#include "UIPortData.hpp"
 #include "Map.hpp"
 #include "ShipMoveCmdEvent.hpp"
 #include "TransactionCheckEvent.hpp"
@@ -29,6 +32,8 @@ public:
   virtual void update(const sf::Time& delta_t);
   
   void readInputs(const sf::Time& delta_t);
+
+  void updateUI();
   
   void drawMap();
   
@@ -40,28 +45,28 @@ public:
   void transactionSuccessEventHandler(const EventInterface& event);
   void transactionStartEventHandler(const EventInterface& event);
 
-
-
-private:
-
-  // Calculates where the top-left corner of the map is in window coordinates
-  // (map_tl_wcoords) and what the map tile size is in pixels (map_tile_size).
-  void calculateMapWindowData();
-
   // Takes a coordinate pair (map_coords) denoting a location on the game map
   // and returns a coordinate pair (window_coords) denoting where the top-left
   // point of that map location is in the window, given current map and window
   // sizes.  Depends on the results of the last run of
   // calculateMapWindowData().  Returns true if the transformation was
   // successful, false otherwise.
-  bool mapToWindow(const sf::Vector2u& map_coords, sf::Vector2u& window_coords); 
+  bool mapToWindow(const sf::Vector2f& map_coords, sf::Vector2f& window_coords); 
 
   // Takes a coordinate pair (window_coords) denoting a location in the window
   // and returns a coordinate pair (map_coords) denoting where that location
   // is on the map, given current map and window sizes.  Depends on the results
   // of the last run of calculateMapWindowData().  Returns true if the
   // transformation was successful, false otherwise.
-  bool windowToMap(const sf::Vector2u& window_coords, sf::Vector2u& map_coords);
+  bool windowToMap(const sf::Vector2f& window_coords, sf::Vector2f& map_coords);
+
+  unsigned int getMapTileSize() const;
+
+private:
+
+  // Calculates where the top-left corner of the map is in window coordinates
+  // (map_tl_wcoords) and what the map tile size is in pixels (map_tile_size).
+  void calculateMapWindowData();
 
   // Location of the top-left corner of the map in window coordinates
   sf::Vector2u map_tl_wcoords;
@@ -97,6 +102,13 @@ private:
 
   // texture to draw sprites from
   sf::Texture texture;
+
+  // last known ship position, for animation
+  unsigned int lastShipX;
+  unsigned int lastShipY;
+  
+  // position in sprite sheet for ship animation
+  unsigned int shipSpriteY;
   
   // the dialogue box
   UITextInput *test;
@@ -111,5 +123,10 @@ private:
   int tc_shiprum;
   int tc_portrum;
 };
+
+inline unsigned int HumanGameView::getMapTileSize() const
+{
+  return map_tile_size;
+}
 
 #endif

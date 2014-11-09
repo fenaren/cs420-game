@@ -3,15 +3,22 @@
 
 #include "SFML/Graphics.hpp"
 
+// Forward declaration of HumanGameView.  This is used instead of including
+// HumanGameView because including HumanGameView isn't necessary (only pointers
+// to HumanGameView are present here) and because including it can cause a
+// "circular include" type situation ...
+class HumanGameView;
+
 class UIElement {
 
 	public:
 		UIElement();
-		~UIElement();
+		virtual ~UIElement();
 		
 		enum Orientation {TopLeft, TopRight, BottomLeft, BottomRight, Center};
 		
 		virtual void initialize(sf::Vector2f s, sf::Vector2u curRes, Orientation orient);
+                virtual void update(HumanGameView* hgv);
 		virtual void resize(sf::Vector2u curRes);
 		virtual void draw(sf::RenderWindow* window);
 		

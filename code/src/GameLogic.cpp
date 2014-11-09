@@ -32,8 +32,8 @@ GameLogic::GameLogic() :
   ship->setPositionX(10);
   ship->setPositionY(11);
   ship->setMinMoveTime(1.0);
-  ship->setGold(0);
-  ship->setRum(1);
+  ship->setGold(10);
+  ship->setRum(5);
   ship->setMaxRum(10);
   ship->setRumRate(0);
 
@@ -272,7 +272,7 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
   portrum = tcheck_event->getPortRum();
   rumrequest = tcheck_event->getRumRequest();
   
-  price = 11 - portrum;
+  price = ports[portid]->getRumPrice();
   
   if (ports[portid]->isBuyPort() && rumrequest <= portrum && rumrequest * price <= shipgold)
   {
