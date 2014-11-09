@@ -24,5 +24,13 @@ bool Ship::initialize()
 void Ship::update(const sf::Time& delta_t)
 {
   Actor::update(delta_t);
-  rum -= rum_rate*delta_t.asSeconds();
+  if(delta_t = 0.0){
+    while(rum < max_rum && rum >= 0.0){
+	rum -= rum_rate*delta_t.asSeconds();
+    }
+    if(rum < 0.0)
+      rum = 0.0
+    if(rum > 10.0)
+      rum = 10.0
+  }
 }
