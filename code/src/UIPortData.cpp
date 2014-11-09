@@ -49,6 +49,10 @@ void UIPortData::update(HumanGameView* hgv)
   // Grab a convenience pointer back to the port we're interested in
   const Port* port = hgv->getGameLogic()->getPortsList().at(actor_id);
 
+  setGold(port->getRumPrice());
+  setRum(port->getRum());
+  setCharacterSize(hgv->getMapTileSize() / 2);  // adjust for prettiness
+
   // Convert port position into vector
   sf::Vector2f map_position(port->getPositionX(), port->getPositionY());
 
@@ -56,9 +60,6 @@ void UIPortData::update(HumanGameView* hgv)
   hgv->mapToWindow(map_position, window_position);
 
   setPosition(window_position);
-
-  setGold(port->getRumPrice());
-  setRum(port->getRum());
 }
 
 void UIPortData::resize(sf::Vector2u curRes)
