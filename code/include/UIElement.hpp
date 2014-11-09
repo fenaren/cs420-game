@@ -18,7 +18,7 @@ class UIElement {
 		enum Orientation {TopLeft, TopRight, BottomLeft, BottomRight, Center};
 		
 		virtual void initialize(sf::Vector2f s, sf::Vector2u curRes, Orientation orient);
-                virtual void update(const HumanGameView* hgv);
+                virtual void update(HumanGameView* hgv);
 		virtual void resize(sf::Vector2u curRes);
 		virtual void draw(sf::RenderWindow* window);
 		

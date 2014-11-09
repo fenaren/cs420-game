@@ -19,7 +19,7 @@ void UITextInput::initialize(sf::Vector2f s, sf::Vector2u curRes, Orientation or
 	dialogueText.setString(dialogue);
 }
 
-void UITextInput::update(const HumanGameView* hgv)
+void UITextInput::update(HumanGameView* hgv)
 {
 }
 

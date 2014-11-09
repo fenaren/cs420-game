@@ -35,7 +35,7 @@ void UITextField::initialize(sf::Vector2f s,
 {
 }
 
-void UITextField::update(const HumanGameView* hgv)
+void UITextField::update(HumanGameView* hgv)
 {
 }
 

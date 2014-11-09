@@ -26,7 +26,7 @@ public:
 			  sf::Vector2u curRes,
 			  Orientation  orient);
 
-  virtual void update(const HumanGameView* hgv);
+  virtual void update(HumanGameView* hgv);
 
   virtual void resize(sf::Vector2u curRes);
 

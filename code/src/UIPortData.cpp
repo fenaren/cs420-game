@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 
+#include "GameLogic.hpp"
 #include "HumanGameView.hpp"
 #include "UIPortData.hpp"
 
@@ -36,8 +37,11 @@ void UIPortData::initialize(sf::Vector2f s,
 {
 }
 
-void UIPortData::update(const HumanGameView* hgv)
+void UIPortData::update(HumanGameView* hgv)
 {
+  // Grab a convenience pointer back to the port list in the game logic
+  const GameLogic::PortsList* ports_list = &hgv->getGameLogic()->getPortsList();
+  //const PortList* port
 }
 
 void UIPortData::resize(sf::Vector2u curRes)

@@ -17,7 +17,7 @@ void UIElement::initialize(sf::Vector2f s, sf::Vector2u curRes, Orientation orie
 	resize(curRes);
 }
 
-void UIElement::update(const HumanGameView* hgv)
+void UIElement::update(HumanGameView* hgv)
 {
 }
 
