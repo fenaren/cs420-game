@@ -7,7 +7,7 @@ Ship::Ship(ActorId actor_id) :
   Actor(actor_id),
   gold(0.0),
   rum(0.0),
-  max_rum(1.0),
+  max_rum(10.0),
   rum_rate(1.0)
 {
 }
@@ -24,4 +24,5 @@ bool Ship::initialize()
 void Ship::update(const sf::Time& delta_t)
 {
   Actor::update(delta_t);
+  rum -= rum_rate*delta_t;
 }
