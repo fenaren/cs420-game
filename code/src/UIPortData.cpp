@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 
+#include "HumanGameView.hpp"
 #include "UIPortData.hpp"
 
 UIPortData::UIPortData() :
@@ -32,6 +33,10 @@ void UIPortData::draw(sf::RenderWindow* window)
 void UIPortData::initialize(sf::Vector2f s,
 			    sf::Vector2u curRes,
 			    Orientation  orient)
+{
+}
+
+void UIPortData::update(const HumanGameView* hgv)
 {
 }
 
