@@ -187,7 +187,6 @@ void HumanGameView::updateUI()
   {
     elem->update(this);
   }
-
 }
 
 // draws the map
