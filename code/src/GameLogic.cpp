@@ -272,7 +272,7 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
   portrum = tcheck_event->getPortRum();
   rumrequest = tcheck_event->getRumRequest();
   
-  price = 11 - portrum;
+  price = ports[portid]->getRumPrice();
   
   if (ports[portid]->isBuyPort() && rumrequest <= portrum && rumrequest * price <= shipgold)
   {
