@@ -119,11 +119,6 @@ private:
   int tc_shipgold;
   int tc_shiprum;
   int tc_portrum;
-
-  // UI data on the ports.  Right now display of the port UI data doesn't
-  // support changes in the number of ports at runtime, which is okay because
-  // neither do some other systems in the game
-  std::map<ActorId, UIPortData*> port_ui_data;
 };
 
 inline unsigned int HumanGameView::getMapTileSize() const
