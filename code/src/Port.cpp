@@ -23,5 +23,5 @@ bool Port::initialize()
 void Port::update(const sf::Time& delta_t)
 {
   Actor::update(delta_t);
-  rum += rum_rate*delta_t;
+  rum += rum_rate*delta_t.asSeconds();
 }
