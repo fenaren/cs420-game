@@ -14,28 +14,23 @@ bool Map::initialize()
 }
 
 bool Map::createMap(std::string filename) {
-    std::string line;
-    int y = 0;
-    std::ifstream map_file (filename);
-    if (map_file.is_open())
-    {
-        while (std::getline (map_file,line) ) 
-        {
-            for (int x = 0; x < map_size_x; x++) {
-                if (line[x] == 'L') {
-                    map_array[x][y] = LAND;
-                }
-                else if (line[x] == 'W') {
-                    map_array[x][y] = WATER;
-                }
-            }
-            y++;
-        }
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-    map_file.close();
+    	std::string line;
+	int x = 0;
+    	int y = 0;
+    	std::ifstream map_file (filename);
+    	if (map_file.is_open()) {
+		while (std::getline(map_file,line,',')) {
+			if(x == 32) {
+				x = 0;
+				y+= 1;
+			}
+			map_array[x][y] = atoi(line.c_str());
+            		x++;
+        	}
+        	return true;
+    	}
+    	else {
+        	return false;
+    	}
+    	map_file.close();
 }

@@ -1,7 +1,7 @@
 # Init file for ports.  Each new line results in the creation of a new port.
 # Lines beginning with # are comments and ignored
 # <name>      <position x> <position y> <min move time> <rum> <max rum> <rum rate>
-Antigua,              7,           5,          0,    0,         10,          0
+Antigua,              7,           8,          0,    0,         10,          0
 Barbados,             13,           8,          0,    0,         10,          0
 Cartagena,            11,           8,          0,    0,         10,          0
 Curacao,              14,           14,          0,    0,         10,          0

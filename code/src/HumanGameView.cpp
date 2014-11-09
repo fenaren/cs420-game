@@ -206,29 +206,55 @@ void HumanGameView::drawMap() {
 	int map_size_x = tempMap.get_map_size_x();
 	int map_size_y = tempMap.get_map_size_y();
 	
-	sf::Sprite land_sprite;
+	sf::Sprite map_sprite;
 	sf::Sprite water_sprite;
-	land_sprite.setTexture(texture);
+	map_sprite.setTexture(texture);
 	water_sprite.setTexture(texture);
 	
-	land_sprite.setTextureRect(sf::IntRect(106,50,25,25));
-	water_sprite.setTextureRect(sf::IntRect(106,25,25,25));
+	//land_sprite.setTextureRect(sf::IntRect(375,100,25,25));
+	water_sprite.setTextureRect(sf::IntRect(300,0,25,25));
 	
-	land_sprite.scale(spriteScale,spriteScale);
+	//land_sprite.scale(spriteScale,spriteScale);
 	water_sprite.scale(spriteScale,spriteScale);
 	
+
+	sf::Sprite other_land;
+	other_land.setTexture(texture);
+	other_land.scale(spriteScale,spriteScale);
+
 	for (int y = 0; y < map_size_y; y++) {
         	for (int x = 0; x < map_size_x; x++) {
-			if (tempMap.getTerrain(x,y) == 1) {
+	//		std::cout << tempMap.getTerrain(x,y) << ",";
+			map_sprite.setTextureRect(sf::IntRect(25*tempMap.getTerrain(x,y),200,25,25));
+			map_sprite.setPosition(sf::Vector2f(x_position,y_position));
+			App->draw(map_sprite);
+		/*	if (tempMap.getTerrain(x,y) == 1) {
                 		land_sprite.setPosition(sf::Vector2f(x_position, y_position));
                 		App->draw(land_sprite);
-            		}
+			}
+			else if (tempMap.getTerrain(x,y) == 2) {
+				other_land.setTextureRect(sf::IntRect(300,75,25,25));
+				other_land.setPosition(sf::Vector2f(x_position, y_position));
+				App->draw(other_land);
+			}
+			else if (tempMap.getTerrain(x,y) == 3) {
+				other_land.setTextureRect(sf::IntRect(350,50,25,25));
+				other_land.setPosition(sf::Vector2f(x_position, y_position));
+				App->draw(other_land);
+			}
+			else if (tempMap.getTerrain(x,y) == 4) {
+				other_land.setTextureRect(sf::IntRect(325,25,25,25));
+				other_land.setPosition(sf::Vector2f(x_position, y_position));
+				App->draw(other_land);
+			}
             		else {
                 		water_sprite.setPosition(sf::Vector2f(x_position, y_position));
                 		App->draw(water_sprite);
-            		}
+            		}*/
+	//		std::cout << tempMap.getTerrain(x,y);
             		x_position += map_tile_size;
         	}
+	//	std::cout << std::endl;
         	x_position = map_tl_wcoords.x;
         	y_position += map_tile_size;
     	}
