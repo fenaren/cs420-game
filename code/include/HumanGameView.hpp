@@ -60,6 +60,8 @@ public:
   // transformation was successful, false otherwise.
   bool windowToMap(const sf::Vector2f& window_coords, sf::Vector2f& map_coords);
 
+  unsigned int getMapTileSize() const;
+
 private:
 
   // Calculates where the top-left corner of the map is in window coordinates
@@ -123,5 +125,10 @@ private:
   // neither do some other systems in the game
   std::map<ActorId, UIPortData*> port_ui_data;
 };
+
+inline unsigned int HumanGameView::getMapTileSize() const
+{
+  return map_tile_size;
+}
 
 #endif
