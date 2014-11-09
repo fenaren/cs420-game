@@ -94,6 +94,9 @@ void HumanGameView::update(const sf::Time& delta_t)
 
   calculateMapWindowData();
 
+  // each sprite is 25x25
+  spriteScale = map_tile_size / 25.0;
+
   drawMap();
   drawActors();
 
@@ -195,19 +198,24 @@ void HumanGameView::updateUI()
 
 // draws the map
 void HumanGameView::drawMap() {
-	int x_position = 0;
-	int y_position = 0;
+	int x_position = map_tl_wcoords.x;
+	int y_position = map_tl_wcoords.y;
+	
 	// these things never change as of right now so they could be created as
 	// members of the class...
-	int tile_size = tempMap.get_tile_size();
 	int map_size_x = tempMap.get_map_size_x();
 	int map_size_y = tempMap.get_map_size_y();
+	
 	sf::Sprite land_sprite;
 	sf::Sprite water_sprite;
 	land_sprite.setTexture(texture);
 	water_sprite.setTexture(texture);
+	
 	land_sprite.setTextureRect(sf::IntRect(106,50,25,25));
 	water_sprite.setTextureRect(sf::IntRect(106,25,25,25));
+	
+	land_sprite.scale(spriteScale,spriteScale);
+	water_sprite.scale(spriteScale,spriteScale);
 	
 	for (int y = 0; y < map_size_y; y++) {
         	for (int x = 0; x < map_size_x; x++) {
@@ -219,20 +227,21 @@ void HumanGameView::drawMap() {
                 		water_sprite.setPosition(sf::Vector2f(x_position, y_position));
                 		App->draw(water_sprite);
             		}
-            		x_position += tile_size;
+            		x_position += map_tile_size;
         	}
-        	x_position = 0;
-        	y_position += tile_size;
+        	x_position = map_tl_wcoords.x;
+        	y_position += map_tile_size;
     	}
 }
 
 // draws the actors
 void HumanGameView::drawActors() {
-	int tileSize = tempMap.get_tile_size();
-	
 	sf::Sprite port_sprite;
 	port_sprite.setTexture(texture);
 	port_sprite.setTextureRect(sf::IntRect(105,0,25,25));
+
+	port_sprite.scale(spriteScale,spriteScale);
+
 	std::map<ActorId, Port*> ports = getGameLogic()->getPortsList();
 	for (std::map<ActorId, Port*>::iterator i = ports.begin(); i != ports.end(); i++) {
 		if(i->second->isBuyPort()){
@@ -241,13 +250,16 @@ void HumanGameView::drawActors() {
 		else {
 			port_sprite.setColor(sf::Color::Yellow);
 		}
-		port_sprite.setPosition(sf::Vector2f(i->second->getPositionX() * tileSize, i->second->getPositionY() * tileSize));
+		port_sprite.setPosition(sf::Vector2f(i->second->getPositionX() * map_tile_size + map_tl_wcoords.x, i->second->getPositionY() * map_tile_size + map_tl_wcoords.y));
 		App->draw(port_sprite);
 	}
 
 	sf::Sprite ship_sprite;
 	ship_sprite.setTexture(texture);
+
+	ship_sprite.scale(spriteScale,spriteScale);
 	const Ship* ship = getGameLogic()->getShip();
+	ship_sprite.setPosition(sf::Vector2f(ship->getPositionX() * map_tile_size + map_tl_wcoords.x, ship->getPositionY() * map_tile_size + map_tl_wcoords.y));
 
 	// ship moved left
 	if (lastShipX > ship->getPositionX()) {
@@ -267,7 +279,6 @@ void HumanGameView::drawActors() {
 	}
 
 	ship_sprite.setTextureRect(sf::IntRect(0,shipSpriteY,25,25));
-	ship_sprite.setPosition(sf::Vector2f(ship->getPositionX() * tileSize, ship->getPositionY() * tileSize));
 	App->draw(ship_sprite);
 
 	lastShipX = ship->getPositionX();
