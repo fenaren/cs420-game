@@ -23,6 +23,14 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
 HumanGameView::~HumanGameView()
 {
   delete test;
+
+  // Delete all the UI elements associated with the ports
+  for (std::map<ActorId, UIPortData*>::iterator i = port_ui_data.begin();
+       i != port_ui_data.end();
+       i++)
+  {
+    delete i->second;
+  }
 }
 
 bool HumanGameView::initialize()
@@ -59,7 +67,28 @@ bool HumanGameView::initialize()
        i != ports_list->end();
        i++)
   {
+    // Make a new UIPortData for this port
+    UIPortData* new_ui_port_data = new UIPortData();
 
+    // Hold on to the new UI port data element by creating a mapping for it in
+    // the structure for this purpose
+    port_ui_data[i->first] = new_ui_port_data;
+
+    // Go ahead and initialize some of the data
+
+    // Set the correct position in the window for it
+    sf::Vector2f map_position(i->second->getPositionX(),
+			      i->second->getPositionY());
+
+    sf::Vector2f window_position;
+    mapToWindow(map_position, window_position);
+
+    new_ui_port_data->setPosition(window_position);
+    new_ui_port_data->setGold(i->second->getRumPrice());
+    new_ui_port_data->setRum(i->second->getRum());
+
+    // Add the port data to the UI list
+    uiList.push_back(new_ui_port_data);
   }
 
   return true;
@@ -354,8 +383,8 @@ void HumanGameView::calculateMapWindowData()
   }
 }
 
-bool HumanGameView::mapToWindow(const sf::Vector2u& map_coords,
-				sf::Vector2u&       window_coords)
+bool HumanGameView::mapToWindow(const sf::Vector2f& map_coords,
+				sf::Vector2f&       window_coords)
 {
   // No conversion possible if input isn't on the map
   if (map_coords.x > tempMap.get_map_size_x() - 1 ||
@@ -370,8 +399,8 @@ bool HumanGameView::mapToWindow(const sf::Vector2u& map_coords,
   return true;
 }
 
-bool HumanGameView::windowToMap(const sf::Vector2u& window_coords,
-				sf::Vector2u&       map_coords)
+bool HumanGameView::windowToMap(const sf::Vector2f& window_coords,
+				sf::Vector2f&       map_coords)
 {
   sf::Vector2u window_size = App->getSize();
 

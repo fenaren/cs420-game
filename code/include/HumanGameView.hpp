@@ -3,13 +3,15 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Time.hpp>
+#include <map>
 #include <vector>
 
+#include "ActorId.hpp"
 #include "GameLogic.hpp"
 #include "GameView.hpp"
 #include "UIElement.hpp"
 #include "UITextInput.hpp"
-#include "UITextField.hpp"
+#include "UIPortData.hpp"
 #include "Map.hpp"
 #include "ShipMoveCmdEvent.hpp"
 #include "TransactionCheckEvent.hpp"
@@ -55,14 +57,14 @@ private:
   // sizes.  Depends on the results of the last run of
   // calculateMapWindowData().  Returns true if the transformation was
   // successful, false otherwise.
-  bool mapToWindow(const sf::Vector2u& map_coords, sf::Vector2u& window_coords); 
+  bool mapToWindow(const sf::Vector2f& map_coords, sf::Vector2f& window_coords); 
 
   // Takes a coordinate pair (window_coords) denoting a location in the window
   // and returns a coordinate pair (map_coords) denoting where that location
   // is on the map, given current map and window sizes.  Depends on the results
   // of the last run of calculateMapWindowData().  Returns true if the
   // transformation was successful, false otherwise.
-  bool windowToMap(const sf::Vector2u& window_coords, sf::Vector2u& map_coords);
+  bool windowToMap(const sf::Vector2f& window_coords, sf::Vector2f& map_coords);
 
   // Location of the top-left corner of the map in window coordinates
   sf::Vector2u map_tl_wcoords;
@@ -116,13 +118,10 @@ private:
   int tc_shiprum;
   int tc_portrum;
 
-  // UI data on the ship and ports
-
-  // Displays ship UI data
-  UITextField ship_ui_data;
-
-  // Displays port UI data
-  std::vector<UITextField*> port_ui_data;
+  // UI data on the ports.  Right now display of the port UI data doesn't
+  // support changes in the number of ports at runtime, which is okay because
+  // neither do some other systems in the game
+  std::map<ActorId, UIPortData*> port_ui_data;
 };
 
 #endif
