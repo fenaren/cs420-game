@@ -32,8 +32,8 @@ GameLogic::GameLogic() :
   ship->setPositionX(10);
   ship->setPositionY(11);
   ship->setMinMoveTime(1.0);
-  ship->setGold(0);
-  ship->setRum(1);
+  ship->setGold(10);
+  ship->setRum(5);
   ship->setMaxRum(10);
   ship->setRumRate(0);
 
