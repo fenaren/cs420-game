@@ -59,6 +59,7 @@ bool HumanGameView::initialize()
 			    std::placeholders::_1)),
     TransactionStartEvent::event_type);
 
+
   // Grab a shortcut to the ports list
   const GameLogic::PortsList* ports_list = &getGameLogic()->getPortsList();
 
@@ -73,19 +74,6 @@ bool HumanGameView::initialize()
     // Hold on to the new UI port data element by creating a mapping for it in
     // the structure for this purpose
     port_ui_data[i->first] = new_ui_port_data;
-
-    // Go ahead and initialize some of the data
-
-    // Set the correct position in the window for it
-    sf::Vector2f map_position(i->second->getPositionX(),
-			      i->second->getPositionY());
-
-    sf::Vector2f window_position;
-    mapToWindow(map_position, window_position);
-
-    new_ui_port_data->setPosition(window_position);
-    new_ui_port_data->setGold(i->second->getRumPrice());
-    new_ui_port_data->setRum(i->second->getRum());
 
     // Add the port data to the UI list
     uiList.push_back(new_ui_port_data);
