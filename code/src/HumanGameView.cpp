@@ -208,6 +208,7 @@ void HumanGameView::drawMap() {
 	
 	sf::Sprite map_sprite;
 	map_sprite.setTexture(texture);
+	map_sprite.scale(spriteScale,spriteScale);
 	
 	for (int y = 0; y < map_size_y; y++) {
         	for (int x = 0; x < map_size_x; x++) {
