@@ -1,6 +1,7 @@
 #if !defined PORT_HPP
 #define PORT_HPP
 
+#include <algorithm>
 #include <SFML/System/Time.hpp>
 #include <string>
 
@@ -86,7 +87,7 @@ inline void Port::setRumRate(double rum_rate)
 
 inline double Port::getRumPrice() const
 {
-  return max_rum - rum + 1.0;
+  return std::min(max_rum - rum + 1.0, 10.0);
 }
 
 inline const bool Port::isBuyPort() const

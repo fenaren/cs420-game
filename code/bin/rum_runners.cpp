@@ -161,10 +161,10 @@ int main(int argc, char** argv)
 
      
     // UPDATE GAME VIEWS
-    human_game_view.update(update_time);
+    human_game_view.update(update_time * static_cast<float>(GAME_TIME_FACTOR));
 
     // UPDATE GAME LOGIC
-    game_logic.update(update_time);
+    game_logic.update(update_time * static_cast<float>(GAME_TIME_FACTOR));
  
     // Note how long since the last update for the framerate indicator
     frametimes.push_back(update_time);

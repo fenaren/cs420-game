@@ -31,11 +31,11 @@ GameLogic::GameLogic() :
   ship = new Ship(actor_id++);
   ship->setPositionX(10);
   ship->setPositionY(12);
-  ship->setMinMoveTime(1.0);
+  ship->setMinMoveTime(0.5);
   ship->setGold(10);
   ship->setRum(5);
   ship->setMaxRum(10);
-  ship->setRumRate(0);
+  ship->setRumRate(-0.1);
 
   // Push the ship onto the list of actors
   actors[ship->getActorId()] = ship;
