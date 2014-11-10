@@ -30,7 +30,7 @@ GameLogic::GameLogic() :
   // Create and initialize the ship
   ship = new Ship(actor_id++);
   ship->setPositionX(10);
-  ship->setPositionY(11);
+  ship->setPositionY(12);
   ship->setMinMoveTime(1.0);
   ship->setGold(10);
   ship->setRum(5);
