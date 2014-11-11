@@ -30,12 +30,6 @@ public:
 
     int get_tile_size();
 
-    enum Terrain
-    {
-      WATER = 0,
-      LAND  = 1
-    };
-        
 private:    
 
     const int map_size_x = 32;

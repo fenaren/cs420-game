@@ -17,7 +17,7 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
 	resRatio = sf::Vector2f(1, 1);
 	aspectRatio = DEFAULT_RES.x / DEFAULT_RES.y;
 	lastShipX = 10;
-	lastShipY = 11;
+	lastShipY = 12;
 	shipSpriteY = 0;
 }
 
@@ -206,27 +206,15 @@ void HumanGameView::drawMap() {
 	int map_size_x = tempMap.get_map_size_x();
 	int map_size_y = tempMap.get_map_size_y();
 	
-	sf::Sprite land_sprite;
-	sf::Sprite water_sprite;
-	land_sprite.setTexture(texture);
-	water_sprite.setTexture(texture);
-	
-	land_sprite.setTextureRect(sf::IntRect(106,50,25,25));
-	water_sprite.setTextureRect(sf::IntRect(106,25,25,25));
-	
-	land_sprite.scale(spriteScale,spriteScale);
-	water_sprite.scale(spriteScale,spriteScale);
+	sf::Sprite map_sprite;
+	map_sprite.setTexture(texture);
+	map_sprite.scale(spriteScale,spriteScale);
 	
 	for (int y = 0; y < map_size_y; y++) {
         	for (int x = 0; x < map_size_x; x++) {
-			if (tempMap.getTerrain(x,y) == 1) {
-                		land_sprite.setPosition(sf::Vector2f(x_position, y_position));
-                		App->draw(land_sprite);
-            		}
-            		else {
-                		water_sprite.setPosition(sf::Vector2f(x_position, y_position));
-                		App->draw(water_sprite);
-            		}
+			map_sprite.setTextureRect(sf::IntRect(25*tempMap.getTerrain(x,y),200,25,25));
+			map_sprite.setPosition(sf::Vector2f(x_position,y_position));
+			App->draw(map_sprite);
             		x_position += map_tile_size;
         	}
         	x_position = map_tl_wcoords.x;
