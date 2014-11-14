@@ -38,23 +38,30 @@ void Port::update(const sf::Time& delta_t)
   rum_time += delta_t.asSeconds();
 
   // Should the rum amount change this frame?
-  if (rum_time > std::abs(1.0 / rum_rate))
+  if (rum_rate != 0.0 && rum_time > std::abs(1.0 / rum_rate))
   {
     // How much should be adjust the rum amount by?
-    int delta_rum = static_cast<int>(std::trunc(rum_time * rum_rate));
+    unsigned int delta_rum_abs =
+      static_cast<unsigned int>(std::trunc(std::abs(rum_time * rum_rate)));
 
-    // Would this adjustment cause a rum overflow or underflow?  You can't
-    // actually perform the modification to test because that would cause the
-    // condition we're trying to test for
-    if (delta_rum < 0 && std::abs(delta_rum) > rum)
+    // Will the change be positive or negative?
+    if (rum_rate > 0.0)
     {
-      // This would underflow, so just set delta_rum so it zeros rum
-      delta_rum = -static_cast<int>(rum);
+      // Will this overflow?
+      if (delta_rum_abs > std::numeric_limits<unsigned int>::max() - rum)
+      {
+	// Cap it so it doesn't overflow
+	delta_rum_abs = std::numeric_limits<unsigned int>::max() - rum;
+      }
     }
-    else if (delta_rum > std::numeric_limits<unsigned int>::max() - rum)
+    else
     {
-      // This would overflow, so just set delta_rum so it maxes out rum
-      delta_rum = std::numeric_limits<unsigned int>::max() - rum;
+      // Will this underflow?
+      if (delta_rum_abs > rum)
+      {
+	// Cap it so it doesn't underflow
+	delta_rum_abs = rum;
+      }
     }
 
     // Perform the adjustment, capping at max_rum
