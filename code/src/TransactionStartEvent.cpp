@@ -13,16 +13,18 @@ TransactionStartEvent::TransactionStartEvent() :
   port_id(0),
   ship_gold(0),
   ship_rum(0),
+  ship_max_rum(0),
   port_rum(0)
 {
 }
 
-TransactionStartEvent::TransactionStartEvent(ActorId ship_id, ActorId port_id, double ship_gold, double ship_rum, double port_rum)
+TransactionStartEvent::TransactionStartEvent(ActorId ship_id, ActorId port_id, double ship_gold, double ship_rum, double ship_max_rum, double port_rum)
   : EventInterface(),
     ship_id(ship_id),
     port_id(port_id),
     ship_gold(ship_gold),
     ship_rum(ship_rum),
+    ship_max_rum(ship_max_rum),
     port_rum(port_rum)
 {
 }
