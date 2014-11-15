@@ -17,6 +17,7 @@ public:
 			ActorId port_id,
 			double ship_gold,
 			double ship_rum,
+			double ship_max_rum,
 			double port_rum);
 
   virtual ~TransactionStartEvent();
@@ -46,7 +47,13 @@ public:
 
   /* Ship rum getter */
   double getShipRum() const;
-  
+ 
+  /* Ship max rum setter */
+  void setShipMaxRum(double z);
+
+  /* Ship max rum getter */
+  double getShipMaxRum() const;
+ 
   /* Port rum setter */
   void setPortRum(double y);
 
@@ -64,6 +71,7 @@ private:
   /* Rum and gold of actors associated with this event */
   double ship_gold;
   double ship_rum;
+  double ship_max_rum;
   double port_rum;
 };
 
@@ -110,6 +118,16 @@ inline void TransactionStartEvent::setShipRum(double y)
 inline double TransactionStartEvent::getShipRum() const
 {
   return ship_rum;
+}
+
+inline void TransactionStartEvent::setShipMaxRum(double z)
+{
+  this->ship_max_rum = z;
+}
+
+inline double TransactionStartEvent::getShipMaxRum() const
+{
+  return ship_max_rum;
 }
 
 inline void TransactionStartEvent::setPortRum(double y)

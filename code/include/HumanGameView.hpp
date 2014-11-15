@@ -121,6 +121,7 @@ private:
   ActorId tc_portid;
   int tc_shipgold;
   int tc_shiprum;
+  int tc_shipmaxrum;
   int tc_portrum;
 };
 

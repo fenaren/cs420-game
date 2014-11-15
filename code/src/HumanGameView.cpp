@@ -152,7 +152,7 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 				if (menuOpen) {
 					double tempdouble = test->clearInput();
 					if (tempdouble >= 0) {
-						TransactionCheckEvent* tc_event = new TransactionCheckEvent(tc_shipid, tc_portid, tc_shipgold, tc_shiprum, tc_portrum, tempdouble);
+						TransactionCheckEvent* tc_event = new TransactionCheckEvent(tc_shipid, tc_portid, tc_shipgold, tc_shiprum, tc_shipmaxrum, tc_portrum, tempdouble);
 						getGameLogic()->getEventManager()->queueEvent(tc_event);
 					}
 				}
@@ -308,6 +308,7 @@ void HumanGameView::transactionStartEventHandler(const EventInterface& event) {
     tc_portid = ts_event->getPortId();
     tc_shipgold = ts_event->getShipGold();
     tc_shiprum = ts_event->getShipRum();
+    tc_shipmaxrum = ts_event->getShipMaxRum();
     tc_portrum = ts_event->getPortRum();
 	std::ostringstream oss;
 	oss << "Supply: " << tc_portrum << "\nPrice: " << (11 - tc_portrum);

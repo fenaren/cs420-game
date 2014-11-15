@@ -242,6 +242,7 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
 	ts_event->setShipId(ship->getActorId());
 	ts_event->setShipGold(ship->getGold());
 	ts_event->setShipRum(ship->getRum());
+	ts_event->setShipMaxRum(ship->getMaxRum());
 	ts_event->setPortId(i->second->getActorId());
 	ts_event->setPortRum(i->second->getRum());
 	
@@ -254,7 +255,7 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
 void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
 {
   unsigned int shipid, portid, price, rum=1;
-  double shipgold, shiprum, portrum, rumrequest;
+  double shipgold, shiprum, shipmaxrum, portrum, rumrequest;
 
   const TransactionCheckEvent* tcheck_event =
     dynamic_cast<const TransactionCheckEvent*>(&event);
@@ -269,12 +270,13 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
   portid = tcheck_event->getPortId();
   shipgold = tcheck_event->getShipGold();
   shiprum = tcheck_event->getShipRum();
+  shipmaxrum = tcheck_event->getShipMaxRum();
   portrum = tcheck_event->getPortRum();
   rumrequest = tcheck_event->getRumRequest();
-  
+  std::cout << shipmaxrum << std::endl;
   price = ports[portid]->getRumPrice();
   
-  if (ports[portid]->isBuyPort() && rumrequest <= portrum && rumrequest * price <= shipgold)
+  if (ports[portid]->isBuyPort() && rumrequest + shiprum <= shipmaxrum && rumrequest <= portrum && rumrequest * price <= shipgold)
   {
       ship->setGold(shipgold - (price * rumrequest));
 	  ship->setRum(shiprum + rumrequest);
