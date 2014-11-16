@@ -282,7 +282,7 @@ void HumanGameView::drawUI() {
 
 // handles transaction fails
 void HumanGameView::transactionFailEventHandler(const EventInterface& event) {
-	if(!sound.openFromFile("coin.wav"))
+	if(!sound.openFromFile("error.wav"))
 	  std::cout << "Music failed to load" << std::endl;
 	sound.play();
         std::ostringstream oss;
@@ -292,6 +292,9 @@ void HumanGameView::transactionFailEventHandler(const EventInterface& event) {
 
 // handles transaction successes
 void HumanGameView::transactionSuccessEventHandler(const EventInterface& event) {
+        if(!sound.openFromFile("success.wav"))
+	  std::cout << "Music failed to load" << std::endl;
+	sound.play();
 	std::vector<UIElement*>::iterator position = std::find(uiList.begin(), uiList.end(), test);
 	if (position != uiList.end())
 		uiList.erase(position);
@@ -300,7 +303,10 @@ void HumanGameView::transactionSuccessEventHandler(const EventInterface& event) 
 
 // handles transaction start
 void HumanGameView::transactionStartEventHandler(const EventInterface& event) {
-	if (!menuOpen) {
+	if(!sound.openFromFile("coin.wav"))
+	  std::cout << "Music failed to load" << std::endl;
+	sound.play();
+        if (!menuOpen) {
 		test->resize(currentRes);
 		uiList.push_back(test);
 		menuOpen = true;
