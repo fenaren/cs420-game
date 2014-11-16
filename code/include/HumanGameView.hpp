@@ -122,6 +122,7 @@ private:
   int tc_shipgold;
   int tc_shiprum;
   int tc_portrum;
+  unsigned int tc_rum_price;
 };
 
 inline unsigned int HumanGameView::getMapTileSize() const
