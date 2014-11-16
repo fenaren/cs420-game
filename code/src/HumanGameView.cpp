@@ -282,7 +282,10 @@ void HumanGameView::drawUI() {
 
 // handles transaction fails
 void HumanGameView::transactionFailEventHandler(const EventInterface& event) {
-	std::ostringstream oss;
+	if(!sound.openFromFile("coin.wav"))
+	  std::cout << "Music failed to load" << std::endl;
+	sound.play();
+        std::ostringstream oss;
 	oss << "Incorrect Amount!\nSupply: " << tc_portrum << "\nPrice: " << (11 - tc_portrum);
 	test->setDialogue(oss.str());
 }
