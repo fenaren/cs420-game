@@ -33,8 +33,18 @@ void Port::update(const sf::Time& delta_t)
     return;
   }
    
-  // Track how much time has passed since the last rum count change
-  rum_time += delta_t.asSeconds();
+  // Track how much time has passed since the last rum count change, unless rum
+  // is up against its limit or rum amount isn't changing
+  if ((rum == 0 && rum_rate < 0.0) ||
+      (rum == max_rum && rum_rate > 0.0) ||
+      rum_rate == 0.0)
+  {
+    rum_time = 0.0;
+  }
+  else
+  {
+    rum_time += delta_t.asSeconds();
+  }
 
   // Should the rum amount change this frame?
   if (rum_rate != 0.0 && rum_time > std::abs(1.0 / rum_rate))
@@ -42,9 +52,6 @@ void Port::update(const sf::Time& delta_t)
     // How much should be adjust the rum amount by?
     unsigned int delta_rum_abs =
       static_cast<unsigned int>(std::trunc(std::abs(rum_time * rum_rate)));
-
-    // Will be set true below if rum reaches a lower or upper limit
-    bool limit_reached = false;
 
     // Will the change be positive or negative?
     if (rum_rate > 0.0)
@@ -56,8 +63,6 @@ void Port::update(const sf::Time& delta_t)
       {
 	// Cap it so it doesn't exceed max_rum
 	delta_rum_abs = max_rum - rum;
-
-	limit_reached = true;
       }
 
       // Add the delta to the current rum amount
@@ -70,8 +75,6 @@ void Port::update(const sf::Time& delta_t)
       {
 	// Cap it so it doesn't underflow
 	delta_rum_abs = rum;
-
-	limit_reached = true;
       }
 
       // Subtract the delta from the current rum amount
@@ -81,15 +84,6 @@ void Port::update(const sf::Time& delta_t)
     // We just adjusted the rum by delta_rum_abs, so now we need to subtract
     // from rum_time the amount of time it takes at the current rum rate to
     // accumulate delta_rum_abs amount of rum change.
-    if (limit_reached)
-    {
-      // We hit a rum limit.  Zero rum_time to avoid large build-ups of rum
-      // time at the limit
-      rum_time = 0.0;
-    }
-    else
-    {
-      rum_time -= static_cast<double>(delta_rum_abs) / std::abs(rum_rate);
-    }
+    rum_time -= static_cast<double>(delta_rum_abs) / std::abs(rum_rate);
   }
 }
