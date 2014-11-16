@@ -18,14 +18,19 @@ TransactionCheckEvent::TransactionCheckEvent() :
 {
 }
 
-TransactionCheckEvent::TransactionCheckEvent(ActorId ship_id, ActorId port_id, double ship_gold, double ship_rum, double port_rum, double rum_request)
+TransactionCheckEvent::TransactionCheckEvent(ActorId ship_id,
+					     ActorId port_id,
+					     unsigned int ship_gold,
+					     unsigned int ship_rum,
+					     unsigned int port_rum,
+					     unsigned int rum_request)
   : EventInterface(),
     ship_id(ship_id),
     port_id(port_id),
     ship_gold(ship_gold),
     ship_rum(ship_rum),
     port_rum(port_rum),
-	rum_request(rum_request)
+    rum_request(rum_request)
 {
 }
 

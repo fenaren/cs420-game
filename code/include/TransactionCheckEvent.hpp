@@ -13,7 +13,12 @@ public:
 
   TransactionCheckEvent();
 
-  TransactionCheckEvent(ActorId ship_id, ActorId port_id, double ship_gold, double ship_rum, double port_rum, double rum_request);
+  TransactionCheckEvent(ActorId ship_id,
+			ActorId port_id,
+			unsigned int ship_gold,
+			unsigned int ship_rum,
+			unsigned int port_rum,
+			unsigned int rum_request);
 
   virtual ~TransactionCheckEvent();
 
@@ -32,28 +37,28 @@ public:
   ActorId getPortId() const;
 
   /* Ship gold setter */
-  void setShipGold(double x);
+  void setShipGold(unsigned int x);
 
   /* Ship gold getter */
-  double getShipGold() const;
+  unsigned int getShipGold() const;
 
   /* Ship rum setter */
-  void setShipRum(double y);
+  void setShipRum(unsigned int y);
 
   /* Ship rum getter */
-  double getShipRum() const;
+  unsigned int getShipRum() const;
   
   /* Port rum setter */
-  void setPortRum(double y);
+  void setPortRum(unsigned int y);
 
   /* Port rum getter */
-  double getPortRum() const;
+  unsigned int getPortRum() const;
   
   /* Request Rum setter */
-  void setRumRequest(double y);
+  void setRumRequest(unsigned int y);
 
   /* Request Rum getter*/
-  double getRumRequest() const;
+  unsigned int getRumRequest() const;
 
   /* TransactionCheckEvent's event type */
   static const EventType event_type;
@@ -64,10 +69,10 @@ private:
   ActorId ship_id, port_id;
 
   /* Rum and gold of actors associated with this event */
-  double ship_gold;
-  double ship_rum;
-  double port_rum;
-  double rum_request;
+  unsigned int ship_gold;
+  unsigned int ship_rum;
+  unsigned int port_rum;
+  unsigned int rum_request;
 };
 
 inline EventType TransactionCheckEvent::getEventType() const
@@ -95,42 +100,42 @@ inline ActorId TransactionCheckEvent::getPortId() const
   return port_id;
 }
 
-inline void TransactionCheckEvent::setShipGold(double x)
+inline void TransactionCheckEvent::setShipGold(unsigned int x)
 {
   this->ship_gold = x;
 }
 
-inline double TransactionCheckEvent::getShipGold() const
+inline unsigned int TransactionCheckEvent::getShipGold() const
 {
   return ship_gold;
 }
 
-inline void TransactionCheckEvent::setShipRum(double y)
+inline void TransactionCheckEvent::setShipRum(unsigned int y)
 {
   this->ship_rum = y;
 }
 
-inline double TransactionCheckEvent::getShipRum() const
+inline unsigned int TransactionCheckEvent::getShipRum() const
 {
   return ship_rum;
 }
 
-inline void TransactionCheckEvent::setPortRum(double y)
+inline void TransactionCheckEvent::setPortRum(unsigned int y)
 {
   this->port_rum= y;
 }
 
-inline double TransactionCheckEvent::getPortRum() const
+inline unsigned int TransactionCheckEvent::getPortRum() const
 {
   return port_rum;
 }
 
-inline void TransactionCheckEvent::setRumRequest(double y)
+inline void TransactionCheckEvent::setRumRequest(unsigned int y)
 {
   this->rum_request= y;
 }
 
-inline double TransactionCheckEvent::getRumRequest() const
+inline unsigned int TransactionCheckEvent::getRumRequest() const
 {
   return rum_request;
 }
