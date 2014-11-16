@@ -123,10 +123,7 @@ int main(int argc, char** argv)
   event_manager->addDelegate(
     EventDelegate(PauseStartHandler),
     TransactionStartEvent::event_type);
-  // UnpauseFailHandler: unpauses game after TransactionFailEvent
-  event_manager->addDelegate(
-    EventDelegate(TransactionEndHandler),
-    TransactionFailEvent::event_type);
+  // Don't unpause after TransactionFailEvent
   // UnpauseSuccessHandler: unpauses game after TransactionSuccessEvent
   event_manager->addDelegate(
     EventDelegate(TransactionEndHandler),
