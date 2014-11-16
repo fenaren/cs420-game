@@ -86,6 +86,10 @@ inline double Port::getRumRate() const
 inline void Port::setRumRate(double rum_rate)
 {
   this->rum_rate = rum_rate;
+
+  // We want to do this to avoid massive rum changes when changing from a low
+  // rum rate to a high rum rate
+  rum_time = 0.0;
 }
 
 inline unsigned int Port::getRumPrice() const
