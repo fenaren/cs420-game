@@ -18,17 +18,17 @@ public:
 
   virtual void update(const sf::Time& delta_t);
 
-  double getGold() const;
+  unsigned int getGold() const;
 
-  void setGold(double gold);
+  void setGold(unsigned int gold);
 
-  double getRum() const;
+  unsigned int getRum() const;
 
-  void setRum(double rum);
+  void setRum(unsigned int rum);
 
-  double getMaxRum() const;
+  unsigned int getMaxRum() const;
 
-  void setMaxRum(double max_rum);
+  void setMaxRum(unsigned int max_rum);
 
   double getRumRate() const;
 
@@ -36,42 +36,43 @@ public:
 
 private:
 
-  double gold;
+  unsigned int gold;
 
-  double rum;
+  unsigned int rum;
 
-  double max_rum;
+  unsigned int max_rum;
 
   double rum_rate;
   
+  double rum_time;
 };
 
-inline double Ship::getGold() const
+inline unsigned int Ship::getGold() const
 {
   return gold;
 }
 
-inline void Ship::setGold(double gold)
+inline void Ship::setGold(unsigned int gold)
 {
   this->gold = gold;
 }
 
-inline double Ship::getRum() const
+inline unsigned int Ship::getRum() const
 {
   return rum;
 }
 
-inline void Ship::setRum(double rum)
+inline void Ship::setRum(unsigned int rum)
 {
   this->rum = rum;
 }
 
-inline double Ship::getMaxRum() const
+inline unsigned int Ship::getMaxRum() const
 {
   return max_rum;
 }
 
-inline void Ship::setMaxRum(double max_rum)
+inline void Ship::setMaxRum(unsigned int max_rum)
 {
   this->max_rum = max_rum;
 }
@@ -84,6 +85,10 @@ inline double Ship::getRumRate() const
 inline void Ship::setRumRate(double rum_rate)
 {
   this->rum_rate = rum_rate;
+
+  // We want to do this to avoid massive rum changes when changing from a low
+  // rum rate to a high rum rate
+  rum_time = 0.0;
 }
 
 #endif

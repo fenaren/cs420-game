@@ -17,7 +17,11 @@ TransactionSuccessEvent::TransactionSuccessEvent() :
 {
 }
 
-TransactionSuccessEvent::TransactionSuccessEvent(ActorId ship_id, ActorId port_id, double ship_gold, double ship_rum, double port_rum)
+TransactionSuccessEvent::TransactionSuccessEvent(ActorId ship_id,
+						 ActorId port_id,
+						 unsigned int ship_gold,
+						 unsigned int ship_rum,
+						 unsigned int port_rum)
   : EventInterface(),
     ship_id(ship_id),
     port_id(port_id),

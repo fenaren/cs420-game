@@ -20,19 +20,19 @@ public:
 
   virtual void update(const sf::Time& delta_t);
   
-  double getRum() const;
+  unsigned int getRum() const;
 
-  void setRum(double rum);
+  void setRum(unsigned int rum);
 
-  double getMaxRum() const;
+  unsigned int getMaxRum() const;
 
-  void setMaxRum(double max_rum);
+  void setMaxRum(unsigned int max_rum);
 
   double getRumRate() const;
 
   void setRumRate(double rum_rate);
 
-  double getRumPrice() const;
+  unsigned int getRumPrice() const;
 
   bool const isBuyPort() const;
 
@@ -44,33 +44,36 @@ public:
 
 private:
 
-  double rum;
+  unsigned int rum;
 
-  double max_rum;
+  unsigned int max_rum;
 
   double rum_rate;
 
   // The name of this port
   std::string name;
+
+  // How long it has been since the rum count last changed
+  double rum_time;
   
 };
 
-inline double Port::getRum() const
+inline unsigned int Port::getRum() const
 {
   return rum;
 }
 
-inline void Port::setRum(double rum)
+inline void Port::setRum(unsigned int rum)
 {
   this->rum = rum;
 }
 
-inline double Port::getMaxRum() const
+inline unsigned int Port::getMaxRum() const
 {
   return max_rum;
 }
 
-inline void Port::setMaxRum(double max_rum)
+inline void Port::setMaxRum(unsigned int max_rum)
 {
   this->max_rum = max_rum;
 }
@@ -83,9 +86,13 @@ inline double Port::getRumRate() const
 inline void Port::setRumRate(double rum_rate)
 {
   this->rum_rate = rum_rate;
+
+  // We want to do this to avoid massive rum changes when changing from a low
+  // rum rate to a high rum rate
+  rum_time = 0.0;
 }
 
-inline double Port::getRumPrice() const
+inline unsigned int Port::getRumPrice() const
 {
   return std::min(max_rum - rum + 1.0, 10.0);
 }
