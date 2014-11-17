@@ -17,7 +17,8 @@ public:
 			ActorId      port_id,
 			unsigned int ship_gold,
 			unsigned int ship_rum,
-			unsigned int port_rum);
+			unsigned int port_rum,
+			unsigned int port_price);
 
   virtual ~TransactionStartEvent();
 
@@ -53,6 +54,10 @@ public:
   /* Port rum getter */
   unsigned int getPortRum() const;
 
+  void setRumPrice(unsigned int rum_price);
+
+  unsigned int getRumPrice() const;
+
   /* TransactionStartEvent's event type */
   static const EventType event_type;
 
@@ -65,6 +70,7 @@ private:
   unsigned int ship_gold;
   unsigned int ship_rum;
   unsigned int port_rum;
+  unsigned int rum_price;
 };
 
 inline EventType TransactionStartEvent::getEventType() const
@@ -122,5 +128,14 @@ inline unsigned int TransactionStartEvent::getPortRum() const
   return port_rum;
 }
 
+inline void TransactionStartEvent::setRumPrice(unsigned int rum_price)
+{
+  this->rum_price = rum_price;
+}
+
+inline unsigned int TransactionStartEvent::getRumPrice() const
+{
+  return rum_price;
+}
 
 #endif
