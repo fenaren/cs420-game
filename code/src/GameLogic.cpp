@@ -255,7 +255,7 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
 void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
 {
   unsigned int shipid, portid, price, rum=1;
-  double shipgold, shiprum, shipmaxrum, portrum, rumrequest;
+  unsigned int shipgold, shiprum, shipmaxrum, portrum, rumrequest;
 
   const TransactionCheckEvent* tcheck_event =
     dynamic_cast<const TransactionCheckEvent*>(&event);
@@ -276,12 +276,15 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
   
   price = ports[portid]->getRumPrice();
   
-  if (ports[portid]->isBuyPort() && rumrequest + shiprum <= shipmaxrum && rumrequest <= portrum && rumrequest * price <= shipgold)
+  if (ports[portid]->isBuyPort() &&
+      rumrequest + shiprum <= shipmaxrum &&
+      rumrequest <= portrum &&
+      rumrequest * price <= shipgold)
   {
-      ship->setGold(shipgold - (price * rumrequest));
-	  ship->setRum(shiprum + rumrequest);
-	  ports[portid]->setRum(portrum - rumrequest);
-	  // This transaction succeeds so signal that with the TransactionSuccessEvent
+    ship->setGold(shipgold - (price * rumrequest));
+    ship->setRum(shiprum + rumrequest);
+    ports[portid]->setRum(portrum - rumrequest);
+    // This transaction succeeds so signal that with the TransactionSuccessEvent
     TransactionSuccessEvent* tsuccess_event =
       new TransactionSuccessEvent(ship->getActorId(),
 				  portid,
@@ -294,10 +297,10 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
   }
   else if (!ports[portid]->isBuyPort() && rumrequest <= shiprum)
   {
-      ship->setGold(shipgold + (price * rumrequest));
-	  ship->setRum(shiprum - rumrequest);
-	  ports[portid]->setRum(portrum + rumrequest);
-	  // This transaction succeeds so signal that with the TransactionSuccessEvent
+    ship->setGold(shipgold + (price * rumrequest));
+    ship->setRum(shiprum - rumrequest);
+    ports[portid]->setRum(portrum + rumrequest);
+    // This transaction succeeds so signal that with the TransactionSuccessEvent
     TransactionSuccessEvent* tsuccess_event =
       new TransactionSuccessEvent(ship->getActorId(),
 				  portid,
