@@ -8,7 +8,13 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
   GameView(game_logic),
   map_tl_wcoords(0, 0),
   map_tile_size(0),
-  App(App)
+  App(App),
+  tc_shipid(0),
+  tc_portid(0),
+  tc_shipgold(0),
+  tc_shiprum(0),
+  tc_portrum(0),
+  tc_rum_price(0)
 {
 	if (!texture.loadFromFile("./data/sprites.png")) {
 		std::cout << "ERROR TEXTURE" << std::endl;
@@ -23,7 +29,18 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
 
 HumanGameView::~HumanGameView()
 {
+  // If test is on the uiList, find it and remove it from the list before
+  // deleting it
+  std::vector<UIElement*>::iterator position =
+    std::find(uiList.begin(), uiList.end(), test);
+
+  if (position != uiList.end())
+  {
+    uiList.erase(position);
+  }
+
   delete test;
+  test = 0;
 
   // Delete all the UI elements
   for (std::vector<UIElement*>::iterator i = uiList.begin();
@@ -31,6 +48,7 @@ HumanGameView::~HumanGameView()
        i++)
   {
     delete *i;
+    *i = 0;
   }
 }
 
@@ -283,7 +301,7 @@ void HumanGameView::drawUI() {
 // handles transaction fails
 void HumanGameView::transactionFailEventHandler(const EventInterface& event) {
 	std::ostringstream oss;
-	oss << "Incorrect Amount!\nSupply: " << tc_portrum << "\nPrice: " << (11 - tc_portrum);
+	oss << "Incorrect Amount!\nSupply: " << tc_portrum << "\nPrice: " << tc_rum_price;
 	test->setDialogue(oss.str());
 }
 
@@ -309,8 +327,9 @@ void HumanGameView::transactionStartEventHandler(const EventInterface& event) {
     tc_shipgold = ts_event->getShipGold();
     tc_shiprum = ts_event->getShipRum();
     tc_portrum = ts_event->getPortRum();
+    tc_rum_price = ts_event->getRumPrice();
 	std::ostringstream oss;
-	oss << "Supply: " << tc_portrum << "\nPrice: " << (11 - tc_portrum);
+	oss << "Supply: " << tc_portrum << "\nPrice: " << tc_rum_price;
 	test->setDialogue(oss.str());
 }
 
