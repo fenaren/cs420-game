@@ -19,6 +19,13 @@ public:
 		       unsigned int ship_rum,
 		       unsigned int port_rum);
 
+  enum FailReason
+  {
+    REASON,
+    REASON_TWO,
+    REASON_THREE
+  };
+
   virtual ~TransactionFailEvent();
 
   virtual EventType getEventType() const;
@@ -53,6 +60,10 @@ public:
   /* Port rum getter */
   unsigned int getPortRum() const;
 
+  void setFailReason(FailReason fail_reason);
+
+  FailReason getFailReason() const;
+
   /* TransactionFailEvent's event type */
   static const EventType event_type;
 
@@ -65,6 +76,9 @@ private:
   unsigned int ship_gold;
   unsigned int ship_rum;
   unsigned int port_rum;
+
+  // Why did the transaction fail?
+  FailReason fail_reason;
 };
 
 inline EventType TransactionFailEvent::getEventType() const
@@ -121,6 +135,18 @@ inline unsigned int TransactionFailEvent::getPortRum() const
 {
   return port_rum;
 }
+
+inline void TransactionFailEvent::setFailReason(FailReason fail_reason)
+{
+  this->fail_reason = fail_reason;
+}
+
+inline
+TransactionFailEvent::FailReason TransactionFailEvent::getFailReason() const
+{
+  return fail_reason;
+}
+
 
 
 #endif
