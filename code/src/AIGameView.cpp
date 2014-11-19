@@ -1,4 +1,5 @@
 #include "AIGameView.hpp"
+#include <iostream>
 
 AIGameView::AIGameView(GameLogic* game_logic) :
   GameView(game_logic)
@@ -148,5 +149,5 @@ sf::Vector2i AIGameView::findOppositeSeek(sf::Vector2i pos_checker) {
 		randMinY = 0;
 		randMaxY = map->get_map_size_y() / 2;
 	}
-	return sf::Vector2i(randMinX + (int)(rand() * ((randMaxX - randMinX) + 1)), randMinY + (int)(rand() * ((randMaxY - randMinY) + 1)));
+	return sf::Vector2i(randMinX + (rand() % (int)(randMaxX - randMinX + 1)), randMinY + (rand() % (int)(randMaxY - randMinY + 1)));
 }
