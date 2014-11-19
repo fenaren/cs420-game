@@ -95,7 +95,7 @@ void AIGameView::moveActors() {
 }
 
 sf::Vector2i AIGameView::minMaxMove(sf::Vector2i start, sf::Vector2i end) {
-	
+	return sf::Vector2i(8, 8);
 }
 
 sf::Vector2i AIGameView::findOppositeSeek(sf::Vector2i pos_checker) {

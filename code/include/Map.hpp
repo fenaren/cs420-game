@@ -29,6 +29,10 @@ public:
     int get_map_size_y();
 
     int get_tile_size();
+	
+	// checks if this position is a valid spot
+	// for an actor to be at
+	bool isValidPosition(sf::Vector2i pos);
 
 private:    
 
@@ -40,6 +44,15 @@ private:
 
     int tile_size = 25;
 };
+
+inline bool Map::isValidPosition(sf::Vector2i pos) {
+	if (getTerrain(pos.x, pos.y) != 19 &&
+      pos.x < get_map_size_x() &&
+      pos.y < get_map_size_y()) 
+		  return true;
+	else
+		return false;
+}
 
 inline int* Map::getMap()
 {

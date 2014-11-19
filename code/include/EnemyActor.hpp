@@ -79,6 +79,10 @@ public:
 	// to the left or 1 tile up and 3 tiles to the left
 	bool checkAggroRange(sf::Vector2i pos_checker);
 	
+	// Returns an int representing the difference in position
+	// from this enemy actor
+	int getPosDifference(sf::Vector2i other);
+	
 	// checks if this actor is at a position
 	bool checkIfAtPosition(sf::Vector2i pos_checker);
 	

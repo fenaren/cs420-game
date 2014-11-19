@@ -264,6 +264,13 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
 }  
 
 void GameLogic::ActorMovedEventHandler(const EventInterface& event) {
+	const ActorMovedEvent* am_event = dynamic_cast<const ActorMovedEvent*>(&event);  
+	int new_pos_x = am_event->getX();
+	int new_pos_y = am_event->getY();
+	if (map.isValidPosition(sf::Vector2i(new_pos_x, new_pos_y))) {
+		  unsigned int actor_id = am_event->getActorId();
+		  actors[actor_id]->setPosition(sf::Vector2i(new_pos_x, new_pos_y));
+	  }
 }
 
 void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
