@@ -178,6 +178,13 @@ bool GameLogic::initialize()
 			    this,
 			    std::placeholders::_1)),
     TransactionCheckEvent::event_type);
+	
+	// Register the proper handler for when the Actor Moved Event is triggered
+    event_manager.addDelegate(
+    EventDelegate(std::bind(&GameLogic::ActorMovedEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    ActorMovedEvent::event_type);
 
   return true;
 }
@@ -224,11 +231,11 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
     ship->setPositionX(new_pos_x);
     ship->setPositionY(new_pos_y);
 
-    //queues ActorMovedEvent for the ship
+    /*//queues ActorMovedEvent for the ship
     ActorMovedEvent* am_event = new ActorMovedEvent(ship->getActorId(),
 						    ship->getPositionX(),
 						    ship->getPositionY());
-    event_manager.queueEvent(am_event);
+    event_manager.queueEvent(am_event);*/
 
     // Now we need to check and see if the ship just moved on top of a port.
     for (PortsList::iterator i = ports.begin();
@@ -255,6 +262,9 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
     }
   }
 }  
+
+void GameLogic::ActorMovedEventHandler(const EventInterface& event) {
+}
 
 void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
 {

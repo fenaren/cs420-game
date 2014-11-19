@@ -63,6 +63,10 @@ public:
   // Transactions can succeed or fail depending on the transaction parameters,
   // and this will queue the appropriate events in those cases.
   void TransactionCheckEventHandler(const EventInterface& event);
+  
+  // Handles an ActorMoveEvent.  Makes sure based off map that it is a valid move
+  // then moves the actor to that location
+  void ActorMovedEventHandler(const EventInterface& event);
 
 private:
 

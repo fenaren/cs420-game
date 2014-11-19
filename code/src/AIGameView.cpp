@@ -86,7 +86,7 @@ void AIGameView::moveActors() {
 		EnemyActor* enemy = i->second;
 		// only sends move command if enough time has passed
 		if (enemy->getMoveTime() > enemy->getMinMoveTime()) {
-			sf::Vector2i temp = minMaxMove(sf::Vector2i(enemy->getPositionX(), enemy->getPositionY()), enemy->getSeek());
+			sf::Vector2i temp = minMaxMove(enemy->getPosition(), enemy->getSeek());
 			ActorMovedEvent* am_event = new ActorMovedEvent(enemy->getActorId(), temp.x, temp.y);
 			getGameLogic()->getEventManager()->queueEvent(am_event);
 			enemy->setMoveTime(0.0);
