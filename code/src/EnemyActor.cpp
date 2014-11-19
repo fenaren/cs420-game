@@ -6,7 +6,8 @@ EnemyActor::EnemyActor(ActorId actor_id) :
   seek(sf::Vector2i(0,0)),
   prev_pos(sf::Vector2i(0,0)),
   leader(this),
-  need_seek(false)
+  need_seek(false),
+  follow_offset(sf::Vector2i(0,0))
 {
 }
 
