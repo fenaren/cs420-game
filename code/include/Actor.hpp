@@ -111,7 +111,7 @@ inline void Actor::setMinMoveTime(double min_move_time)
 }
 
 inline sf::Vector2i Actor::getPosition() const {
-	return sf::Vector2i(x, y);
+	return sf::Vector2i((int) x, (int) y);
 }
 
 inline void Actor::setPosition(sf::Vector2i new_pos) {

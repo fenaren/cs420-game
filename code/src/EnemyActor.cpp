@@ -96,20 +96,20 @@ void EnemyActor::setLeader(EnemyActor* new_leader) {
 }
 
 bool EnemyActor::checkAggroRange(sf::Vector2i pos_checker) {
-	if (getPosDifference(pos_checker) <= aggro_range)
+	if (getPosDifference(getPosition(), pos_checker) <= aggro_range)
 		return true;
 	else
 		return false;
 }
 
-int EnemyActor::getPosDifference(sf::Vector2i other) {
-	int check = abs((int) getPositionX() - (int) other.x);
-	check += abs((int) getPositionY() - (int) other.y);
+int EnemyActor::getPosDifference(sf::Vector2i first, sf::Vector2i second) {
+	int check = abs((int) first.x - (int) second.x);
+	check += abs((int) first.y - (int) second.y);
 	return  check;
 }
 
 bool EnemyActor::checkIfAtPosition(sf::Vector2i pos_checker) {
-	if (getPositionX() == seek.x && getPositionY() == seek.y)
+	if ((int) getPositionX() == seek.x && (int) getPositionY() == seek.y)
 		return true;
 	else
 		return false;

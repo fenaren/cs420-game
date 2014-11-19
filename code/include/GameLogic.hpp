@@ -49,6 +49,8 @@ public:
   const EnemiesList& getEnemiesList() const;
 
   const Ship* getShip() const;
+  
+  Map* getMap();
 
 
   // EVENT HANDLERS
@@ -108,6 +110,10 @@ inline  const GameLogic::EnemiesList& GameLogic::getEnemiesList() const
 inline const Ship* GameLogic::getShip() const
 {
   return ship;
+}
+
+inline  Map* GameLogic::getMap() {
+	return &map;
 }
 
 #endif

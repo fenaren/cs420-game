@@ -34,9 +34,8 @@ void AIGameView::update(const sf::Time& delta_t) {
 }
 
 void AIGameView::updateStates() {
-	sf::Vector2i temp(getGameLogic()->getShip()->getPositionX(), getGameLogic()->getShip()->getPositionY());
 	for (EnemiesList::iterator i = enemies.begin(); i != enemies.end(); i++) {
-		i->second->checkState(temp);
+		i->second->checkState(getGameLogic()->getShip()->getPosition());
 	}
 }
 
@@ -47,8 +46,8 @@ void AIGameView::updateSeeks() {
 		
 		// always checks on pursue, otherwise checks if enemy has reaches its waypoint
 		// or if it has specifically asked for a new seek
-		if (enemy->getState() == EnemyActor::Pursue || enemy->checkIfAtPosition(enemy->getSeek()) || enemy->getNeedSeek()) {
-			switch (enemy->getType()) {
+		if (enemy->getState() == EnemyActor::Pursue || enemy->checkIfAtPosition(enemy->getSeek()) || enemy->getNeedSeek())  {
+			switch (enemy->getState()) {
 				
 				// if on patrol, the actor will attemp to move to a random tile on an opposite
 				// quadrant of the map
@@ -86,7 +85,7 @@ void AIGameView::moveActors() {
 		EnemyActor* enemy = i->second;
 		// only sends move command if enough time has passed
 		if (enemy->getMoveTime() > enemy->getMinMoveTime()) {
-			sf::Vector2i temp = minMaxMove(enemy->getPosition(), enemy->getSeek());
+			sf::Vector2i temp = minMaxMove(enemy);
 			ActorMovedEvent* am_event = new ActorMovedEvent(enemy->getActorId(), temp.x, temp.y);
 			getGameLogic()->getEventManager()->queueEvent(am_event);
 			enemy->setMoveTime(0.0);
@@ -94,10 +93,39 @@ void AIGameView::moveActors() {
 	}
 }
 
-sf::Vector2i AIGameView::minMaxMove(sf::Vector2i start, sf::Vector2i end) {
-	return sf::Vector2i(8, 8);
+sf::Vector2i AIGameView::minMaxMove(EnemyActor* enemy) {
+	sf::Vector2i curr = enemy->getPosition();
+	sf::Vector2i prev = enemy->getPrevPos();
+	sf::Vector2i seek = enemy->getSeek();
+	sf::Vector2i min = prev;
+	sf::Vector2i test = curr;
+	int weight = enemy->getPosDifference(prev, seek);
+	Map *map = getGameLogic()->getMap();
+	test.x += 1;
+	if (map->isValidPosition(test) && ((enemy->getPosDifference(test, seek) < weight) || min == prev)) {
+		weight = enemy->getPosDifference(test, seek);
+		min = test;
+	}
+	test.x -= 1;
+	test.y += 1;
+	if (map->isValidPosition(test) && ((enemy->getPosDifference(test, seek) < weight) || min == prev)) {
+		weight = enemy->getPosDifference(test, seek);
+		min = test;
+	}
+	test.x -= 1;
+	test.y -= 1;
+	if (map->isValidPosition(test) && ((enemy->getPosDifference(test, seek) < weight) || min == prev)) {
+		weight = enemy->getPosDifference(test, seek);
+		min = test;
+	}
+	test.y -= 1;
+	if (map->isValidPosition(test) && ((enemy->getPosDifference(test, seek) < weight) || min == prev)) {
+		weight = enemy->getPosDifference(test, seek);
+		min = test;
+	}
+	return min;
 }
 
 sf::Vector2i AIGameView::findOppositeSeek(sf::Vector2i pos_checker) {
-	
+	return sf::Vector2i(8, 8);
 }

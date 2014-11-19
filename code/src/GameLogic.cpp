@@ -269,7 +269,8 @@ void GameLogic::ActorMovedEventHandler(const EventInterface& event) {
 	int new_pos_y = am_event->getY();
 	if (map.isValidPosition(sf::Vector2i(new_pos_x, new_pos_y))) {
 		  unsigned int actor_id = am_event->getActorId();
-		  actors[actor_id]->setPosition(sf::Vector2i(new_pos_x, new_pos_y));
+		  enemies[actor_id]->setPrevPos(actors[actor_id]->getPosition());
+		  enemies[actor_id]->setPosition(sf::Vector2i(new_pos_x, new_pos_y));
 	  }
 }
 

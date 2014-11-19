@@ -81,7 +81,7 @@ public:
 	
 	// Returns an int representing the difference in position
 	// from this enemy actor
-	int getPosDifference(sf::Vector2i other);
+	int getPosDifference(sf::Vector2i first, sf::Vector2i second);
 	
 	// checks if this actor is at a position
 	bool checkIfAtPosition(sf::Vector2i pos_checker);

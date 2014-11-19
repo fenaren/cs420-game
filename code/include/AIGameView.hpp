@@ -27,7 +27,7 @@ public:
 	
 	// returns the vector for a min max move  based of a current position
 	// and the position that the actor wishes to reach
-	sf::Vector2i minMaxMove(sf::Vector2i start, sf::Vector2i end);
+	sf::Vector2i minMaxMove(EnemyActor* enemy);
 	
 	// looks for a new seek in a random opposite quadrant
 	// from the given position
