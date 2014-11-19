@@ -36,9 +36,13 @@ GameLogic::GameLogic() :
   ship->setRum(5);
   ship->setMaxRum(10);
   ship->setRumRate(-0.1);
+  
+  Pirate* pirate = new Pirate(actor_id++);
 
   // Push the ship onto the list of actors
   actors[ship->getActorId()] = ship;
+  enemies[pirate->getActorId()] = pirate;
+  actors[pirate->getActorId()] = pirate;
 
 
   // Create and initialize all the ports

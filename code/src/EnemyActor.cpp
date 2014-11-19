@@ -1,5 +1,18 @@
 #include "EnemyActor.hpp"
 
+EnemyActor::EnemyActor(ActorId actor_id) :
+  Actor(actor_id),
+  aggro_range(0),
+  seek(sf::Vector2i(0,0)),
+  prev_pos(sf::Vector2i(0,0)),
+  need_seek(false)
+{
+}
+
+EnemyActor::~EnemyActor() {
+	
+}
+
 void EnemyActor::update(const sf::Time& delta_t)
 {
 	Actor::update(delta_t);
@@ -31,4 +44,72 @@ int EnemyActor::getAggroRange() {
 
 void EnemyActor::setAggroRange(int new_aggro) {
 	aggro_range = new_aggro;
+}
+
+EnemyActor::Type EnemyActor::getType() {
+	return type;
+}
+
+void EnemyActor::setType(EnemyActor::Type new_type) {
+	type = new_type;
+}
+
+bool EnemyActor::getNeedSeek() {
+	return need_seek;
+}
+
+void EnemyActor::setNeedSeek(bool new_need) {
+	need_seek = new_need;
+}
+
+sf::Vector2i EnemyActor::getPrevPos() {
+	return prev_pos;
+}
+
+void EnemyActor::setPrevPos(sf::Vector2i new_prev) {
+	prev_pos = new_prev;
+}
+
+sf::Vector2i EnemyActor::getFollowOffset() {
+	return follow_offset;
+}
+
+void EnemyActor::setFollowOffset(sf::Vector2i new_offset) {
+	follow_offset = new_offset;
+}
+
+int EnemyActor::getRumPenalty() {
+	return rum_penalty;
+}
+
+void EnemyActor::setRumPenalty(int new_rum) {
+	rum_penalty = new_rum;
+}
+
+EnemyActor* EnemyActor::getLeader() {
+	return leader;
+}
+
+void EnemyActor::setLeader(EnemyActor* new_leader) {
+	leader = new_leader;
+}
+
+bool EnemyActor::checkAggroRange(sf::Vector2i pos_checker) {
+	int check = abs((int)getPositionX() - (int) pos_checker.x);
+	check += abs((int) getPositionY() - (int) pos_checker.y);
+	if (check <= aggro_range)
+		return true;
+	else
+		return false;
+}
+
+bool EnemyActor::checkIfAtPosition(sf::Vector2i pos_checker) {
+	if (getPositionX() == seek.x && getPositionY() == seek.y)
+		return true;
+	else
+		return false;
+}
+
+void EnemyActor::checkState(sf::Vector2i ship_pos) {
+	
 }

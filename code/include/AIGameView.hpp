@@ -3,6 +3,7 @@
 
 #include "EnemyActor.hpp"
 #include "GameView.hpp"
+#include "ActorMovedEvent.hpp"
 
 class AIGameView : public GameView {
 	
@@ -10,7 +11,7 @@ public:
 	AIGameView(GameLogic *game_logic);
 	~AIGameView();
 	
-	typedef std::map<ActorId, EnemyActor*> EnemyList;
+	typedef std::map<ActorId, EnemyActor*> EnemiesList;
 	
 	virtual bool initialize();
 	virtual void update(const sf::Time& delta_t);
@@ -28,8 +29,12 @@ public:
 	// and the position that the actor wishes to reach
 	sf::Vector2i minMaxMove(sf::Vector2i start, sf::Vector2i end);
 	
-private:
+	// looks for a new seek in a random opposite quadrant
+	// from the given position
+	sf::Vector2i findOppositeSeek(sf::Vector2i pos_checker);
 	
+private:
+	EnemiesList enemies;
 };
 
 #endif

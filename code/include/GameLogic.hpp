@@ -13,6 +13,7 @@
 #include "Map.hpp"
 #include "Port.hpp"
 #include "EnemyActor.hpp"
+#include "Pirate.hpp"
 
 class GameLogic
 {

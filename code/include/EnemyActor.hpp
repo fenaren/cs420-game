@@ -4,14 +4,14 @@
 #include "Actor.hpp"
 #include "ActorId.hpp"
 #include <SFML/Graphics.hpp>
+#include <cmath>
 
 class EnemyActor : public Actor {
 	
-	enum State { Patrol, Pursue, Flee };
-	
 public:
-	EnemyActor();
-	EnemyActor(State state, int aggro_range, sf::Vector2i seek);
+	enum State { Patrol, Pursue, Flee, Follow };
+	enum Type { Pirate, Trader, Kraken, Tentacle };
+	EnemyActor(ActorId actor_id);
 	~EnemyActor();
 	
 	virtual void update(const sf::Time& delta_t);
@@ -38,10 +38,62 @@ public:
 	// aggro range getter
 	int getAggroRange();
 	
+	// type setter
+	void setType(Type new_type);
+	
+	// type getter
+	Type getType();
+	
+	// need seek setter
+	void setNeedSeek(bool new_need);
+	
+	// need seek getter
+	bool getNeedSeek();
+	
+	// prev pos setter
+	void setPrevPos(sf::Vector2i new_prev);
+	
+	// follow offset getter
+	sf::Vector2i getFollowOffset();
+	
+	// rum penalty setter
+	void setRumPenalty(int new_rum);
+	
+	// rum penalt getter
+	int getRumPenalty();
+	
+	// follow offset setter
+	void setFollowOffset(sf::Vector2i new_offset);
+	
+	// prev pos getter
+	sf::Vector2i getPrevPos();
+	
+	// leader getter
+	EnemyActor* getLeader();
+	
+	// leader setter
+	void setLeader(EnemyActor* new_leader);
+	
+	// checks if given vector is within aggro range
+	// aggro range represents single tiles away from
+	// actor, so for example 4 range could mean 4 tiles
+	// to the left or 1 tile up and 3 tiles to the left
+	bool checkAggroRange(sf::Vector2i pos_checker);
+	
+	// checks if this actor is at a position
+	bool checkIfAtPosition(sf::Vector2i pos_checker);
+	
 private:
 	int aggro_range;
+	int rum_penalty;
 	State state;
+	Type type;
 	sf::Vector2i seek;
+	sf::Vector2i prev_pos;
+	
+	EnemyActor* leader;
+	sf::Vector2i follow_offset;
+	bool need_seek;
 };
 
 #endif
