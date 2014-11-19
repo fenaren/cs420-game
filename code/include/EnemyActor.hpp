@@ -3,7 +3,6 @@
 
 #include "Actor.hpp"
 #include "ActorId.hpp"
-#include <SFML/Graphics.hpp>
 #include <cmath>
 
 class EnemyActor : public Actor {
