@@ -48,7 +48,8 @@ private:
 inline bool Map::isValidPosition(sf::Vector2i pos) {
 	if (getTerrain(pos.x, pos.y) != 19 &&
       pos.x < get_map_size_x() &&
-      pos.y < get_map_size_y()) 
+      pos.y < get_map_size_y() &&
+	  pos.x >= 0 && pos.y >= 0) 
 		  return true;
 	else
 		return false;

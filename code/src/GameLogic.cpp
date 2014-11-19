@@ -219,9 +219,8 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
 
   // does the move if target terrain is water (this ship can only move on water)
   // AND if enough time has passed
-  if (map.getTerrain(new_pos_x, new_pos_y) != 19 &&
-      new_pos_x < map.get_map_size_x() &&
-      new_pos_y < map.get_map_size_y() &&
+  sf::Vector2i newPos(new_pos_x, new_pos_y);
+  if (map.isValidPosition(newPos) &&
       ship->getMoveTime() > ship->getMinMoveTime())
   {
     // Reset the ship's move time, it's just about to move

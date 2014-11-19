@@ -127,5 +127,26 @@ sf::Vector2i AIGameView::minMaxMove(EnemyActor* enemy) {
 }
 
 sf::Vector2i AIGameView::findOppositeSeek(sf::Vector2i pos_checker) {
-	return sf::Vector2i(8, 8);
+	int randMinX;
+	int randMaxX;
+	int randMinY;
+	int randMaxY;
+	Map* map = getGameLogic()->getMap();
+	if (pos_checker.x <= map->get_map_size_x() / 2) {
+		randMinX = map->get_map_size_x() / 2;
+		randMaxX = map->get_map_size_x();
+	}
+	else {
+		randMinX = 0;
+		randMaxX = map->get_map_size_x() / 2;
+	}
+	if (pos_checker.y <= map->get_map_size_y() / 2) {
+		randMinY = map->get_map_size_y() / 2;
+		randMaxY = map->get_map_size_y();
+	}
+	else {
+		randMinY = 0;
+		randMaxY = map->get_map_size_y() / 2;
+	}
+	return sf::Vector2i(randMinX + (int)(rand() * ((randMaxX - randMinX) + 1)), randMinY + (int)(rand() * ((randMaxY - randMinY) + 1)));
 }
