@@ -44,7 +44,10 @@ void AIGameView::updateSeeks() {
 	const Ship* ship = getGameLogic()->getShip();
 	for (EnemiesList::iterator i = enemies.begin(); i != enemies.end(); i++) {
 		EnemyActor* enemy = i->second;
-		if (enemy->checkIfAtPosition(enemy->getSeek()) || enemy->getNeedSeek()) {
+		
+		// always checks on pursue, otherwise checks if enemy has reaches its waypoint
+		// or if it has specifically asked for a new seek
+		if (enemy->getState() == EnemyActor::Pursue || enemy->checkIfAtPosition(enemy->getSeek()) || enemy->getNeedSeek()) {
 			switch (enemy->getType()) {
 				
 				// if on patrol, the actor will attemp to move to a random tile on an opposite
@@ -58,7 +61,7 @@ void AIGameView::updateSeeks() {
 					enemy->setSeek(findOppositeSeek(sf::Vector2i(ship->getPositionX(), enemy->getPositionY())));
 					break;
 					
-				// if pursuing, constantly change the seek to the ships location
+				// if pursuing, change the seek to the ships location
 				case EnemyActor::Pursue:
 					enemy->setSeek(sf::Vector2i(ship->getPositionX(), ship->getPositionY()));
 					break;
