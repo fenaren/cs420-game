@@ -12,6 +12,7 @@
 #include "Ship.hpp"
 #include "Map.hpp"
 #include "Port.hpp"
+#include "EnemyActor.hpp"
 
 class GameLogic
 {
@@ -25,6 +26,7 @@ public:
   // Define a couple types to make working with our containers easier
   typedef std::map<ActorId, Actor*> ActorList;
   typedef std::map<ActorId, Port*>  PortsList;
+  typedef std::map<ActorId, EnemyActor*>  EnemiesList;
 
 
   /* Does everything necessary to initialize the game logic.  Should run
@@ -42,6 +44,8 @@ public:
   const ActorList& getActorList() const;
 
   const PortsList& getPortsList() const;
+  
+  const EnemiesList& getEnemiesList() const;
 
   const Ship* getShip() const;
 
@@ -64,6 +68,7 @@ private:
   // Containers for actors and other things
   ActorList actors;
   PortsList ports;
+  EnemiesList enemies;
 
   // The game logic's event manager
   EventManager event_manager;
@@ -88,6 +93,11 @@ inline const GameLogic::ActorList& GameLogic::getActorList() const
 inline const GameLogic::PortsList& GameLogic::getPortsList() const
 {
   return ports;
+}
+
+inline  const GameLogic::EnemiesList& GameLogic::getEnemiesList() const 
+{
+	return enemies;
 }
 
 inline const Ship* GameLogic::getShip() const
