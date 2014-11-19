@@ -265,30 +265,30 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
 
 void GameLogic::ActorMovedEventHandler(const EventInterface& event) {
 	const ActorMovedEvent* am_event = dynamic_cast<const ActorMovedEvent*>(&event);  
-	int new_pos_x = am_event->getX();
-	int new_pos_y = am_event->getY();
-	if (map.isValidPosition(sf::Vector2i(new_pos_x, new_pos_y))) {
+	sf::Vector2i newPos(am_event->getX(), am_event->getY());
+	if (map.isValidPosition(newPos)) {
 		  EnemyActor* enemy = enemies[am_event->getActorId()];
-		  enemy->setPrevPos(enemy->getPosition());
-		  enemy->setPosition(sf::Vector2i(new_pos_x, new_pos_y));
-		  int rum_penalty = enemy->getRumPenalty();
-		  if (ship->getPosition() == enemy->getPosition() && rum_penalty != 0) {
-			  if (rum_penalty <= ship->getRum()) {
-				  ship->setRum(ship->getRum() - rum_penalty);
-			  }
-			  else {
-				  rum_penalty -= ship->getRum();
-				  ship->setRum(0);
-				  int gold_penalty = rum_penalty * 2;
-				  if (gold_penalty <= ship->getGold()) {
-					  ship->setGold(ship->getGold() - gold_penalty);
-				  }
-				  else {
-					  ship->setGold(0);
-				  }
-			  }
+		  if (ship->getPosition() != newPos) {
+			enemy->setPrevPos(enemy->getPosition());
+			enemy->setPosition(newPos);
 		  }
-	  }
+		  else {
+			int rum_penalty = enemy->getRumPenalty();
+			if (rum_penalty != 0) {
+				if (rum_penalty <= ship->getRum()) 
+					ship->setRum(ship->getRum() - rum_penalty);
+				else {
+					rum_penalty -= ship->getRum();
+					ship->setRum(0);
+					int gold_penalty = rum_penalty * 2;
+					if (gold_penalty <= ship->getGold()) 
+						ship->setGold(ship->getGold() - gold_penalty);
+					else 
+						ship->setGold(0);
+				}
+			}
+		}
+	}
 }
 
 void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
