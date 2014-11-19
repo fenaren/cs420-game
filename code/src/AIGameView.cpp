@@ -1,5 +1,18 @@
 #include "AIGameView.hpp"
 
+AIGameView::AIGameView(GameLogic* game_logic) :
+  GameView(game_logic)
+{
+}
+
+AIGameView::~AIGameView() {
+	
+}
+
+bool AIGameView::initialize() {
+	return true;
+}
+
 // AIGameView first calls each enemies check state function to
 // see if it switches states
 //

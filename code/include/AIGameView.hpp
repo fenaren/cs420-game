@@ -7,6 +7,8 @@
 class AIGameView : public GameView {
 	
 public:
+	AIGameView(GameLogic *game_logic);
+	~AIGameView();
 	
 	typedef std::map<ActorId, EnemyActor*> EnemyList;
 	
