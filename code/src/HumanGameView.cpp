@@ -289,6 +289,15 @@ void HumanGameView::drawActors() {
 
 	lastShipX = ship->getPositionX();
 	lastShipY = ship->getPositionY();
+	
+	std::map<ActorId, EnemyActor*> enemies = getGameLogic()->getEnemiesList();
+	for (std::map<ActorId, EnemyActor*>::iterator i = enemies.begin(); i != enemies.end(); i++) {
+		if(i->second->getType() == EnemyActor::Pirate){
+			ship_sprite.setColor(sf::Color::Red);
+		}
+		ship_sprite.setPosition(sf::Vector2f(i->second->getPositionX() * map_tile_size + map_tl_wcoords.x, i->second->getPositionY() * map_tile_size + map_tl_wcoords.y));
+		App->draw(ship_sprite);
+	}
 }
   
 // draws the elements in the UI list

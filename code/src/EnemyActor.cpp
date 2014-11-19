@@ -5,6 +5,7 @@ EnemyActor::EnemyActor(ActorId actor_id) :
   aggro_range(0),
   seek(sf::Vector2i(0,0)),
   prev_pos(sf::Vector2i(0,0)),
+  leader(this),
   need_seek(false)
 {
 }

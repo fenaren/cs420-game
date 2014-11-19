@@ -53,27 +53,26 @@ void AIGameView::updateSeeks() {
 				// if on patrol, the actor will attemp to move to a random tile on an opposite
 				// quadrant of the map
 				case EnemyActor::Patrol:
-					enemy->setSeek(findOppositeSeek(sf::Vector2i(enemy->getPositionX(), enemy->getPositionY())));
+					enemy->setSeek(findOppositeSeek(enemy->getPosition()));
 					break;
 				
 				// if fleeing, the actor will try and move to a random tile opposite of the ship
 				case EnemyActor::Flee:
-					enemy->setSeek(findOppositeSeek(sf::Vector2i(ship->getPositionX(), enemy->getPositionY())));
+					enemy->setSeek(findOppositeSeek(ship->getPosition()));
 					break;
 					
 				// if pursuing, change the seek to the ships location
 				case EnemyActor::Pursue:
-					enemy->setSeek(sf::Vector2i(ship->getPositionX(), ship->getPositionY()));
+					enemy->setSeek(ship->getPosition());
 					break;
 					
 				// follows the enemy saved in leader based off an offset
 				case EnemyActor::Follow:
-					// makes the offset a bit more random
-					int randX = (rand() % 2) - 1;
-					int randY = (rand() % 2) - 1;
+					// makes the offset a bit more random by adding -1, 0, or 1
+					sf::Vector2i random((int) (rand() % 2) - 1, (int) (rand() % 2) - 1);
 					sf::Vector2i temp = enemy->getFollowOffset();
-					temp.x += (enemy->getLeader()->getPositionX() + randX);
-					temp.y += (enemy->getLeader()->getPositionY() + randY);
+					temp += random;
+					temp += enemy->getLeader()->getPosition();
 					enemy->setSeek(temp);
 					break;
 			}
