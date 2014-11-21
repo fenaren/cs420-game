@@ -16,10 +16,10 @@ public:
 	virtual EventType getEventType() const;
 	
 	void setActorId(ActorId new_id);
-	ActorId getActorId();
+	ActorId getActorId() const;
 	
 	void setPos(sf::Vector2i new_pos);
-	sf::Vector2i getPos();
+	sf::Vector2i getPos() const;
 	
 	static const EventType event_type;
 	

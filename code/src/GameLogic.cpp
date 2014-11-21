@@ -6,6 +6,7 @@
 #include <string>
 
 #include "ActorMovedEvent.hpp"
+#include "AICmdEvent.hpp"
 #include "GameLogic.hpp"
 #include "ShipMoveCmdEvent.hpp"
 #include "TransactionCheckEvent.hpp"
@@ -190,10 +191,10 @@ bool GameLogic::initialize()
 	
 	// Register the proper handler for when the Actor Moved Event is triggered
     event_manager.addDelegate(
-    EventDelegate(std::bind(&GameLogic::ActorMovedEventHandler,
+    EventDelegate(std::bind(&GameLogic::AICmdEventHandler,
 			    this,
 			    std::placeholders::_1)),
-    ActorMovedEvent::event_type);
+    AICmdEvent::event_type);
 
   return true;
 }
@@ -271,11 +272,11 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
   }
 }  
 
-void GameLogic::ActorMovedEventHandler(const EventInterface& event) {
-	const ActorMovedEvent* am_event = dynamic_cast<const ActorMovedEvent*>(&event);  
-	sf::Vector2i newPos(am_event->getX(), am_event->getY());
+void GameLogic::AICmdEventHandler(const EventInterface& event) {
+	const AICmdEvent* ai_event = dynamic_cast<const AICmdEvent*>(&event);  
+	sf::Vector2i newPos = ai_event->getPos();
 	if (map.isValidPosition(newPos)) {
-		  EnemyActor* enemy = enemies[am_event->getActorId()];
+		  EnemyActor* enemy = enemies[ai_event->getActorId()];
 		  if (ship->getPosition() != newPos) {
 			enemy->setPrevPos(enemy->getPosition());
 			enemy->setPosition(newPos);

@@ -3,7 +3,7 @@
 
 #include "EnemyActor.hpp"
 #include "GameView.hpp"
-#include "ActorMovedEvent.hpp"
+#include "AICmdEvent.hpp"
 
 class AIGameView : public GameView {
 	

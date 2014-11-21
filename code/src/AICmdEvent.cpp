@@ -24,7 +24,7 @@ void AICmdEvent::setActorId(ActorId new_id) {
 	actor_id = new_id;
 }
 
-ActorId AICmdEvent::getActorId() {
+ActorId AICmdEvent::getActorId() const{
 	return actor_id;
 }
 
@@ -36,6 +36,6 @@ void AICmdEvent::setPos(sf::Vector2i new_pos) {
 	pos = new_pos;
 }
 
-sf::Vector2i AICmdEvent::getPos() {
+sf::Vector2i AICmdEvent::getPos() const {
 	return pos;
 }
