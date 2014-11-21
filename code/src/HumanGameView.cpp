@@ -29,7 +29,18 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
 
 HumanGameView::~HumanGameView()
 {
+  // If test is on the uiList, find it and remove it from the list before
+  // deleting it
+  std::vector<UIElement*>::iterator position =
+    std::find(uiList.begin(), uiList.end(), test);
+
+  if (position != uiList.end())
+  {
+    uiList.erase(position);
+  }
+
   delete test;
+  test = 0;
 
   // Delete all the UI elements
   for (std::vector<UIElement*>::iterator i = uiList.begin();
@@ -37,6 +48,7 @@ HumanGameView::~HumanGameView()
        i++)
   {
     delete *i;
+    *i = 0;
   }
 }
 
