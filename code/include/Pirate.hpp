@@ -1,5 +1,5 @@
 #if !defined PIRATE_HPP
-#define PIRATE_CPP
+#define PIRATE_HPP
 
 #include "EnemyActor.hpp"
 
