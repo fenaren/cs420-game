@@ -28,21 +28,21 @@ bool AIGameView::initialize() {
 // formula and queues an actor move event on the game 
 // logic
 void AIGameView::update(const sf::Time& delta_t) {
-	enemies = getGameLogic()->getEnemiesList();
+	enemies = getGameLogic()->getEnemiesListPointer();
 	updateStates();
 	updateSeeks();
 	moveActors();
 }
 
 void AIGameView::updateStates() {
-	for (EnemiesList::iterator i = enemies.begin(); i != enemies.end(); i++) {
+	for (GameLogic::EnemiesList::const_iterator i = enemies->begin(); i != enemies->end(); i++) {
 		i->second->checkState(getGameLogic()->getShip()->getPosition());
 	}
 }
 
 void AIGameView::updateSeeks() {
 	const Ship* ship = getGameLogic()->getShip();
-	for (EnemiesList::iterator i = enemies.begin(); i != enemies.end(); i++) {
+	for (GameLogic::EnemiesList::const_iterator i = enemies->begin(); i != enemies->end(); i++) {
 		EnemyActor* enemy = i->second;
 		
 		// always checks on pursue, otherwise checks if enemy has reaches its waypoint
@@ -82,7 +82,7 @@ void AIGameView::updateSeeks() {
 }
 
 void AIGameView::moveActors() {
-	for (EnemiesList::iterator i = enemies.begin(); i != enemies.end(); i++) {
+	for (GameLogic::EnemiesList::const_iterator i = enemies->begin(); i != enemies->end(); i++) {
 		EnemyActor* enemy = i->second;
 		// only sends move command if enough time has passed
 		if (enemy->getMoveTime() > enemy->getMinMoveTime()) {

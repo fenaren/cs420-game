@@ -46,7 +46,7 @@ public:
 
   const PortsList& getPortsList() const;
   
-  const EnemiesList& getEnemiesList() const;
+  const EnemiesList* getEnemiesListPointer() const;
 
   const Ship* getShip() const;
   
@@ -102,9 +102,9 @@ inline const GameLogic::PortsList& GameLogic::getPortsList() const
   return ports;
 }
 
-inline  const GameLogic::EnemiesList& GameLogic::getEnemiesList() const 
+inline  const GameLogic::EnemiesList* GameLogic::getEnemiesListPointer() const 
 {
-	return enemies;
+	return &enemies;
 }
 
 inline const Ship* GameLogic::getShip() const

@@ -11,8 +11,6 @@ public:
 	AIGameView(GameLogic *game_logic);
 	~AIGameView();
 	
-	typedef std::map<ActorId, EnemyActor*> EnemiesList;
-	
 	virtual bool initialize();
 	virtual void update(const sf::Time& delta_t);
 	
@@ -34,7 +32,7 @@ public:
 	sf::Vector2i findOppositeSeek(sf::Vector2i pos_checker);
 	
 private:
-	EnemiesList enemies;
+	const GameLogic::EnemiesList* enemies;
 };
 
 #endif

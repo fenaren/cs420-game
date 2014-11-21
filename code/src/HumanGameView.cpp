@@ -290,8 +290,8 @@ void HumanGameView::drawActors() {
 	lastShipX = ship->getPositionX();
 	lastShipY = ship->getPositionY();
 	
-	std::map<ActorId, EnemyActor*> enemies = getGameLogic()->getEnemiesList();
-	for (std::map<ActorId, EnemyActor*>::iterator i = enemies.begin(); i != enemies.end(); i++) {
+	const std::map<ActorId, EnemyActor*> *enemies = getGameLogic()->getEnemiesListPointer();
+	for (std::map<ActorId, EnemyActor*>::const_iterator i = enemies->begin(); i != enemies->end(); i++) {
 		EnemyActor* enemy = i->second;
 		if(enemy->getType() == EnemyActor::Pirate){
 			int enemyShipSpriteY = 0;
