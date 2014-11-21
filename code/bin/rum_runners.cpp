@@ -49,18 +49,6 @@ int main(int argc, char** argv)
   // create main window
   sf::RenderWindow App(sf::VideoMode(800,600,32), "Rum Runners");
     
-    /*Map game_map = Map();
-    if(!game_map.createMap("first_map.txt"))
-    {
-        std::cout << "Map failed to create" << std::endl;
-    }
-    else
-    {
-        game_map.drawMap(&App);
-    }
-    App.display();*/
-
-
   // Clocks for managing frame time.  'processing_clock' is used to determine
   // how long the processing required by the game takes, 'update_clock' is used
   // to determine how much time actually passes between successive game updates
@@ -123,12 +111,17 @@ int main(int argc, char** argv)
   event_manager->addDelegate(
     EventDelegate(PauseStartHandler),
     TransactionStartEvent::event_type);
+
+  // PauseStartHandler: pauses game at GameLostEvent
+  event_manager->addDelegate(
+    EventDelegate(PauseStartHandler),
+    GameLostEvent::event_type);
+
   // Don't unpause after TransactionFailEvent
   // UnpauseSuccessHandler: unpauses game after TransactionSuccessEvent
   event_manager->addDelegate(
     EventDelegate(TransactionEndHandler),
     TransactionSuccessEvent::event_type);
-
 
   // start main loop
   while(App.isOpen())

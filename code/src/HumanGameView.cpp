@@ -78,6 +78,11 @@ bool HumanGameView::initialize()
 			    std::placeholders::_1)),
     TransactionStartEvent::event_type);
 
+  getGameLogic()->getEventManager()->addDelegate(
+    EventDelegate(std::bind(&HumanGameView::gameLostEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    GameLostEvent::event_type);
 
   // Push the UI ship data element onto the element list
   uiList.push_back(new UIShipData());
@@ -173,6 +178,12 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 						TransactionCheckEvent* tc_event = new TransactionCheckEvent(tc_shipid, tc_portid, tc_shipgold, tc_shiprum, tc_portrum, tempdouble);
 						getGameLogic()->getEventManager()->queueEvent(tc_event);
 					}
+				}
+			}
+			if (event.key.code == sf::Keyboard::Space) {
+				if (menuOpen) {
+					//GameStartEvent* gs_event = new GameStartEvent();
+					//getGameLogic()->getEventManager()->queueEvent(gs_event);
 				}
 			}
 			break;
@@ -330,6 +341,17 @@ void HumanGameView::transactionStartEventHandler(const EventInterface& event) {
     tc_rum_price = ts_event->getRumPrice();
 	std::ostringstream oss;
 	oss << "Supply: " << tc_portrum << "\nPrice: " << tc_rum_price;
+	test->setDialogue(oss.str());
+}
+
+void HumanGameView::gameLostEventHandler(const EventInterface& event) {
+	if (!menuOpen) {
+                test->resize(currentRes);
+                uiList.push_back(test);
+                menuOpen = true;
+        }
+	std::ostringstream oss;
+	oss << "YOU LOSE";
 	test->setDialogue(oss.str());
 }
 

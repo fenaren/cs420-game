@@ -7,12 +7,12 @@
 
 #include "ActorMovedEvent.hpp"
 #include "GameLogic.hpp"
+#include "GameLostEvent.hpp"
 #include "ShipMoveCmdEvent.hpp"
 #include "TransactionCheckEvent.hpp"
 #include "TransactionFailEvent.hpp"
 #include "TransactionStartEvent.hpp"
 #include "TransactionSuccessEvent.hpp"
-
 
 GameLogic::GameLogic() :
   ship(0)
@@ -26,21 +26,19 @@ GameLogic::GameLogic() :
     std::cout<<"Map failed to create"<<std::endl;
   }
 
-
   // Create and initialize the ship
   ship = new Ship(actor_id++);
   ship->setPositionX(10);
   ship->setPositionY(12);
   ship->setMinMoveTime(0.5);
-  ship->setGold(10);
-  ship->setRum(5);
+  ship->setGold(4);
+  ship->setRum(2);
   ship->setMaxRum(10);
   ship->setRumRate(-0.1);
   ship->setGoldRate(0.0);
 
   // Push the ship onto the list of actors
   actors[ship->getActorId()] = ship;
-
 
   // Create and initialize all the ports
 
@@ -190,6 +188,10 @@ void GameLogic::update(const sf::Time& delta_t)
        i++)
   {
     i->second->update(delta_t);
+  }
+  if (ship->getGold() == 0 && ship->getRum() == 0) {
+    GameLostEvent* gl_event = new GameLostEvent();
+    event_manager.queueEvent(gl_event);
   }
 }
 
