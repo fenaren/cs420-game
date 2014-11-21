@@ -240,11 +240,11 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
     ship->setPositionX(new_pos_x);
     ship->setPositionY(new_pos_y);
 
-    /*//queues ActorMovedEvent for the ship
+    //queues ActorMovedEvent for the ship
     ActorMovedEvent* am_event = new ActorMovedEvent(ship->getActorId(),
 						    ship->getPositionX(),
 						    ship->getPositionY());
-    event_manager.queueEvent(am_event);*/
+    event_manager.queueEvent(am_event);
 
     // Now we need to check and see if the ship just moved on top of a port.
     for (PortsList::iterator i = ports.begin();
@@ -280,6 +280,8 @@ void GameLogic::AICmdEventHandler(const EventInterface& event) {
 		  if (ship->getPosition() != newPos) {
 			enemy->setPrevPos(enemy->getPosition());
 			enemy->setPosition(newPos);
+			ActorMovedEvent* am_event = new ActorMovedEvent(enemy->getActorId(), newPos.x, newPos.y);
+			event_manager.queueEvent(am_event);
 		  }
 		  else {
 			int rum_penalty = enemy->getRumPenalty();
