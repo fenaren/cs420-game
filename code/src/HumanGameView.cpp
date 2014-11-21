@@ -331,6 +331,9 @@ void HumanGameView::transactionFailEventHandler(const EventInterface& event)
   case TransactionFailEvent::SELL_EXCEEDS_SHIP_INVENTORY:
     oss << "You don't have that much rum!";
     break;
+
+  case TransactionFailEvent::SELL_EXCEEDS_MAX_PORT_INVENTORY:
+    oss << "This port can't accept that much rum!";
   };
 
   oss << "\nSupply: " << tc_portrum << "\nPrice: " << tc_rum_price;
