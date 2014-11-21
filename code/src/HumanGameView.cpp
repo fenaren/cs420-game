@@ -2,6 +2,7 @@
 
 #include "GameRestartEvent.hpp"
 #include "HumanGameView.hpp"
+#include "UIGameTime.hpp"
 #include "UITextField.hpp"
 #include "UIShipData.hpp"
 #include "WinLoseMessage.hpp"
@@ -92,6 +93,9 @@ bool HumanGameView::initialize()
 
   // Push the UI win/lose message onto the element list
   uiList.push_back(new WinLoseMessage());
+
+  // Push the UI game time element onto the element list
+  uiList.push_back(new UIGameTime());
 
   // Grab a shortcut to the ports list
   const GameLogic::PortsList* ports_list = &getGameLogic()->getPortsList();

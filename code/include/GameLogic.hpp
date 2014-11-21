@@ -45,6 +45,7 @@ public:
 
   const Ship* getShip() const;
 
+  double getGameTime() const;
 
   // EVENT HANDLERS
 
@@ -77,6 +78,9 @@ private:
   // The game map.  Contains terrain data.
   Map map;
 
+  // The game timer
+  double game_time;
+
   // Resets starting positions and rum/gold values of ship/ports
   void resetStartValues();
 };
@@ -99,6 +103,11 @@ inline const GameLogic::PortsList& GameLogic::getPortsList() const
 inline const Ship* GameLogic::getShip() const
 {
   return ship;
+}
+
+inline double GameLogic::getGameTime() const
+{
+  return game_time;
 }
 
 #endif

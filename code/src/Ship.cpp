@@ -103,6 +103,9 @@ void Ship::update(const sf::Time& delta_t)
   if (rum == 0.0) {
     gold_rate = -0.2;
   }
+  else {
+    gold_rate = 0.0;
+  }
 
   // Should the gold amount be changed this frame?
   if (gold_rate != 0.0 && gold_time > std::abs(1.0 / gold_rate))

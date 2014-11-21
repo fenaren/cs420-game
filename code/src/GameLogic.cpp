@@ -18,6 +18,8 @@
 GameLogic::GameLogic() :
   ship(0)
 {
+  game_time = 0.0;
+
   // Used for assigning actor IDs throughout this constructor
   unsigned int actor_id = 0;
 
@@ -197,7 +199,13 @@ void GameLogic::update(const sf::Time& delta_t)
   {
     i->second->update(delta_t);
   }
-  if (ship->getGold() == 0 && ship->getRum() == 0) {
+
+  // Update game_time
+  game_time += delta_t.asSeconds();
+
+  // Check for lose conditions
+  if ((ship->getGold() == 0 && ship->getRum() == 0)
+	|| game_time >= 300) {
     GameLostEvent* gl_event = new GameLostEvent();
     event_manager.queueEvent(gl_event);
   }
@@ -205,6 +213,9 @@ void GameLogic::update(const sf::Time& delta_t)
 
 void GameLogic::resetStartValues()
 {
+  // Reset game time
+  game_time = 0.0;
+
   // Reset ship to starting position, gold, etc.
   ship->setPositionX(10);
   ship->setPositionY(12);
