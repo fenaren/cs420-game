@@ -287,10 +287,40 @@ void HumanGameView::drawUI() {
 }
 
 // handles transaction fails
-void HumanGameView::transactionFailEventHandler(const EventInterface& event) {
-	std::ostringstream oss;
-	oss << "Incorrect Amount!\nSupply: " << tc_portrum << "\nPrice: " << tc_rum_price;
-	test->setDialogue(oss.str());
+void HumanGameView::transactionFailEventHandler(const EventInterface& event)
+{
+  const TransactionFailEvent* tf_event =
+    dynamic_cast<const TransactionFailEvent*>(&event);
+
+  if (tf_event == 0)
+  {
+    return;
+  }
+
+  std::ostringstream oss;
+
+  // Why did the transaction fail?  Push descriptive text for each case.
+  switch(tf_event->getFailReason())
+  {
+  case TransactionFailEvent::BUY_EXCEEDS_MAX_SHIP_INVENTORY:
+    oss << "BUY_EXCEEDS_MAX_SHIP_INVENTORY";
+    break;
+
+  case TransactionFailEvent::BUY_NOT_ENOUGH_PORT_INVENTORY:
+    oss << "BUY_NOT_ENOUGH_PORT_INVENTORY";
+    break;
+
+  case TransactionFailEvent::BUY_NOT_ENOUGH_GOLD:
+    oss << "BUY_NOT_ENOUGH_GOLD";
+    break;
+
+  case TransactionFailEvent::SELL_EXCEEDS_SHIP_INVENTORY:
+    oss << "SELL_EXCEEDS_SHIP_INVENTORY";
+    break;
+  };
+
+  oss << "\nSupply: " << tc_portrum << "\nPrice: " << tc_rum_price;
+  test->setDialogue(oss.str());
 }
 
 // handles transaction successes
