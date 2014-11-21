@@ -9,6 +9,7 @@
 #include "GameLogic.hpp"
 #include "GameLostEvent.hpp"
 #include "GameRestartEvent.hpp"
+#include "GameWonEvent.hpp"
 #include "ShipMoveCmdEvent.hpp"
 #include "TransactionCheckEvent.hpp"
 #include "TransactionFailEvent.hpp"
@@ -18,7 +19,7 @@
 GameLogic::GameLogic() :
   ship(0)
 {
-  game_time = 0.0;
+  game_time = 300.0;
 
   // Used for assigning actor IDs throughout this constructor
   unsigned int actor_id = 0;
@@ -201,20 +202,28 @@ void GameLogic::update(const sf::Time& delta_t)
   }
 
   // Update game_time
-  game_time += delta_t.asSeconds();
+  game_time -= delta_t.asSeconds();
 
   // Check for lose conditions
   if ((ship->getGold() == 0 && ship->getRum() == 0)
-	|| game_time >= 300) {
+	|| game_time <= 0) 
+  {
     GameLostEvent* gl_event = new GameLostEvent();
     event_manager.queueEvent(gl_event);
   }
+
+  // Check for win condition
+  if (ship->getGold() >= 500) 
+  {
+    GameWonEvent* gw_event = new GameWonEvent();
+    event_manager.queueEvent(gw_event);
+  }  
 }
 
 void GameLogic::resetStartValues()
 {
   // Reset game time
-  game_time = 0.0;
+  game_time = 300.0;
 
   // Reset ship to starting position, gold, etc.
   ship->setPositionX(10);

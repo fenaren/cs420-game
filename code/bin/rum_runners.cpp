@@ -6,6 +6,7 @@
 #include "GameLogic.hpp"
 #include "GameLostEvent.hpp"
 #include "GameRestartEvent.hpp"
+#include "GameWonEvent.hpp"
 #include "HumanGameView.hpp"
 #include "Map.hpp"
 #include "TransactionFailEvent.hpp"
@@ -118,6 +119,11 @@ int main(int argc, char** argv)
   event_manager->addDelegate(
     EventDelegate(PauseStartHandler),
     GameLostEvent::event_type);
+
+  // Pause game at GameWonEvent
+  event_manager->addDelegate(
+    EventDelegate(PauseStartHandler),
+    GameWonEvent::event_type);
 
   // Don't unpause after TransactionFailEvent
   // UnpauseSuccessHandler: unpauses game after TransactionSuccessEvent

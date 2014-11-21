@@ -8,7 +8,7 @@ UIGameTime::UIGameTime() :
   UIElement()
 {
   // Defaults
-  setPosition(sf::Vector2f(400, 0));
+  setPosition(sf::Vector2f(600, 0));
   setColor(sf::Color::White);
   setStyle(sf::Text::Bold);
 }
@@ -48,8 +48,8 @@ void UIGameTime::updateText()
   std::string updated_text;
 
   // Convert game time into minutes and seconds
-  unsigned int minutes = (300 - game_time) / 60;
-  unsigned int seconds = (int) (300 - game_time) % 60;
+  unsigned int minutes = (game_time) / 60;
+  unsigned int seconds = (int) (game_time) % 60;
 
   // Convert game time into text
   std::ostringstream min_to_str;

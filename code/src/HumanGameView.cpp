@@ -1,6 +1,8 @@
 #include <iostream>
 
+#include "GameLostEvent.hpp"
 #include "GameRestartEvent.hpp"
+#include "GameWonEvent.hpp"
 #include "HumanGameView.hpp"
 #include "UIGameTime.hpp"
 #include "UITextField.hpp"
@@ -87,6 +89,12 @@ bool HumanGameView::initialize()
 			    this,
 			    std::placeholders::_1)),
     GameLostEvent::event_type);
+
+  getGameLogic()->getEventManager()->addDelegate(
+    EventDelegate(std::bind(&HumanGameView::gameWonEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    GameWonEvent::event_type);
 
   // Push the UI ship data element onto the element list
   uiList.push_back(new UIShipData());
@@ -189,7 +197,8 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 					}
 				}
 			}
-			if (event.key.code == sf::Keyboard::Space && getGameState() == "YOU LOSE") {
+			if ((event.key.code == sf::Keyboard::Space) 
+				&& (getGameState() == "YOU LOSE" || getGameState() == "YOU WIN")) {
 				GameRestartEvent* gr_event = new GameRestartEvent();
 				getGameLogic()->getEventManager()->queueEvent(gr_event);
 				setGameState("");
@@ -354,6 +363,10 @@ void HumanGameView::transactionStartEventHandler(const EventInterface& event) {
 
 void HumanGameView::gameLostEventHandler(const EventInterface& event) {
 	setGameState("YOU LOSE");
+}
+
+void HumanGameView::gameWonEventHandler(const EventInterface& event) {
+	setGameState("YOU WIN");
 }
 
 void HumanGameView::calculateMapWindowData()
