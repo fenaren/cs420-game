@@ -36,6 +36,7 @@ GameLogic::GameLogic() :
   ship->setRum(5);
   ship->setMaxRum(10);
   ship->setRumRate(-0.1);
+  ship->setGoldRate(0.0);
 
   // Push the ship onto the list of actors
   actors[ship->getActorId()] = ship;
