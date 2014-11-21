@@ -20,6 +20,7 @@ GameLogic::GameLogic() :
   ship(0)
 {
   game_time = 300.0;
+  game_over = 0;
 
   // Used for assigning actor IDs throughout this constructor
   unsigned int actor_id = 0;
@@ -205,18 +206,20 @@ void GameLogic::update(const sf::Time& delta_t)
   game_time -= delta_t.asSeconds();
 
   // Check for lose conditions
-  if ((ship->getGold() == 0 && ship->getRum() == 0)
-	|| game_time <= 0) 
+  if (((ship->getGold() == 0 && ship->getRum() == 0)
+	|| game_time <= 0) && game_over == 0) 
   {
     GameLostEvent* gl_event = new GameLostEvent();
     event_manager.queueEvent(gl_event);
+    game_over = 1;
   }
 
   // Check for win condition
-  if (ship->getGold() >= 500) 
+  if (ship->getGold() >= 500 && game_over == 0) 
   {
     GameWonEvent* gw_event = new GameWonEvent();
     event_manager.queueEvent(gw_event);
+    game_over = 1;
   }  
 }
 
@@ -234,6 +237,8 @@ void GameLogic::resetStartValues()
   ship->setMaxRum(10);
   ship->setRumRate(-0.1);
   ship->setGoldRate(0.0);
+
+  game_over = 0;
 }
 
 void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)

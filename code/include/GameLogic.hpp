@@ -81,6 +81,10 @@ private:
   // The game timer
   double game_time;
 
+  // Should I queue another gameWon/gameLost event?
+  // Check game_over
+  unsigned int game_over;
+
   // Resets starting positions and rum/gold values of ship/ports
   void resetStartValues();
 };

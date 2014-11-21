@@ -65,9 +65,6 @@ public:
 
   unsigned int getMapTileSize() const;
 
-  std::string getGameState() const;
-  void setGameState(std::string game_state);
-
 private:
 
   // Calculates where the top-left corner of the map is in window coordinates
@@ -131,22 +128,13 @@ private:
   unsigned int tc_portrum;
   unsigned int tc_rum_price;
 
+  UITextField* win_lose_message;
   std::string game_state;
 };
 
 inline unsigned int HumanGameView::getMapTileSize() const
 {
   return map_tile_size;
-}
-
-inline std::string HumanGameView::getGameState() const
-{
-  return game_state;
-}
-
-inline void HumanGameView::setGameState(std::string game_state) 
-{
-  this->game_state = game_state;
 }
 
 #endif

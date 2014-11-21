@@ -7,7 +7,6 @@
 #include "UIGameTime.hpp"
 #include "UITextField.hpp"
 #include "UIShipData.hpp"
-#include "WinLoseMessage.hpp"
 
 HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
   GameView(game_logic),
@@ -30,7 +29,7 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
 	lastShipX = 10;
 	lastShipY = 12;
 	shipSpriteY = 0;
-	setGameState("");
+	game_state = "";
 }
 
 HumanGameView::~HumanGameView()
@@ -100,7 +99,12 @@ bool HumanGameView::initialize()
   uiList.push_back(new UIShipData());
 
   // Push the UI win/lose message onto the element list
-  uiList.push_back(new WinLoseMessage());
+  win_lose_message = new UITextField();
+  win_lose_message->setText(game_state);
+  win_lose_message->setPosition(sf::Vector2f(350,300));
+  win_lose_message->setCharacterSize(24);
+  win_lose_message->setStyle(sf::Text::Bold);
+  uiList.push_back(win_lose_message);
 
   // Push the UI game time element onto the element list
   uiList.push_back(new UIGameTime());
@@ -198,10 +202,12 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 				}
 			}
 			if ((event.key.code == sf::Keyboard::Space) 
-				&& (getGameState() == "YOU LOSE" || getGameState() == "YOU WIN")) {
+				&& (game_state == "YOU LOSE" || game_state == "YOU WIN")) {
+			
 				GameRestartEvent* gr_event = new GameRestartEvent();
 				getGameLogic()->getEventManager()->queueEvent(gr_event);
-				setGameState("");
+				game_state = "";
+				win_lose_message->setText(game_state);
 			}
 			break;
 
@@ -362,11 +368,13 @@ void HumanGameView::transactionStartEventHandler(const EventInterface& event) {
 }
 
 void HumanGameView::gameLostEventHandler(const EventInterface& event) {
-	setGameState("YOU LOSE");
+	game_state = "YOU LOSE";
+	win_lose_message->setText(game_state + "\nPress [space] to play again");
 }
 
 void HumanGameView::gameWonEventHandler(const EventInterface& event) {
-	setGameState("YOU WIN");
+	game_state = "YOU WIN";
+	win_lose_message->setText(game_state + "\nPress [space] to play again");
 }
 
 void HumanGameView::calculateMapWindowData()
