@@ -55,7 +55,9 @@ HumanGameView::~HumanGameView()
 bool HumanGameView::initialize()
 {
   test = new UITextInput();
-  test->initialize(sf::Vector2f(150, 100), currentRes, UIElement::Center);
+
+  // Sized such that all transaction failure text fits within it
+  test->initialize(sf::Vector2f(350, 100), currentRes, UIElement::Center);
   if (!tempMap.createMap("./data/second_map.txt")) {
 	std::cout << "ERROR MAP" << std::endl;
   }
@@ -315,19 +317,19 @@ void HumanGameView::transactionFailEventHandler(const EventInterface& event)
   switch(tf_event->getFailReason())
   {
   case TransactionFailEvent::BUY_EXCEEDS_MAX_SHIP_INVENTORY:
-    oss << "BUY_EXCEEDS_MAX_SHIP_INVENTORY";
+    oss << "Your ship can't hold that much rum!";
     break;
 
   case TransactionFailEvent::BUY_NOT_ENOUGH_PORT_INVENTORY:
-    oss << "BUY_NOT_ENOUGH_PORT_INVENTORY";
+    oss << "This port doesn't have that much rum!";
     break;
 
   case TransactionFailEvent::BUY_NOT_ENOUGH_GOLD:
-    oss << "BUY_NOT_ENOUGH_GOLD";
+    oss << "You don't have enough gold!";
     break;
 
   case TransactionFailEvent::SELL_EXCEEDS_SHIP_INVENTORY:
-    oss << "SELL_EXCEEDS_SHIP_INVENTORY";
+    oss << "This port can't hold that much rum!";
     break;
   };
 
