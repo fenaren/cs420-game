@@ -84,13 +84,9 @@ void AIGameView::updateSeeks() {
 void AIGameView::moveActors() {
 	for (GameLogic::EnemiesList::const_iterator i = enemies->begin(); i != enemies->end(); i++) {
 		EnemyActor* enemy = i->second;
-		// only sends move command if enough time has passed
-		if (enemy->getMoveTime() > enemy->getMinMoveTime()) {
-			sf::Vector2i temp = minMaxMove(enemy);
-			AICmdEvent* ai_event = new AICmdEvent(enemy->getActorId(), temp);
-			getGameLogic()->getEventManager()->queueEvent(ai_event);
-			enemy->setMoveTime(0.0);
-		}
+		sf::Vector2i temp = minMaxMove(enemy);
+		AICmdEvent* ai_event = new AICmdEvent(enemy->getActorId(), temp);
+		getGameLogic()->getEventManager()->queueEvent(ai_event);
 	}
 }
 

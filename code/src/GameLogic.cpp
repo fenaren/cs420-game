@@ -275,8 +275,9 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
 void GameLogic::AICmdEventHandler(const EventInterface& event) {
 	const AICmdEvent* ai_event = dynamic_cast<const AICmdEvent*>(&event);  
 	sf::Vector2i newPos = ai_event->getPos();
-	if (map.isValidPosition(newPos)) {
-		  EnemyActor* enemy = enemies[ai_event->getActorId()];
+	EnemyActor* enemy = enemies[ai_event->getActorId()];
+	if (enemy->getMoveTime() > enemy->getMinMoveTime() && map.isValidPosition(newPos)) {
+		  enemy->setMoveTime(0.0);
 		  if (ship->getPosition() != newPos) {
 			enemy->setPrevPos(enemy->getPosition());
 			enemy->setPosition(newPos);
