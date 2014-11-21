@@ -283,11 +283,13 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
     if (rumrequest + shiprum > shipmaxrum)
     {
       TransactionFailEvent* tfail_event =
-	new TransactionFailEvent(ship->getActorId(),
-				 portid,
-				 shipgold,
-				 shiprum,
-				 portrum);
+	new TransactionFailEvent(
+	  ship->getActorId(),
+	  portid,
+	  shipgold,
+	  shiprum,
+	  portrum,
+	  TransactionFailEvent::BUY_EXCEEDS_MAX_SHIP_INVENTORY);
 
       // Queue the event, event manager takes ownership
       event_manager.queueEvent(tfail_event);
@@ -295,10 +297,32 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
     // Is the ship trying to buy more rum than the port has?
     else if (rumrequest > portrum)
     {
+      TransactionFailEvent* tfail_event =
+	new TransactionFailEvent(
+	  ship->getActorId(),
+	  portid,
+	  shipgold,
+	  shiprum,
+	  portrum,
+	  TransactionFailEvent::BUY_NOT_ENOUGH_PORT_INVENTORY);
+
+      // Queue the event, event manager takes ownership
+      event_manager.queueEvent(tfail_event);
     }
     // Is the ship trying to buy more rum than it can afford?
     else if (rumrequest * price > shipgold)
     {
+      TransactionFailEvent* tfail_event =
+	new TransactionFailEvent(
+	  ship->getActorId(),
+	  portid,
+	  shipgold,
+	  shiprum,
+	  portrum,
+	  TransactionFailEvent::BUY_NOT_ENOUGH_GOLD);
+
+      // Queue the event, event manager takes ownership
+      event_manager.queueEvent(tfail_event);
     }
     else
     {
@@ -327,6 +351,17 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
     // Is the ship trying to sell more rum than it has?
     if (rumrequest > shiprum)
     {
+      TransactionFailEvent* tfail_event =
+	new TransactionFailEvent(
+	  ship->getActorId(),
+	  portid,
+	  shipgold,
+	  shiprum,
+	  portrum,
+	  TransactionFailEvent::SELL_EXCEEDS_SHIP_INVENTORY);
+
+      // Queue the event, event manager takes ownership
+      event_manager.queueEvent(tfail_event);
     }
     else
     {

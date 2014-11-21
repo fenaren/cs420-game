@@ -11,20 +11,22 @@ class TransactionFailEvent : public EventInterface
 {
 public:
 
+  enum FailReason
+  {
+    BUY_EXCEEDS_MAX_SHIP_INVENTORY,
+    BUY_NOT_ENOUGH_PORT_INVENTORY,
+    BUY_NOT_ENOUGH_GOLD,
+    SELL_EXCEEDS_SHIP_INVENTORY
+  };
+
   TransactionFailEvent();
 
   TransactionFailEvent(ActorId ship_id,
 		       ActorId port_id,
 		       unsigned int ship_gold,
 		       unsigned int ship_rum,
-		       unsigned int port_rum);
-
-  enum FailReason
-  {
-    REASON,
-    REASON_TWO,
-    REASON_THREE
-  };
+		       unsigned int port_rum,
+		       FailReason fail_reason);
 
   virtual ~TransactionFailEvent();
 
