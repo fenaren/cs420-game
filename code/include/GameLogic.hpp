@@ -59,6 +59,9 @@ public:
   // and this will queue the appropriate events in those cases.
   void TransactionCheckEventHandler(const EventInterface& event);
 
+  // Handles the GameRestartEvent. This should reset all actor values.
+  void GameRestartEventHandler(const EventInterface& event);
+
 private:
 
   // Containers for actors and other things
@@ -73,6 +76,9 @@ private:
 
   // The game map.  Contains terrain data.
   Map map;
+
+  // Resets starting positions and rum/gold values of ship/ports
+  void resetStartValues();
 };
 
 inline EventManager* GameLogic::getEventManager()

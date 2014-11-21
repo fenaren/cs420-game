@@ -8,6 +8,7 @@
 #include "ActorMovedEvent.hpp"
 #include "GameLogic.hpp"
 #include "GameLostEvent.hpp"
+#include "GameRestartEvent.hpp"
 #include "ShipMoveCmdEvent.hpp"
 #include "TransactionCheckEvent.hpp"
 #include "TransactionFailEvent.hpp"
@@ -31,8 +32,8 @@ GameLogic::GameLogic() :
   ship->setPositionX(10);
   ship->setPositionY(12);
   ship->setMinMoveTime(0.5);
-  ship->setGold(4);
-  ship->setRum(2);
+  ship->setGold(10);
+  ship->setRum(5);
   ship->setMaxRum(10);
   ship->setRumRate(-0.1);
   ship->setGoldRate(0.0);
@@ -174,6 +175,13 @@ bool GameLogic::initialize()
 			    std::placeholders::_1)),
     TransactionCheckEvent::event_type);
 
+  // Register the proper handler for when the game is restarted
+  event_manager.addDelegate(
+    EventDelegate(std::bind(&GameLogic::GameRestartEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    GameRestartEvent::event_type);
+
   return true;
 }
 
@@ -193,6 +201,19 @@ void GameLogic::update(const sf::Time& delta_t)
     GameLostEvent* gl_event = new GameLostEvent();
     event_manager.queueEvent(gl_event);
   }
+}
+
+void GameLogic::resetStartValues()
+{
+  // Reset ship to starting position, gold, etc.
+  ship->setPositionX(10);
+  ship->setPositionY(12);
+  ship->setMinMoveTime(0.5);
+  ship->setGold(10);
+  ship->setRum(5);
+  ship->setMaxRum(10);
+  ship->setRumRate(-0.1);
+  ship->setGoldRate(0.0);
 }
 
 void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
@@ -325,4 +346,9 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
     // Queue the event, event manager takes ownership
     event_manager.queueEvent(tfail_event);
   }
+}
+
+void GameLogic::GameRestartEventHandler(const EventInterface& event)
+{
+  resetStartValues();
 }

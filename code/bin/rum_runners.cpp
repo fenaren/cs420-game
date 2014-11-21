@@ -4,6 +4,8 @@
 #include <vector>
 
 #include "GameLogic.hpp"
+#include "GameLostEvent.hpp"
+#include "GameRestartEvent.hpp"
 #include "HumanGameView.hpp"
 #include "Map.hpp"
 #include "TransactionFailEvent.hpp"
@@ -122,6 +124,11 @@ int main(int argc, char** argv)
   event_manager->addDelegate(
     EventDelegate(TransactionEndHandler),
     TransactionSuccessEvent::event_type);
+
+  // Unpauses game after GameRestartEvent
+  event_manager->addDelegate(
+    EventDelegate(TransactionEndHandler),
+    GameRestartEvent::event_type);
 
   // start main loop
   while(App.isOpen())

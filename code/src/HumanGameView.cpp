@@ -1,8 +1,10 @@
 #include <iostream>
 
+#include "GameRestartEvent.hpp"
 #include "HumanGameView.hpp"
 #include "UITextField.hpp"
 #include "UIShipData.hpp"
+#include "WinLoseMessage.hpp"
 
 HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
   GameView(game_logic),
@@ -25,6 +27,7 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
 	lastShipX = 10;
 	lastShipY = 12;
 	shipSpriteY = 0;
+	setGameState("");
 }
 
 HumanGameView::~HumanGameView()
@@ -87,6 +90,8 @@ bool HumanGameView::initialize()
   // Push the UI ship data element onto the element list
   uiList.push_back(new UIShipData());
 
+  // Push the UI win/lose message onto the element list
+  uiList.push_back(new WinLoseMessage());
 
   // Grab a shortcut to the ports list
   const GameLogic::PortsList* ports_list = &getGameLogic()->getPortsList();
@@ -180,11 +185,10 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 					}
 				}
 			}
-			if (event.key.code == sf::Keyboard::Space) {
-				if (menuOpen) {
-					//GameStartEvent* gs_event = new GameStartEvent();
-					//getGameLogic()->getEventManager()->queueEvent(gs_event);
-				}
+			if (event.key.code == sf::Keyboard::Space && getGameState() == "YOU LOSE") {
+				GameRestartEvent* gr_event = new GameRestartEvent();
+				getGameLogic()->getEventManager()->queueEvent(gr_event);
+				setGameState("");
 			}
 			break;
 
@@ -345,14 +349,7 @@ void HumanGameView::transactionStartEventHandler(const EventInterface& event) {
 }
 
 void HumanGameView::gameLostEventHandler(const EventInterface& event) {
-	if (!menuOpen) {
-                test->resize(currentRes);
-                uiList.push_back(test);
-                menuOpen = true;
-        }
-	std::ostringstream oss;
-	oss << "YOU LOSE";
-	test->setDialogue(oss.str());
+	setGameState("YOU LOSE");
 }
 
 void HumanGameView::calculateMapWindowData()
