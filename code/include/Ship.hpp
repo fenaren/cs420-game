@@ -34,6 +34,10 @@ public:
 
   void setRumRate(double rum_rate);
 
+  double getGoldRate() const;
+
+  void setGoldRate(double gold_rate);
+
 private:
 
   unsigned int gold;
@@ -43,8 +47,12 @@ private:
   unsigned int max_rum;
 
   double rum_rate;
+
+  double gold_rate;
   
   double rum_time;
+
+  double gold_time;
 };
 
 inline unsigned int Ship::getGold() const
@@ -89,6 +97,20 @@ inline void Ship::setRumRate(double rum_rate)
   // We want to do this to avoid massive rum changes when changing from a low
   // rum rate to a high rum rate
   rum_time = 0.0;
+}
+
+inline double Ship::getGoldRate() const
+{
+  return gold_rate;
+}
+
+inline void Ship::setGoldRate(double gold_rate)
+{
+  this->gold_rate = gold_rate;
+
+  // We want to do this to avoid massive gold changes when changing from a low
+  // gold rate to a high gold rate
+  gold_time = 0.0;
 }
 
 #endif
