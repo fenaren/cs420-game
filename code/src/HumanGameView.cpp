@@ -291,6 +291,36 @@ void HumanGameView::drawActors() {
 
 	lastShipX = ship->getPositionX();
 	lastShipY = ship->getPositionY();
+	
+	const std::map<ActorId, EnemyActor*> *enemies = getGameLogic()->getEnemiesListPointer();
+	for (std::map<ActorId, EnemyActor*>::const_iterator i = enemies->begin(); i != enemies->end(); i++) {
+		EnemyActor* enemy = i->second;
+		if(enemy->getType() == EnemyActor::Pirate){
+			int enemyShipSpriteY = 0;
+			if (enemy->getPrevPos().x > enemy->getPositionX()) {
+				enemyShipSpriteY = 25;
+			}
+			// ship moved right
+			else if (enemy->getPrevPos().x < enemy->getPositionX()) {
+				enemyShipSpriteY = 50;
+			}
+			// ship moved up
+			else if (enemy->getPrevPos().y > enemy->getPositionY()) {
+				enemyShipSpriteY = 75;
+			}
+			// ship moved down
+			else if (enemy->getPrevPos().y < enemy->getPositionY()) {
+				enemyShipSpriteY = 0;
+			}
+			ship_sprite.setTextureRect(sf::IntRect(0,enemyShipSpriteY,25,25));
+			if (enemy->getState() == EnemyActor::Pursue)
+				ship_sprite.setColor(sf::Color::Red);
+			else 
+				ship_sprite.setColor(sf::Color::Green);
+		}
+		ship_sprite.setPosition(sf::Vector2f(enemy->getPositionX() * map_tile_size + map_tl_wcoords.x, enemy->getPositionY() * map_tile_size + map_tl_wcoords.y));
+		App->draw(ship_sprite);
+	}
 }
   
 // draws the elements in the UI list
