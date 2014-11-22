@@ -129,22 +129,36 @@ sf::Vector2i AIGameView::findOppositeSeek(sf::Vector2i pos_checker) {
 	int randMaxX;
 	int randMinY;
 	int randMaxY;
+	int adjX;
+	int adjY;
 	Map* map = getGameLogic()->getMap();
-	if (pos_checker.x <= map->get_map_size_x() / 2) {
+	if (pos_checker.x < map->get_map_size_x() / 2) {
 		randMinX = map->get_map_size_x() / 2;
-		randMaxX = map->get_map_size_x();
+		randMaxX = map->get_map_size_x() - 1;
+		adjX = 1;
 	}
 	else {
 		randMinX = 0;
 		randMaxX = map->get_map_size_x() / 2;
+		adjX = -1;
 	}
-	if (pos_checker.y <= map->get_map_size_y() / 2) {
+	if (pos_checker.y < map->get_map_size_y() / 2) {
 		randMinY = map->get_map_size_y() / 2;
-		randMaxY = map->get_map_size_y();
+		randMaxY = map->get_map_size_y() - 1;
+		adjY = 1;
 	}
 	else {
 		randMinY = 0;
 		randMaxY = map->get_map_size_y() / 2;
+		adjY = -1;
 	}
-	return sf::Vector2i(randMinX + (rand() % (int)(randMaxX - randMinX + 1)), randMinY + (rand() % (int)(randMaxY - randMinY + 1)));
+	int x = randMinX + (rand() % (int)(randMaxX - randMinX + 1));
+	int y = randMinY + (rand() % (int)(randMaxY - randMinY + 1));
+	
+	// moves the point towards center if not at a valid position
+	while (!map->isValidPosition(sf::Vector2i(x, y))) {
+		x += adjX;
+		y += adjY;
+	}
+	return sf::Vector2i(x, y);
 }
