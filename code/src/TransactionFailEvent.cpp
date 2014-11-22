@@ -13,7 +13,8 @@ TransactionFailEvent::TransactionFailEvent() :
   port_id(0),
   ship_gold(0),
   ship_rum(0),
-  port_rum(0)
+  port_rum(0),
+  fail_reason(BUY_EXCEEDS_MAX_SHIP_INVENTORY)
 {
 }
 
@@ -21,13 +22,15 @@ TransactionFailEvent::TransactionFailEvent(ActorId ship_id,
 					   ActorId port_id,
 					   unsigned int ship_gold,
 					   unsigned int ship_rum,
-					   unsigned int port_rum)
+					   unsigned int port_rum,
+					   FailReason fail_reason)
   : EventInterface(),
     ship_id(ship_id),
     port_id(port_id),
     ship_gold(ship_gold),
     ship_rum(ship_rum),
-    port_rum(port_rum)
+    port_rum(port_rum),
+    fail_reason(fail_reason)
 {
 }
 

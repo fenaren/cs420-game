@@ -55,7 +55,9 @@ HumanGameView::~HumanGameView()
 bool HumanGameView::initialize()
 {
   test = new UITextInput();
-  test->initialize(sf::Vector2f(150, 100), currentRes, UIElement::Center);
+
+  // Sized such that all transaction failure text fits within it
+  test->initialize(sf::Vector2f(350, 100), currentRes, UIElement::Center);
   if (!tempMap.createMap("./data/second_map.txt")) {
 	std::cout << "ERROR MAP" << std::endl;
   }
@@ -329,10 +331,43 @@ void HumanGameView::drawUI() {
 }
 
 // handles transaction fails
-void HumanGameView::transactionFailEventHandler(const EventInterface& event) {
-	std::ostringstream oss;
-	oss << "Incorrect Amount!\nSupply: " << tc_portrum << "\nPrice: " << tc_rum_price;
-	test->setDialogue(oss.str());
+void HumanGameView::transactionFailEventHandler(const EventInterface& event)
+{
+  const TransactionFailEvent* tf_event =
+    dynamic_cast<const TransactionFailEvent*>(&event);
+
+  if (tf_event == 0)
+  {
+    return;
+  }
+
+  std::ostringstream oss;
+
+  // Why did the transaction fail?  Push descriptive text for each case.
+  switch(tf_event->getFailReason())
+  {
+  case TransactionFailEvent::BUY_EXCEEDS_MAX_SHIP_INVENTORY:
+    oss << "Your ship can't hold that much rum!";
+    break;
+
+  case TransactionFailEvent::BUY_NOT_ENOUGH_PORT_INVENTORY:
+    oss << "This port doesn't have that much rum!";
+    break;
+
+  case TransactionFailEvent::BUY_NOT_ENOUGH_GOLD:
+    oss << "You don't have enough gold!";
+    break;
+
+  case TransactionFailEvent::SELL_EXCEEDS_SHIP_INVENTORY:
+    oss << "You don't have that much rum!";
+    break;
+
+  case TransactionFailEvent::SELL_EXCEEDS_MAX_PORT_INVENTORY:
+    oss << "This port can't accept that much rum!";
+  };
+
+  oss << "\nSupply: " << tc_portrum << "\nPrice: " << tc_rum_price;
+  test->setDialogue(oss.str());
 }
 
 // handles transaction successes

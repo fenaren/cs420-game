@@ -326,51 +326,128 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
   rumrequest = tcheck_event->getRumRequest();
   
   price = ports[portid]->getRumPrice();
-  
-  if (ports[portid]->isBuyPort() &&
-      rumrequest + shiprum <= shipmaxrum &&
-      rumrequest <= portrum &&
-      rumrequest * price <= shipgold)
+
+  // Is this transaction being done with a buy port?
+  if (ports[portid]->isBuyPort())
   {
-    ship->setGold(shipgold - (price * rumrequest));
-    ship->setRum(shiprum + rumrequest);
-    ports[portid]->setRum(portrum - rumrequest);
-    // This transaction succeeds so signal that with the TransactionSuccessEvent
-    TransactionSuccessEvent* tsuccess_event =
-      new TransactionSuccessEvent(ship->getActorId(),
-				  portid,
-				  shipgold,
-				  shiprum,
-				  portrum);
+    // Did the ship try to buy too much rum?
+    if (rumrequest + shiprum > shipmaxrum)
+    {
+      TransactionFailEvent* tfail_event =
+	new TransactionFailEvent(
+	  ship->getActorId(),
+	  portid,
+	  shipgold,
+	  shiprum,
+	  portrum,
+	  TransactionFailEvent::BUY_EXCEEDS_MAX_SHIP_INVENTORY);
 
-    // Queue the event, event manager takes ownership
-    event_manager.queueEvent(tsuccess_event);
+      // Queue the event, event manager takes ownership
+      event_manager.queueEvent(tfail_event);
+    }
+    // Is the ship trying to buy more rum than the port has?
+    else if (rumrequest > portrum)
+    {
+      TransactionFailEvent* tfail_event =
+	new TransactionFailEvent(
+	  ship->getActorId(),
+	  portid,
+	  shipgold,
+	  shiprum,
+	  portrum,
+	  TransactionFailEvent::BUY_NOT_ENOUGH_PORT_INVENTORY);
+
+      // Queue the event, event manager takes ownership
+      event_manager.queueEvent(tfail_event);
+    }
+    // Is the ship trying to buy more rum than it can afford?
+    else if (rumrequest * price > shipgold)
+    {
+      TransactionFailEvent* tfail_event =
+	new TransactionFailEvent(
+	  ship->getActorId(),
+	  portid,
+	  shipgold,
+	  shiprum,
+	  portrum,
+	  TransactionFailEvent::BUY_NOT_ENOUGH_GOLD);
+
+      // Queue the event, event manager takes ownership
+      event_manager.queueEvent(tfail_event);
+    }
+    else
+    {
+      // This buy transaction is okay
+
+      ship->setGold(shipgold - (price * rumrequest));
+      ship->setRum(shiprum + rumrequest);
+      ports[portid]->setRum(portrum - rumrequest);
+
+      // This transaction succeeds so signal that with the
+      // TransactionSuccessEvent
+      TransactionSuccessEvent* tsuccess_event =
+	new TransactionSuccessEvent(ship->getActorId(),
+				    portid,
+				    shipgold,
+				    shiprum,
+				    portrum);
+
+      // Queue the event, event manager takes ownership
+      event_manager.queueEvent(tsuccess_event);
+    }
   }
-  else if (!ports[portid]->isBuyPort() && rumrequest <= shiprum)
+  // The transaction is being done with a sell port
+  else
   {
-    ship->setGold(shipgold + (price * rumrequest));
-    ship->setRum(shiprum - rumrequest);
-    ports[portid]->setRum(portrum + rumrequest);
-    // This transaction succeeds so signal that with the TransactionSuccessEvent
-    TransactionSuccessEvent* tsuccess_event =
-      new TransactionSuccessEvent(ship->getActorId(),
-				  portid,
-				  shipgold,
-				  shiprum,
-				  portrum);
+    // Is the ship trying to sell more rum than it has?
+    if (rumrequest > shiprum)
+    {
+      TransactionFailEvent* tfail_event =
+	new TransactionFailEvent(
+	  ship->getActorId(),
+	  portid,
+	  shipgold,
+	  shiprum,
+	  portrum,
+	  TransactionFailEvent::SELL_EXCEEDS_SHIP_INVENTORY);
 
-    // Queue the event, event manager takes ownership
-    event_manager.queueEvent(tsuccess_event);
-  }
-  else{
-    TransactionFailEvent* tfail_event =
-      new TransactionFailEvent(ship->getActorId(),
-			       portid,
-			       shipgold,
-			       shiprum,
-			       portrum);
+      // Queue the event, event manager takes ownership
+      event_manager.queueEvent(tfail_event);
+    }
+    // Is the ship trying to sell more rum than the port can hold?
+    else if (rumrequest + portrum > ports[portid]->getMaxRum())
+    {
+      TransactionFailEvent* tfail_event =
+	new TransactionFailEvent(
+	  ship->getActorId(),
+	  portid,
+	  shipgold,
+	  shiprum,
+	  portrum,
+	  TransactionFailEvent::SELL_EXCEEDS_MAX_PORT_INVENTORY);
 
-    // Queue the event, event manager takes ownership
-    event_manager.queueEvent(tfail_event);
+      // Queue the event, event manager takes ownership
+      event_manager.queueEvent(tfail_event);
+    }
+    else
+    {
+      // This sell transaction is okay
+
+      ship->setGold(shipgold + (price * rumrequest));
+      ship->setRum(shiprum - rumrequest);
+      ports[portid]->setRum(portrum + rumrequest);
+
+      // This transaction succeeds so signal that with the
+      // TransactionSuccessEvent
+      TransactionSuccessEvent* tsuccess_event =
+	new TransactionSuccessEvent(ship->getActorId(),
+				    portid,
+				    shipgold,
+				    shiprum,
+				    portrum);
+
+      // Queue the event, event manager takes ownership
+      event_manager.queueEvent(tsuccess_event);
+    }
   }
 }
