@@ -18,8 +18,9 @@ public:
 			unsigned int ship_gold,
 			unsigned int ship_rum,
 			unsigned int port_rum,
-			unsigned int rum_request,
-			bool cancel);
+			unsigned int rum_request);
+
+  TransactionCheckEvent(bool cancel);
 
   virtual ~TransactionCheckEvent();
 
