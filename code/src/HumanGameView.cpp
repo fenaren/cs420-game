@@ -166,18 +166,37 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 			
 		  // this code will actually react to transaction request event in the future
 		  case (sf::Event::KeyPressed):
-			
-			// if an input menu is open returns the int and clears it
-			if (event.key.code == sf::Keyboard::Return) {
-				if (menuOpen) {
-					double tempdouble = test->clearInput();
-					if (tempdouble >= 0) {
-						TransactionCheckEvent* tc_event = new TransactionCheckEvent(tc_shipid, tc_portid, tc_shipgold, tc_shiprum, tc_portrum, tempdouble);
-						getGameLogic()->getEventManager()->queueEvent(tc_event);
-					}
-				}
+		    if (menuOpen)
+		    {
+		      // if an input menu is open returns the int and clears it
+		      if (event.key.code == sf::Keyboard::Return)
+		      {
+			double tempdouble = test->clearInput();
+			if (tempdouble >= 0)
+			{
+			  TransactionCheckEvent* tc_event =
+			    new TransactionCheckEvent(tc_shipid,
+						      tc_portid,
+						      tc_shipgold,
+						      tc_shiprum,
+						      tc_portrum,
+						      tempdouble);
+
+			  getGameLogic()->getEventManager()->queueEvent(tc_event);
 			}
-			break;
+		      }
+		      // Did the user press Escape?
+		      else if (event.key.code == sf::Keyboard::Escape)
+		      {
+			// The user wants to cancel the transaction, so queue up
+			// the appropriate event with cancel set to true
+			TransactionCheckEvent* tc_event =
+			  new TransactionCheckEvent(true);
+
+			getGameLogic()->getEventManager()->queueEvent(tc_event);
+		      }
+		    }
+		    break;
 
 		default:
 		{

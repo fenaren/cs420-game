@@ -317,6 +317,13 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
     return;
   }
 
+  // Does the user want to cancel the transaction?
+  if (tcheck_event->getCancel())
+  {
+    std::cout << "user wants to cancel\n";
+    return;
+  }
+
   shipid = tcheck_event->getShipId();
   portid = tcheck_event->getPortId();
   shipgold = tcheck_event->getShipGold();
