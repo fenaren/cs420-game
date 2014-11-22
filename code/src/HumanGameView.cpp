@@ -316,7 +316,7 @@ void HumanGameView::drawActors() {
 			if (enemy->getState() == EnemyActor::Pursue)
 				ship_sprite.setColor(sf::Color::Red);
 			else 
-				ship_sprite.setColor(sf::Color::Green);
+				ship_sprite.setColor(sf::Color::Black);
 		}
 		ship_sprite.setPosition(sf::Vector2f(enemy->getPositionX() * map_tile_size + map_tl_wcoords.x, enemy->getPositionY() * map_tile_size + map_tl_wcoords.y));
 		App->draw(ship_sprite);

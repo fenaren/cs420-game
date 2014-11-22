@@ -9,7 +9,8 @@ Pirate::Pirate(ActorId actor_id) : EnemyActor(actor_id)
 	setPrevPos(getSeek());
 	setRumPenalty(2);
 	setMinMoveTime(1.0);
-	setAggroRange(6);
+	setAggroRange(5);
+	setNeedSeek(true);
 }
 
 void Pirate::checkState(sf::Vector2i ship_pos) {
