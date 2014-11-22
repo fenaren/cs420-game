@@ -8,8 +8,8 @@ Pirate::Pirate(ActorId actor_id) : EnemyActor(actor_id)
 	setSeek(sf::Vector2i(getPositionX(), getPositionY()));
 	setPrevPos(getSeek());
 	setRumPenalty(2);
-	setMinMoveTime(1);
-	setAggroRange(4);
+	setMinMoveTime(.1);
+	setAggroRange(0);
 	setNeedSeek(true);
 }
 
