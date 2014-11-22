@@ -9,6 +9,7 @@
 #include "AICmdEvent.hpp"
 #include "GameLogic.hpp"
 #include "ShipMoveCmdEvent.hpp"
+#include "TransactionCancelEvent.hpp"
 #include "TransactionCheckEvent.hpp"
 #include "TransactionFailEvent.hpp"
 #include "TransactionStartEvent.hpp"
@@ -320,7 +321,10 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
   // Does the user want to cancel the transaction?
   if (tcheck_event->getCancel())
   {
-    std::cout << "user wants to cancel\n";
+    // Notify that transaction has been cancelled and return
+    TransactionCancelEvent* tc_event = new TransactionCancelEvent();
+    event_manager.queueEvent(tc_event);
+    
     return;
   }
 

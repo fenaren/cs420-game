@@ -75,6 +75,13 @@ bool HumanGameView::initialize()
     TransactionSuccessEvent::event_type);
 
   getGameLogic()->getEventManager()->addDelegate(
+    EventDelegate(std::bind(&HumanGameView::transactionCancelEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    TransactionCancelEvent::event_type);
+
+
+  getGameLogic()->getEventManager()->addDelegate(
     EventDelegate(std::bind(&HumanGameView::transactionStartEventHandler,
 			    this,
 			    std::placeholders::_1)),
@@ -391,6 +398,13 @@ void HumanGameView::transactionFailEventHandler(const EventInterface& event)
 
 // handles transaction successes
 void HumanGameView::transactionSuccessEventHandler(const EventInterface& event) {
+	std::vector<UIElement*>::iterator position = std::find(uiList.begin(), uiList.end(), test);
+	if (position != uiList.end())
+		uiList.erase(position);
+	menuOpen = false;
+}
+
+void HumanGameView::transactionCancelEventHandler(const EventInterface& event) {
 	std::vector<UIElement*>::iterator position = std::find(uiList.begin(), uiList.end(), test);
 	if (position != uiList.end())
 		uiList.erase(position);
