@@ -88,7 +88,7 @@ void AIGameView::updateSeeks() {
 void AIGameView::moveActors() {
 	for (GameLogic::EnemiesList::const_iterator i = enemies->begin(); i != enemies->end(); i++) {
 		EnemyActor* enemy = i->second;
-		if (enemy->getSeek() != enemy->getPosition()) {
+		if (enemy->getState() != EnemyActor::Stop) {
 			sf::Vector2i temp = minMaxMove(enemy);
 			AICmdEvent* ai_event = new AICmdEvent(enemy->getActorId(), temp);
 			getGameLogic()->getEventManager()->queueEvent(ai_event);
@@ -100,6 +100,8 @@ sf::Vector2i AIGameView::minMaxMove(EnemyActor* enemy) {
 	sf::Vector2i curr = enemy->getPosition();
 	sf::Vector2i prev = enemy->getPrevPos();
 	sf::Vector2i seek = enemy->getSeek();
+	if (curr == seek)
+		return curr;
 	sf::Vector2i min = prev;
 	sf::Vector2i test = curr;
 	int weight = 500;
