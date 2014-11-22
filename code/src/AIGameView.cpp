@@ -115,6 +115,7 @@ sf::Vector2i AIGameView::minMaxMove(EnemyActor* enemy) {
 		weight = enemy->getPosDifference(test, seek);
 		min = test;
 	}
+	test.x += 1;
 	test.y -= 1;
 	if (map->isValidPosition(test) && ((enemy->getPosDifference(test, seek) < weight) || min == prev)) {
 		weight = enemy->getPosDifference(test, seek);
