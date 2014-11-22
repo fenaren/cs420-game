@@ -18,7 +18,8 @@ public:
 			unsigned int ship_gold,
 			unsigned int ship_rum,
 			unsigned int port_rum,
-			unsigned int rum_request);
+			unsigned int rum_request,
+			bool cancel);
 
   virtual ~TransactionCheckEvent();
 
@@ -60,6 +61,10 @@ public:
   /* Request Rum getter*/
   unsigned int getRumRequest() const;
 
+  void setCancel(bool cancel);
+
+  bool getCancel() const;
+
   /* TransactionCheckEvent's event type */
   static const EventType event_type;
 
@@ -73,6 +78,9 @@ private:
   unsigned int ship_rum;
   unsigned int port_rum;
   unsigned int rum_request;
+
+  // True if the associated transaction should be cancelled
+  bool cancel;
 };
 
 inline EventType TransactionCheckEvent::getEventType() const
@@ -140,5 +148,14 @@ inline unsigned int TransactionCheckEvent::getRumRequest() const
   return rum_request;
 }
 
+inline void TransactionCheckEvent::setCancel(bool cancel)
+{
+  this->cancel = cancel;
+}
+
+inline bool TransactionCheckEvent::getCancel() const
+{
+  return cancel;
+}
 
 #endif
