@@ -8,7 +8,7 @@
 class EnemyActor : public Actor {
 	
 public:
-	enum State { Patrol, Pursue, Flee, Follow };
+	enum State { Patrol, Pursue, Flee, Follow, Stop };
 	enum Type { Pirate, Trader, Kraken, Tentacle };
 	EnemyActor(ActorId actor_id);
 	~EnemyActor();

@@ -66,6 +66,10 @@ void AIGameView::updateSeeks() {
 					enemy->setSeek(ship->getPosition());
 					break;
 					
+				case EnemyActor::Stop:
+					enemy->setSeek(enemy->getPosition());
+					break;
+					
 				// follows the enemy saved in leader based off an offset
 				case EnemyActor::Follow:
 					// makes the offset a bit more random by adding -1, 0, or 1
@@ -84,9 +88,11 @@ void AIGameView::updateSeeks() {
 void AIGameView::moveActors() {
 	for (GameLogic::EnemiesList::const_iterator i = enemies->begin(); i != enemies->end(); i++) {
 		EnemyActor* enemy = i->second;
-		sf::Vector2i temp = minMaxMove(enemy);
-		AICmdEvent* ai_event = new AICmdEvent(enemy->getActorId(), temp);
-		getGameLogic()->getEventManager()->queueEvent(ai_event);
+		if (enemy->getSeek() != enemy->getPosition()) {
+			sf::Vector2i temp = minMaxMove(enemy);
+			AICmdEvent* ai_event = new AICmdEvent(enemy->getActorId(), temp);
+			getGameLogic()->getEventManager()->queueEvent(ai_event);
+		}
 	}
 }
 
@@ -129,6 +135,8 @@ sf::Vector2i AIGameView::minMaxMove(EnemyActor* enemy) {
 		weight = enemy->getPosDifference(test, seek);
 		min = test;
 	}
+	if (prev == seek)
+		min = prev;
 	return min;
 }
 

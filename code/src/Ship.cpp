@@ -21,6 +21,8 @@ Ship::~Ship()
 
 bool Ship::initialize()
 {
+  invincibleTimer = INVINCIBLE_TIMER;
+  invincible = false;
   return true;
 }
 
@@ -32,6 +34,14 @@ void Ship::update(const sf::Time& delta_t)
   if(delta_t.asSeconds() == 0.0)
   {
     return;
+  }
+  
+  if (invincible) {
+	  invincibleTimer -= delta_t.asSeconds();
+	  if (invincibleTimer < 0.0) {
+		  invincible = false;
+		  invincibleTimer = INVINCIBLE_TIMER;
+	  }
   }
 
   // Track how much time has passed since the last rum count change, unless rum

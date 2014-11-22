@@ -69,6 +69,9 @@ public:
   // Handles an ActorMoveEvent.  Makes sure based off map that it is a valid move
   // then moves the actor to that location
   void AICmdEventHandler(const EventInterface& event);
+  
+  // checks actor moves for collisions
+  void CollisionEventHandler(const EventInterface& event);
 
 private:
 

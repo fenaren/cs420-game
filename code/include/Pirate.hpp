@@ -12,8 +12,10 @@ public:
 	virtual void update(const sf::Time& delta_t);
 	
 private:
-	const double PATROL_RECHECK = 20.0;
+	const double PATROL_TIMER = 20.0;
 	double recheckTimer;
+	const double FREEZE_TIMER = 2.0;
+	double freezeTimer;
 };
 
 #endif

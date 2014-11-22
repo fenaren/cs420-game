@@ -285,6 +285,9 @@ void HumanGameView::drawActors() {
 	else if (lastShipY < ship->getPositionY()) {
 		shipSpriteY = 0;
 	}
+	
+	if (ship->getIsInvincible())
+		ship_sprite.setColor(sf::Color::Yellow);
 
 	ship_sprite.setTextureRect(sf::IntRect(0,shipSpriteY,25,25));
 	App->draw(ship_sprite);
@@ -315,6 +318,8 @@ void HumanGameView::drawActors() {
 			ship_sprite.setTextureRect(sf::IntRect(0,enemyShipSpriteY,25,25));
 			if (enemy->getState() == EnemyActor::Pursue)
 				ship_sprite.setColor(sf::Color::Red);
+			else if (enemy->getState() == EnemyActor::Stop)
+				ship_sprite.setColor(sf::Color::Blue);
 			else 
 				ship_sprite.setColor(sf::Color::Black);
 		}

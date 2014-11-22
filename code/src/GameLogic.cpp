@@ -193,12 +193,19 @@ bool GameLogic::initialize()
 			    std::placeholders::_1)),
     TransactionCheckEvent::event_type);
 	
-	// Register the proper handler for when the Actor Moved Event is triggered
+	// Register the proper handler for when the AICmdEvent is triggered
     event_manager.addDelegate(
     EventDelegate(std::bind(&GameLogic::AICmdEventHandler,
 			    this,
 			    std::placeholders::_1)),
     AICmdEvent::event_type);
+	
+	// Register the proper handler for collision detection
+    event_manager.addDelegate(
+    EventDelegate(std::bind(&GameLogic::CollisionEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    ActorMovedEvent::event_type);
 
   return true;
 }
@@ -281,27 +288,50 @@ void GameLogic::AICmdEventHandler(const EventInterface& event) {
 	sf::Vector2i newPos = ai_event->getPos();
 	EnemyActor* enemy = enemies[ai_event->getActorId()];
 	if (enemy->getMoveTime() > enemy->getMinMoveTime() && map.isValidPosition(newPos)) {
-		  enemy->setMoveTime(0.0);
-		  if (ship->getPosition() != newPos) {
-			enemy->setPrevPos(enemy->getPosition());
-			enemy->setPosition(newPos);
-			ActorMovedEvent* am_event = new ActorMovedEvent(enemy->getActorId(), newPos.x, newPos.y);
-			event_manager.queueEvent(am_event);
-		  }
-		  else {
-			int rum_penalty = enemy->getRumPenalty();
-			if (rum_penalty != 0) {
-				if (rum_penalty <= ship->getRum()) 
-					ship->setRum(ship->getRum() - rum_penalty);
-				else {
-					rum_penalty -= ship->getRum();
-					ship->setRum(0);
-					int gold_penalty = rum_penalty * 2;
-					if (gold_penalty <= ship->getGold()) 
-						ship->setGold(ship->getGold() - gold_penalty);
-					else 
-						ship->setGold(0);
-				}
+		enemy->setMoveTime(0.0);
+		enemy->setPrevPos(enemy->getPosition());
+		enemy->setPosition(newPos);
+		ActorMovedEvent* am_event = new ActorMovedEvent(enemy->getActorId(), newPos.x, newPos.y);
+		event_manager.queueEvent(am_event);
+	}
+}
+
+void GameLogic::CollisionEventHandler(const EventInterface& event) {
+	const ActorMovedEvent* am_event = dynamic_cast<const ActorMovedEvent*>(&event);  
+	bool collision = false;
+	EnemyActor *enemy;
+	if (am_event->getActorId() == ship->getActorId()) {
+		for (EnemiesList::iterator i = enemies.begin(); i != enemies.end() && !collision; i++) {
+			if (ship->getPosition() == i->second->getPosition()) {
+				enemy = i->second;
+				collision = true;
+			}
+		}
+	}
+	else {
+		EnemiesList::iterator i = enemies.find(am_event->getActorId()); 
+		if (i != enemies.end()) {
+			enemy = i->second;
+			if (enemy->getPosition() == ship->getPosition())
+				collision = true;
+		}
+	}
+	if (collision && !ship->getIsInvincible()) {
+		int rum_penalty = enemy->getRumPenalty();
+		ship->setIsInvincible(true);
+		if (enemy->getType() == EnemyActor::Pirate) 
+			enemy->setState(EnemyActor::Stop);
+		if (rum_penalty != 0) {
+			if (rum_penalty <= ship->getRum()) 
+				ship->setRum(ship->getRum() - rum_penalty);
+			else {
+				rum_penalty -= ship->getRum();
+				ship->setRum(0);
+				int gold_penalty = rum_penalty * 2;
+				if (gold_penalty <= ship->getGold()) 
+					ship->setGold(ship->getGold() - gold_penalty);
+				else 
+					ship->setGold(0);
 			}
 		}
 	}

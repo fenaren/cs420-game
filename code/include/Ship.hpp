@@ -33,6 +33,10 @@ public:
   double getRumRate() const;
 
   void setRumRate(double rum_rate);
+  
+  bool getIsInvincible() const;
+  
+  void setIsInvincible(bool new_invincible);
 
 private:
 
@@ -45,6 +49,12 @@ private:
   double rum_rate;
   
   double rum_time;
+  
+  bool invincible;
+  
+  const double INVINCIBLE_TIMER = 3.0;
+  
+  double invincibleTimer;
 };
 
 inline unsigned int Ship::getGold() const
@@ -89,6 +99,14 @@ inline void Ship::setRumRate(double rum_rate)
   // We want to do this to avoid massive rum changes when changing from a low
   // rum rate to a high rum rate
   rum_time = 0.0;
+}
+
+inline bool Ship::getIsInvincible() const {
+	return invincible;
+}
+
+inline void Ship::setIsInvincible(bool new_invincible) {
+	invincible = new_invincible;
 }
 
 #endif
