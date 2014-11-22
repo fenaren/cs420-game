@@ -5,6 +5,7 @@
 
 #include "GameLogic.hpp"
 #include "HumanGameView.hpp"
+#include "AIGameView.hpp"
 #include "Map.hpp"
 #include "TransactionFailEvent.hpp"
 #include "TransactionStartEvent.hpp"
@@ -113,6 +114,12 @@ int main(int argc, char** argv)
     // Do something smarter than this
     return 0;
   }
+  
+  AIGameView AI_game_view(&game_logic);
+  if (!AI_game_view.initialize()) 
+  {
+	return 0;  
+  }
 
 
   // Pull event_manager from GameLogic
@@ -159,6 +166,9 @@ int main(int argc, char** argv)
      
     // UPDATE GAME VIEWS
     human_game_view.update(update_time * static_cast<float>(GAME_TIME_FACTOR));
+	
+	// UPDATE AI VIEW
+	AI_game_view.update(update_time * static_cast<float>(GAME_TIME_FACTOR));
 
     // UPDATE GAME LOGIC
     game_logic.update(update_time * static_cast<float>(GAME_TIME_FACTOR));
