@@ -44,13 +44,17 @@ GameLogic::GameLogic() :
   
   // initializer for pirate 1
   Pirate* pirate1 = new Pirate(actor_id++);
-  pirate1->setPosition(sf::Vector2i(0, 8));
+  pirate1->initialize();
+  pirate1->setPosition(sf::Vector2i(1, 8));
+  pirate1->setPrevPos(sf::Vector2i(0, 8));
   enemies[pirate1->getActorId()] = pirate1;
   actors[pirate1->getActorId()] = pirate1;
   
   // initializer for pirate 2
   Pirate* pirate2 = new Pirate(actor_id++);
+  pirate2->initialize();
   pirate2->setPosition(sf::Vector2i(26, 10));
+  pirate2->setPrevPos(sf::Vector2i(25,10));
   enemies[pirate2->getActorId()] = pirate2;
   actors[pirate2->getActorId()] = pirate2;
 

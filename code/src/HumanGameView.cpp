@@ -318,8 +318,6 @@ void HumanGameView::drawActors() {
 			else 
 				ship_sprite.setColor(sf::Color::Black);
 		}
-		ship_sprite.setPosition(sf::Vector2f(enemy->getSeek().x * map_tile_size + map_tl_wcoords.x, enemy->getSeek().y * map_tile_size + map_tl_wcoords.y));
-		App->draw(ship_sprite);
 		ship_sprite.setPosition(sf::Vector2f(enemy->getPositionX() * map_tile_size + map_tl_wcoords.x, enemy->getPositionY() * map_tile_size + map_tl_wcoords.y));
 		App->draw(ship_sprite);
 	}
