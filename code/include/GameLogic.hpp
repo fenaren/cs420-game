@@ -12,6 +12,8 @@
 #include "Ship.hpp"
 #include "Map.hpp"
 #include "Port.hpp"
+#include "EnemyActor.hpp"
+#include "Pirate.hpp"
 
 class GameLogic
 {
@@ -25,6 +27,7 @@ public:
   // Define a couple types to make working with our containers easier
   typedef std::map<ActorId, Actor*> ActorList;
   typedef std::map<ActorId, Port*>  PortsList;
+  typedef std::map<ActorId, EnemyActor*>  EnemiesList;
 
 
   /* Does everything necessary to initialize the game logic.  Should run
@@ -42,8 +45,12 @@ public:
   const ActorList& getActorList() const;
 
   const PortsList& getPortsList() const;
+  
+  const EnemiesList* getEnemiesListPointer() const;
 
   const Ship* getShip() const;
+  
+  Map* getMap();
 
   double getGameTime() const;
 
@@ -59,6 +66,10 @@ public:
   // Transactions can succeed or fail depending on the transaction parameters,
   // and this will queue the appropriate events in those cases.
   void TransactionCheckEventHandler(const EventInterface& event);
+  
+  // Handles an ActorMoveEvent.  Makes sure based off map that it is a valid move
+  // then moves the actor to that location
+  void AICmdEventHandler(const EventInterface& event);
 
   // Handles the GameRestartEvent. This should reset all actor values.
   void GameRestartEventHandler(const EventInterface& event);
@@ -68,6 +79,7 @@ private:
   // Containers for actors and other things
   ActorList actors;
   PortsList ports;
+  EnemiesList enemies;
 
   // The game logic's event manager
   EventManager event_manager;
@@ -104,6 +116,11 @@ inline const GameLogic::PortsList& GameLogic::getPortsList() const
   return ports;
 }
 
+inline  const GameLogic::EnemiesList* GameLogic::getEnemiesListPointer() const 
+{
+	return &enemies;
+}
+
 inline const Ship* GameLogic::getShip() const
 {
   return ship;
@@ -112,6 +129,10 @@ inline const Ship* GameLogic::getShip() const
 inline double GameLogic::getGameTime() const
 {
   return game_time;
+}
+
+inline  Map* GameLogic::getMap() {
+	return &map;
 }
 
 #endif

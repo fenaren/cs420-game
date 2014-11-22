@@ -60,7 +60,9 @@ HumanGameView::~HumanGameView()
 bool HumanGameView::initialize()
 {
   test = new UITextInput();
-  test->initialize(sf::Vector2f(150, 100), currentRes, UIElement::Center);
+
+  // Sized such that all transaction failure text fits within it
+  test->initialize(sf::Vector2f(350, 100), currentRes, UIElement::Center);
   if (!tempMap.createMap("./data/second_map.txt")) {
 	std::cout << "ERROR MAP" << std::endl;
   }
@@ -323,6 +325,36 @@ void HumanGameView::drawActors() {
 
 	lastShipX = ship->getPositionX();
 	lastShipY = ship->getPositionY();
+	
+	const std::map<ActorId, EnemyActor*> *enemies = getGameLogic()->getEnemiesListPointer();
+	for (std::map<ActorId, EnemyActor*>::const_iterator i = enemies->begin(); i != enemies->end(); i++) {
+		EnemyActor* enemy = i->second;
+		if(enemy->getType() == EnemyActor::Pirate){
+			int enemyShipSpriteY = 0;
+			if (enemy->getPrevPos().x > enemy->getPositionX()) {
+				enemyShipSpriteY = 25;
+			}
+			// ship moved right
+			else if (enemy->getPrevPos().x < enemy->getPositionX()) {
+				enemyShipSpriteY = 50;
+			}
+			// ship moved up
+			else if (enemy->getPrevPos().y > enemy->getPositionY()) {
+				enemyShipSpriteY = 75;
+			}
+			// ship moved down
+			else if (enemy->getPrevPos().y < enemy->getPositionY()) {
+				enemyShipSpriteY = 0;
+			}
+			ship_sprite.setTextureRect(sf::IntRect(0,enemyShipSpriteY,25,25));
+			if (enemy->getState() == EnemyActor::Pursue)
+				ship_sprite.setColor(sf::Color::Red);
+			else 
+				ship_sprite.setColor(sf::Color::Green);
+		}
+		ship_sprite.setPosition(sf::Vector2f(enemy->getPositionX() * map_tile_size + map_tl_wcoords.x, enemy->getPositionY() * map_tile_size + map_tl_wcoords.y));
+		App->draw(ship_sprite);
+	}
 }
   
 // draws the elements in the UI list
@@ -333,10 +365,43 @@ void HumanGameView::drawUI() {
 }
 
 // handles transaction fails
-void HumanGameView::transactionFailEventHandler(const EventInterface& event) {
-	std::ostringstream oss;
-	oss << "Incorrect Amount!\nSupply: " << tc_portrum << "\nPrice: " << tc_rum_price;
-	test->setDialogue(oss.str());
+void HumanGameView::transactionFailEventHandler(const EventInterface& event)
+{
+  const TransactionFailEvent* tf_event =
+    dynamic_cast<const TransactionFailEvent*>(&event);
+
+  if (tf_event == 0)
+  {
+    return;
+  }
+
+  std::ostringstream oss;
+
+  // Why did the transaction fail?  Push descriptive text for each case.
+  switch(tf_event->getFailReason())
+  {
+  case TransactionFailEvent::BUY_EXCEEDS_MAX_SHIP_INVENTORY:
+    oss << "Your ship can't hold that much rum!";
+    break;
+
+  case TransactionFailEvent::BUY_NOT_ENOUGH_PORT_INVENTORY:
+    oss << "This port doesn't have that much rum!";
+    break;
+
+  case TransactionFailEvent::BUY_NOT_ENOUGH_GOLD:
+    oss << "You don't have enough gold!";
+    break;
+
+  case TransactionFailEvent::SELL_EXCEEDS_SHIP_INVENTORY:
+    oss << "You don't have that much rum!";
+    break;
+
+  case TransactionFailEvent::SELL_EXCEEDS_MAX_PORT_INVENTORY:
+    oss << "This port can't accept that much rum!";
+  };
+
+  oss << "\nSupply: " << tc_portrum << "\nPrice: " << tc_rum_price;
+  test->setDialogue(oss.str());
 }
 
 // handles transaction successes

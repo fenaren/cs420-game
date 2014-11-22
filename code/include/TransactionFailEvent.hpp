@@ -11,13 +11,23 @@ class TransactionFailEvent : public EventInterface
 {
 public:
 
+  enum FailReason
+  {
+    BUY_EXCEEDS_MAX_SHIP_INVENTORY,
+    BUY_NOT_ENOUGH_PORT_INVENTORY,
+    BUY_NOT_ENOUGH_GOLD,
+    SELL_EXCEEDS_SHIP_INVENTORY,
+    SELL_EXCEEDS_MAX_PORT_INVENTORY
+  };
+
   TransactionFailEvent();
 
   TransactionFailEvent(ActorId ship_id,
 		       ActorId port_id,
 		       unsigned int ship_gold,
 		       unsigned int ship_rum,
-		       unsigned int port_rum);
+		       unsigned int port_rum,
+		       FailReason fail_reason);
 
   virtual ~TransactionFailEvent();
 
@@ -53,6 +63,10 @@ public:
   /* Port rum getter */
   unsigned int getPortRum() const;
 
+  void setFailReason(FailReason fail_reason);
+
+  FailReason getFailReason() const;
+
   /* TransactionFailEvent's event type */
   static const EventType event_type;
 
@@ -65,6 +79,9 @@ private:
   unsigned int ship_gold;
   unsigned int ship_rum;
   unsigned int port_rum;
+
+  // Why did the transaction fail?
+  FailReason fail_reason;
 };
 
 inline EventType TransactionFailEvent::getEventType() const
@@ -121,6 +138,18 @@ inline unsigned int TransactionFailEvent::getPortRum() const
 {
   return port_rum;
 }
+
+inline void TransactionFailEvent::setFailReason(FailReason fail_reason)
+{
+  this->fail_reason = fail_reason;
+}
+
+inline
+TransactionFailEvent::FailReason TransactionFailEvent::getFailReason() const
+{
+  return fail_reason;
+}
+
 
 
 #endif
