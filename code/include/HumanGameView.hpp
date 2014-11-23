@@ -41,6 +41,8 @@ public:
   void drawActors();
   
   void drawUI();
+
+  void drawScreen();
   
   void transactionFailEventHandler(const EventInterface& event);
   void transactionSuccessEventHandler(const EventInterface& event);
@@ -106,6 +108,9 @@ private:
 
   // texture to draw sprites from
   sf::Texture texture;
+
+  // texture to draw start_screen from
+  sf::Texture start_screen;
 
   // last known ship position, for animation
   unsigned int lastShipX;

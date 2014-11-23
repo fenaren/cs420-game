@@ -27,13 +27,16 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
 	if (!texture.loadFromFile("./data/sprites.png")) {
 		std::cout << "ERROR TEXTURE" << std::endl;
 	}
+	if (!start_screen.loadFromFile("./data/title_screen.png")) {
+		std::cout << "ERROR START_SCREEN" << std::endl;
+	}
 	currentRes = DEFAULT_RES;
 	resRatio = sf::Vector2f(1, 1);
 	aspectRatio = DEFAULT_RES.x / DEFAULT_RES.y;
 	lastShipX = 10;
 	lastShipY = 12;
 	shipSpriteY = 0;
-	game_state = "";
+	game_state = "START_SCREEN";
 }
 
 HumanGameView::~HumanGameView()
@@ -160,6 +163,8 @@ void HumanGameView::update(const sf::Time& delta_t)
   updateUI();
   drawUI();
 
+  drawScreen();
+
   // Can use App to draw in the game window
   
   App->display();
@@ -235,7 +240,7 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 		    }
 
 		    if ((event.key.code == sf::Keyboard::Space) 
-			&& (game_state == "YOU LOSE" || game_state == "YOU WIN")) {
+			&& (game_state == "YOU LOSE" || game_state == "YOU WIN" || game_state == "START_SCREEN")) {
 				GameRestartEvent* gr_event = new GameRestartEvent();
 				getGameLogic()->getEventManager()->queueEvent(gr_event);
 				game_state = "";
@@ -392,6 +397,23 @@ void HumanGameView::drawUI() {
 	for ( UIElement* elem : uiList ) {
 		elem->draw(App);
 	}
+}
+
+// draws the screen that the player is on, if any
+void HumanGameView::drawScreen() {
+
+	sf::Vector2u window_size = App->getSize();
+	double x_scale = window_size.x / 800.0;
+	double y_scale = window_size.y / 600.0;
+
+	sf::Sprite screen_sprite;
+	if (game_state == "START_SCREEN") {
+		screen_sprite.setTexture(start_screen);
+	}
+	screen_sprite.setTextureRect(sf::IntRect(0,0,800,600));
+	screen_sprite.setPosition(sf::Vector2f(0,0));
+	screen_sprite.scale(x_scale,y_scale);
+	App->draw(screen_sprite);
 }
 
 // handles transaction fails
