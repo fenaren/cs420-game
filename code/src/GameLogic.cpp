@@ -8,6 +8,9 @@
 #include "ActorMovedEvent.hpp"
 #include "AICmdEvent.hpp"
 #include "GameLogic.hpp"
+#include "GameLostEvent.hpp"
+#include "GameRestartEvent.hpp"
+#include "GameWonEvent.hpp"
 #include "ShipMoveCmdEvent.hpp"
 #include "TransactionCancelEvent.hpp"
 #include "TransactionCheckEvent.hpp"
@@ -15,10 +18,12 @@
 #include "TransactionStartEvent.hpp"
 #include "TransactionSuccessEvent.hpp"
 
-
 GameLogic::GameLogic() :
   ship(0)
 {
+  game_time = 300.0;
+  game_over = 0;
+
   // Used for assigning actor IDs throughout this constructor
   unsigned int actor_id = 0;
 
@@ -27,7 +32,6 @@ GameLogic::GameLogic() :
   if(!map.createMap("./data/second_map.txt")){
     std::cout<<"Map failed to create"<<std::endl;
   }
-
 
   // Create and initialize the ship
   ship = new Ship(actor_id++);
@@ -38,7 +42,7 @@ GameLogic::GameLogic() :
   ship->setRum(5);
   ship->setMaxRum(10);
   ship->setRumRate(-0.1);
-  
+  ship->setGoldRate(0.0);
 
   // Push the ship onto the list of actors
   actors[ship->getActorId()] = ship;
@@ -54,7 +58,6 @@ GameLogic::GameLogic() :
   pirate2->setPosition(sf::Vector2i(26, 10));
   enemies[pirate2->getActorId()] = pirate2;
   actors[pirate2->getActorId()] = pirate2;
-
 
   // Create and initialize all the ports
 
@@ -197,6 +200,13 @@ bool GameLogic::initialize()
 			    std::placeholders::_1)),
     AICmdEvent::event_type);
 
+  // Register the proper handler for when the game is restarted
+  event_manager.addDelegate(
+    EventDelegate(std::bind(&GameLogic::GameRestartEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    GameRestartEvent::event_type);
+
   return true;
 }
 
@@ -212,6 +222,44 @@ void GameLogic::update(const sf::Time& delta_t)
   {
     i->second->update(delta_t);
   }
+
+  // Update game_time
+  game_time -= delta_t.asSeconds();
+
+  // Check for lose conditions
+  if (((ship->getGold() == 0 && ship->getRum() == 0)
+	|| game_time <= 0) && game_over == 0) 
+  {
+    GameLostEvent* gl_event = new GameLostEvent();
+    event_manager.queueEvent(gl_event);
+    game_over = 1;
+  }
+
+  // Check for win condition
+  if (ship->getGold() >= 500 && game_over == 0) 
+  {
+    GameWonEvent* gw_event = new GameWonEvent();
+    event_manager.queueEvent(gw_event);
+    game_over = 1;
+  }  
+}
+
+void GameLogic::resetStartValues()
+{
+  // Reset game time
+  game_time = 300.0;
+
+  // Reset ship to starting position, gold, etc.
+  ship->setPositionX(10);
+  ship->setPositionY(12);
+  ship->setMinMoveTime(0.5);
+  ship->setGold(10);
+  ship->setRum(5);
+  ship->setMaxRum(10);
+  ship->setRumRate(-0.1);
+  ship->setGoldRate(0.0);
+
+  game_over = 0;
 }
 
 void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
@@ -461,4 +509,9 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
       event_manager.queueEvent(tsuccess_event);
     }
   }
+}
+
+void GameLogic::GameRestartEventHandler(const EventInterface& event)
+{
+  resetStartValues();
 }
