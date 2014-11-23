@@ -12,7 +12,7 @@ void UITextInput::initialize(sf::Vector2f s, sf::Vector2u curRes, Orientation or
 	input = ":";
 	inputText.setFont(font);
 	inputText.setString('\n'+input);
-	inputText.setCharacterSize(20);
+	inputText.setCharacterSize(25);
 	dialogue = "Rum Supply X\nPrice Y";
 	dialogueText.setFont(font);
 	dialogueText.setCharacterSize(20);
