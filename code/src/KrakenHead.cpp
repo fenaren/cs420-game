@@ -12,7 +12,7 @@ bool KrakenHead::initialize() {
 	setPrevPos(getSeek());
 	setRumPenalty(3);
 	setMinMoveTime(3);
-	setPatrolTimerMin(200.0);
+	setPatrolTimerMin(30.0);
 	setAggroRange(0);
 	setNeedSeek(true);
 }
