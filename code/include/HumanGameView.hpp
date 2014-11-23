@@ -8,6 +8,7 @@
 
 #include "ActorId.hpp"
 #include "GameLogic.hpp"
+#include "GameLostEvent.hpp"
 #include "GameView.hpp"
 #include "UIElement.hpp"
 #include "UITextInput.hpp"
@@ -44,6 +45,9 @@ public:
   void transactionFailEventHandler(const EventInterface& event);
   void transactionSuccessEventHandler(const EventInterface& event);
   void transactionStartEventHandler(const EventInterface& event);
+  void transactionCancelEventHandler(const EventInterface& event);
+  void gameLostEventHandler(const EventInterface& event);
+  void gameWonEventHandler(const EventInterface& event);
 
   // Takes a coordinate pair (map_coords) denoting a location on the game map
   // and returns a coordinate pair (window_coords) denoting where the top-left
@@ -124,6 +128,9 @@ private:
   unsigned int tc_shiprum;
   unsigned int tc_portrum;
   unsigned int tc_rum_price;
+
+  UITextField* win_lose_message;
+  std::string game_state;
 };
 
 inline unsigned int HumanGameView::getMapTileSize() const

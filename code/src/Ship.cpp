@@ -97,4 +97,56 @@ void Ship::update(const sf::Time& delta_t)
     // accumulate delta_rum_abs amount of rum change.
     rum_time -= static_cast<double>(delta_rum_abs) / std::abs(rum_rate);
   }
+
+  // Track how much time has passed since the last gold count change, unless gold
+  // amount isn't changing
+  if (gold_rate == 0.0)
+  {
+    gold_time = 0.0;
+  }
+  else 
+  {
+    gold_time += delta_t.asSeconds();
+  }
+
+  // Should the gold rate change this frame?
+  if (rum == 0.0) {
+    gold_rate = -0.2;
+  }
+  else {
+    gold_rate = 0.0;
+  }
+
+  // Should the gold amount be changed this frame?
+  if (gold_rate != 0.0 && gold_time > std::abs(1.0 / gold_rate))
+  {
+    // How much should be adjust the gold amount by?
+    unsigned int delta_gold_abs =
+      static_cast<unsigned int>(std::trunc(std::abs(gold_time * gold_rate)));
+
+    // Will the change be positive or negative?
+    if (gold_rate > 0.0)
+    {
+      // Add the delta to the current rum amount
+      gold += delta_gold_abs;
+    }
+    else
+    {
+      // Will this underflow?
+      if (delta_gold_abs > gold)
+      {
+        // Cap it so it doesn't underflow
+        delta_gold_abs = gold;
+      }
+
+      // Subtract the delta from the current gold amount
+      gold -= delta_gold_abs;
+    }
+
+    // We just adjusted the gold by delta_gold_abs, so now we need to subtract
+    // from gold_time the amount of time it takes at the current gold rate to
+    // accumulate delta_gold_abs amount of gold change.
+    gold_time -= static_cast<double>(delta_gold_abs) / std::abs(gold_rate);
+  }
+
 }

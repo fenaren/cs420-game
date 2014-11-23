@@ -8,16 +8,22 @@
 #include "ActorMovedEvent.hpp"
 #include "AICmdEvent.hpp"
 #include "GameLogic.hpp"
+#include "GameLostEvent.hpp"
+#include "GameRestartEvent.hpp"
+#include "GameWonEvent.hpp"
 #include "ShipMoveCmdEvent.hpp"
+#include "TransactionCancelEvent.hpp"
 #include "TransactionCheckEvent.hpp"
 #include "TransactionFailEvent.hpp"
 #include "TransactionStartEvent.hpp"
 #include "TransactionSuccessEvent.hpp"
 
-
 GameLogic::GameLogic() :
   ship(0)
 {
+  game_time = 300.0;
+  game_over = 0;
+
   // Used for assigning actor IDs throughout this constructor
   unsigned int actor_id = 0;
 
@@ -26,7 +32,6 @@ GameLogic::GameLogic() :
   if(!map.createMap("./data/second_map.txt")){
     std::cout<<"Map failed to create"<<std::endl;
   }
-
 
   // Create and initialize the ship
   ship = new Ship(actor_id++);
@@ -38,7 +43,7 @@ GameLogic::GameLogic() :
   ship->setMaxRum(10);
   ship->setRumRate(-0.1);
   ship->initialize();
-  
+  ship->setGoldRate(0.0);
 
   // Push the ship onto the list of actors
   actors[ship->getActorId()] = ship;
@@ -108,7 +113,6 @@ GameLogic::GameLogic() :
   kraken_tent4->setFollowOffset(sf::Vector2i(1, 1));
   enemies[kraken_tent4->getActorId()] = kraken_tent4;
   actors[kraken_tent4->getActorId()] = kraken_tent4;
-
   // Create and initialize all the ports
 
   // Open the port init file
@@ -250,12 +254,16 @@ bool GameLogic::initialize()
 			    std::placeholders::_1)),
     AICmdEvent::event_type);
 	
+  // Register the proper handler for when the game is restarted
+  event_manager.addDelegate(
+    EventDelegate(std::bind(&GameLogic::GameRestartEventHandler,
 	// Register the proper handler for collision detection
     event_manager.addDelegate(
     EventDelegate(std::bind(&GameLogic::CollisionEventHandler,
 			    this,
 			    std::placeholders::_1)),
     ActorMovedEvent::event_type);
+    GameRestartEvent::event_type);
 
   return true;
 }
@@ -272,6 +280,44 @@ void GameLogic::update(const sf::Time& delta_t)
   {
     i->second->update(delta_t);
   }
+
+  // Update game_time
+  game_time -= delta_t.asSeconds();
+
+  // Check for lose conditions
+  if (((ship->getGold() == 0 && ship->getRum() == 0)
+	|| game_time <= 0) && game_over == 0) 
+  {
+    GameLostEvent* gl_event = new GameLostEvent();
+    event_manager.queueEvent(gl_event);
+    game_over = 1;
+  }
+
+  // Check for win condition
+  if (ship->getGold() >= 500 && game_over == 0) 
+  {
+    GameWonEvent* gw_event = new GameWonEvent();
+    event_manager.queueEvent(gw_event);
+    game_over = 1;
+  }  
+}
+
+void GameLogic::resetStartValues()
+{
+  // Reset game time
+  game_time = 300.0;
+
+  // Reset ship to starting position, gold, etc.
+  ship->setPositionX(10);
+  ship->setPositionY(12);
+  ship->setMinMoveTime(0.5);
+  ship->setGold(10);
+  ship->setRum(5);
+  ship->setMaxRum(10);
+  ship->setRumRate(-0.1);
+  ship->setGoldRate(0.0);
+
+  game_over = 0;
 }
 
 void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
@@ -410,6 +456,16 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
     return;
   }
 
+  // Does the user want to cancel the transaction?
+  if (tcheck_event->getCancel())
+  {
+    // Notify that transaction has been cancelled and return
+    TransactionCancelEvent* tc_event = new TransactionCancelEvent();
+    event_manager.queueEvent(tc_event);
+    
+    return;
+  }
+
   shipid = tcheck_event->getShipId();
   portid = tcheck_event->getPortId();
   shipgold = tcheck_event->getShipGold();
@@ -543,4 +599,9 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
       event_manager.queueEvent(tsuccess_event);
     }
   }
+}
+
+void GameLogic::GameRestartEventHandler(const EventInterface& event)
+{
+  resetStartValues();
 }

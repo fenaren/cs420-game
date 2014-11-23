@@ -14,7 +14,8 @@ TransactionCheckEvent::TransactionCheckEvent() :
   ship_gold(0),
   ship_rum(0),
   port_rum(0),
-  rum_request(0)
+  rum_request(0),
+  cancel(false)
 {
 }
 
@@ -30,7 +31,20 @@ TransactionCheckEvent::TransactionCheckEvent(ActorId ship_id,
     ship_gold(ship_gold),
     ship_rum(ship_rum),
     port_rum(port_rum),
-    rum_request(rum_request)
+    rum_request(rum_request),
+    cancel(false)
+{
+}
+
+TransactionCheckEvent::TransactionCheckEvent(bool cancel) :
+  EventInterface(),
+  ship_id(0),
+  port_id(0),
+  ship_gold(0),
+  ship_rum(0),
+  port_rum(0),
+  rum_request(0),
+  cancel(cancel)
 {
 }
 

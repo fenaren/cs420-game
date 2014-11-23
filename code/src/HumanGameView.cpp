@@ -1,6 +1,14 @@
 #include <iostream>
 
+#include "GameLostEvent.hpp"
+#include "GameRestartEvent.hpp"
+#include "GameWonEvent.hpp"
 #include "HumanGameView.hpp"
+#include "TransactionCancelEvent.hpp"
+#include "TransactionFailEvent.hpp"
+#include "TransactionStartEvent.hpp"
+#include "TransactionSuccessEvent.hpp"
+#include "UIGameTime.hpp"
 #include "UITextField.hpp"
 #include "UIShipData.hpp"
 
@@ -25,6 +33,7 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
 	lastShipX = 10;
 	lastShipY = 12;
 	shipSpriteY = 0;
+	game_state = "";
 }
 
 HumanGameView::~HumanGameView()
@@ -75,15 +84,43 @@ bool HumanGameView::initialize()
     TransactionSuccessEvent::event_type);
 
   getGameLogic()->getEventManager()->addDelegate(
+    EventDelegate(std::bind(&HumanGameView::transactionCancelEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    TransactionCancelEvent::event_type);
+
+
+  getGameLogic()->getEventManager()->addDelegate(
     EventDelegate(std::bind(&HumanGameView::transactionStartEventHandler,
 			    this,
 			    std::placeholders::_1)),
     TransactionStartEvent::event_type);
 
+  getGameLogic()->getEventManager()->addDelegate(
+    EventDelegate(std::bind(&HumanGameView::gameLostEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    GameLostEvent::event_type);
+
+  getGameLogic()->getEventManager()->addDelegate(
+    EventDelegate(std::bind(&HumanGameView::gameWonEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    GameWonEvent::event_type);
 
   // Push the UI ship data element onto the element list
   uiList.push_back(new UIShipData());
 
+  // Push the UI win/lose message onto the element list
+  win_lose_message = new UITextField();
+  win_lose_message->setText(game_state);
+  win_lose_message->setPosition(sf::Vector2f(350,300));
+  win_lose_message->setCharacterSize(24);
+  win_lose_message->setStyle(sf::Text::Bold);
+  uiList.push_back(win_lose_message);
+
+  // Push the UI game time element onto the element list
+  uiList.push_back(new UIGameTime());
 
   // Grab a shortcut to the ports list
   const GameLogic::PortsList* ports_list = &getGameLogic()->getPortsList();
@@ -166,18 +203,45 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 			
 		  // this code will actually react to transaction request event in the future
 		  case (sf::Event::KeyPressed):
-			
-			// if an input menu is open returns the int and clears it
-			if (event.key.code == sf::Keyboard::Return) {
-				if (menuOpen) {
-					double tempdouble = test->clearInput();
-					if (tempdouble >= 0) {
-						TransactionCheckEvent* tc_event = new TransactionCheckEvent(tc_shipid, tc_portid, tc_shipgold, tc_shiprum, tc_portrum, tempdouble);
-						getGameLogic()->getEventManager()->queueEvent(tc_event);
-					}
-				}
+		    if (menuOpen)
+		    {
+		      // if an input menu is open returns the int and clears it
+		      if (event.key.code == sf::Keyboard::Return)
+		      {
+			double tempdouble = test->clearInput();
+			if (tempdouble >= 0)
+			{
+			  TransactionCheckEvent* tc_event =
+			    new TransactionCheckEvent(tc_shipid,
+						      tc_portid,
+						      tc_shipgold,
+						      tc_shiprum,
+						      tc_portrum,
+						      tempdouble);
+
+			  getGameLogic()->getEventManager()->queueEvent(tc_event);
 			}
-			break;
+		      }
+		      // Did the user press Escape?
+		      else if (event.key.code == sf::Keyboard::Escape)
+		      {
+			// The user wants to cancel the transaction, so queue up
+			// the appropriate event with cancel set to true
+			TransactionCheckEvent* tc_event =
+			  new TransactionCheckEvent(true);
+
+			getGameLogic()->getEventManager()->queueEvent(tc_event);
+		      }
+		    }
+
+		    if ((event.key.code == sf::Keyboard::Space) 
+			&& (game_state == "YOU LOSE" || game_state == "YOU WIN")) {
+				GameRestartEvent* gr_event = new GameRestartEvent();
+				getGameLogic()->getEventManager()->queueEvent(gr_event);
+				game_state = "";
+				win_lose_message->setText(game_state);
+		    }
+		    break;
 
 		default:
 		{
@@ -407,6 +471,13 @@ void HumanGameView::transactionSuccessEventHandler(const EventInterface& event) 
 	menuOpen = false;
 }
 
+void HumanGameView::transactionCancelEventHandler(const EventInterface& event) {
+	std::vector<UIElement*>::iterator position = std::find(uiList.begin(), uiList.end(), test);
+	if (position != uiList.end())
+		uiList.erase(position);
+	menuOpen = false;
+}
+
 // handles transaction start
 void HumanGameView::transactionStartEventHandler(const EventInterface& event) {
 	if (!menuOpen) {
@@ -425,6 +496,16 @@ void HumanGameView::transactionStartEventHandler(const EventInterface& event) {
 	std::ostringstream oss;
 	oss << "Supply: " << tc_portrum << "\nPrice: " << tc_rum_price;
 	test->setDialogue(oss.str());
+}
+
+void HumanGameView::gameLostEventHandler(const EventInterface& event) {
+	game_state = "YOU LOSE";
+	win_lose_message->setText(game_state + "\nPress [space] to play again");
+}
+
+void HumanGameView::gameWonEventHandler(const EventInterface& event) {
+	game_state = "YOU WIN";
+	win_lose_message->setText(game_state + "\nPress [space] to play again");
 }
 
 void HumanGameView::calculateMapWindowData()

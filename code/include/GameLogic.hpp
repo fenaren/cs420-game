@@ -55,6 +55,7 @@ public:
   
   Map* getMap();
 
+  double getGameTime() const;
 
   // EVENT HANDLERS
 
@@ -76,6 +77,9 @@ public:
   // checks actor moves for collisions
   void CollisionEventHandler(const EventInterface& event);
 
+  // Handles the GameRestartEvent. This should reset all actor values.
+  void GameRestartEventHandler(const EventInterface& event);
+
 private:
 
   // Containers for actors and other things
@@ -91,6 +95,16 @@ private:
 
   // The game map.  Contains terrain data.
   Map map;
+
+  // The game timer
+  double game_time;
+
+  // Should I queue another gameWon/gameLost event?
+  // Check game_over
+  unsigned int game_over;
+
+  // Resets starting positions and rum/gold values of ship/ports
+  void resetStartValues();
 };
 
 inline EventManager* GameLogic::getEventManager()
@@ -116,6 +130,11 @@ inline  const GameLogic::EnemiesList* GameLogic::getEnemiesListPointer() const
 inline const Ship* GameLogic::getShip() const
 {
   return ship;
+}
+
+inline double GameLogic::getGameTime() const
+{
+  return game_time;
 }
 
 inline  Map* GameLogic::getMap() {
