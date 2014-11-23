@@ -391,10 +391,12 @@ void HumanGameView::drawActors() {
 			// changes colors based on various states
 			if (enemy->getState() == EnemyActor::Pursue)
 				ship_sprite.setColor(sf::Color::Red);
-			else if (enemy->getState() == EnemyActor::Stop || enemy->getRumPenalty() == 0.0)
+			else if (enemy->getState() == EnemyActor::Stop)
 				ship_sprite.setColor(sf::Color::Blue);
+			else if (enemy->getRumPenalty() == 0.0)
+				ship_sprite.setColor(sf::Color::Cyan);
 			else if (enemy->getRumPenalty() > 0.0)
-				ship_sprite.setColor(sf::Color::Black);
+				ship_sprite.setColor(sf::Color(84, 84, 84));
 			else
 				ship_sprite.setColor(sf::Color::Green);
 			
