@@ -21,28 +21,19 @@
 GameLogic::GameLogic() :
   ship(0)
 {
+  // Initialize game time
   game_time = 300.0;
-  game_over = 0;
 
-  // Used for assigning actor IDs throughout this constructor
-  unsigned int actor_id = 0;
+  // Initialize game state
+  game_over = 0;
 
   // Initialize the map
   if(!map.createMap("./data/second_map.txt")){
     std::cout<<"Map failed to create"<<std::endl;
   }
-  
-  // Initialize the ship
-  initializeShip(actor_id++);
 
-  // Initialize pirate1
-  initializePirate1(actor_id++);
-
-  // Initialize pirate2
-  initializePirate2(actor_id++);
-
-  // Create and initialize all the ports
-  initializePorts(actor_id++);
+  // Initialize all actors
+  initializeActors();
 }
 
 GameLogic::~GameLogic()
@@ -121,6 +112,24 @@ void GameLogic::update(const sf::Time& delta_t)
     event_manager.queueEvent(gw_event);
     game_over = 1;
   }  
+}
+
+void GameLogic::initializeActors()
+{
+  // Used for assigning actor IDs throughout this initializer
+  unsigned int actor_id = 0;
+
+  // Initialize the ship
+  initializeShip(actor_id++);
+
+  // Initialize pirate1
+  initializePirate1(actor_id++);
+
+  // Initialize pirate2
+  initializePirate2(actor_id++);
+
+  // Create and initialize all the ports
+  initializePorts(actor_id++);
 }
 
 void GameLogic::initializeShip(unsigned int actor_id)
@@ -275,19 +284,8 @@ void GameLogic::resetStartValues()
     delete i->second;
   }
 
-  unsigned int actor_id = 0;
-
-  // Reset ship to starting position, gold, etc.
-  initializeShip(actor_id++);
-
-  // Reset pirate1 to starting position
-  initializePirate1(actor_id++);
-
-  // Reset pirate2 to starting position
-  initializePirate2(actor_id++);
-
-  // Reset ports to initial values
-  initializePorts(actor_id++);
+  // Reinitialize all actors
+  initializeActors();
 
   // Reset game time
   game_time = 300.0;

@@ -103,6 +103,9 @@ private:
   // Check game_over
   unsigned int game_over;
 
+  // Initialize all actors
+  void initializeActors();
+
   // Initialize ship values
   void initializeShip(unsigned int actor_id);
 
