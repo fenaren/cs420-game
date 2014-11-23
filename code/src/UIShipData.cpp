@@ -35,6 +35,7 @@ void UIShipData::update(HumanGameView* hgv)
 
   setRum(ship->getRum());
   setGold(ship->getGold());
+  setSupply(ship->getMaxRum());
 
   updateText();
 }
@@ -56,11 +57,15 @@ void UIShipData::updateText()
   // Convert rum and gold into text
   std::ostringstream num_to_str;
   num_to_str << rum;
-  updated_text = num_to_str.str() + " R ";
+  updated_text = "Rum: " + num_to_str.str();
+  
+  num_to_str.str("");
+  num_to_str << supply;
+  updated_text += "/" + num_to_str.str();
 
   num_to_str.str("");
   num_to_str << gold;
-  updated_text += num_to_str.str() + " G";
+  updated_text +=" Gold: " + num_to_str.str();
 
   text.setText(updated_text);
 }
