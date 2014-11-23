@@ -72,11 +72,9 @@ void AIGameView::updateSeeks() {
 					
 				// follows the enemy saved in leader based off an offset
 				case EnemyActor::Follow:
-					// makes the offset a bit more random by adding -1, 0, or 1
-					sf::Vector2i random((int) (rand() % 2) - 1, (int) (rand() % 2) - 1);
-					sf::Vector2i temp = enemy->getFollowOffset();
-					temp += random;
-					temp += enemy->getLeader()->getPosition();
+					sf::Vector2i temp = enemy->getLeader()->getPosition() + enemy->getFollowOffset();
+					if (!getGameLogic()->getMap()->isValidPosition(temp))
+						temp = enemy->getLeader()->getPosition();
 					enemy->setSeek(temp);
 					break;
 			}
@@ -106,13 +104,13 @@ sf::Vector2i AIGameView::minMaxMove(EnemyActor* enemy) {
 	sf::Vector2i test = curr;
 	int weight = 500;
 	Map *map = getGameLogic()->getMap();
-	sf::Vector2i diff = curr - prev;
+	/*sf::Vector2i diff = curr - prev;
 	-diff;
 	test = curr + diff;
 	if (test != prev && map->isValidPosition(test) && enemy->getPosDifference(test, seek) < weight) {
 		weight = enemy->getPosDifference(test, seek);
 		min = test;
-	}
+	}*/
 	test = curr;
 	test.y -= 1;
 	if (test != prev && map->isValidPosition(test) && enemy->getPosDifference(test, seek) < weight) {
@@ -139,6 +137,8 @@ sf::Vector2i AIGameView::minMaxMove(EnemyActor* enemy) {
 	}
 	if (prev == seek)
 		min = prev;
+	if (min == enemy->getLeader()->getPosition())
+		return curr;
 	return min;
 }
 

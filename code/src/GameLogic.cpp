@@ -65,7 +65,49 @@ GameLogic::GameLogic() :
   merchant->setPrevPos(sf::Vector2i(12, 17));
   enemies[merchant->getActorId()] = merchant;
   actors[merchant->getActorId()] = merchant;
-
+  
+  KrakenHead* kraken_head = new KrakenHead(actor_id++);
+  kraken_head->initialize();
+  kraken_head->setPosition(sf::Vector2i(24, 15));
+  kraken_head->setPrevPos(sf::Vector2i(23, 15));
+  enemies[kraken_head->getActorId()] = kraken_head;
+  actors[kraken_head->getActorId()] = kraken_head;
+  
+  KrakenTentacle* kraken_tent1 = new KrakenTentacle(actor_id++);
+  kraken_tent1->initialize();
+  kraken_tent1->setPosition(sf::Vector2i(23, 14));
+  kraken_tent1->setPrevPos(sf::Vector2i(22, 14));
+  kraken_tent1->setLeader(kraken_head);
+  kraken_tent1->setFollowOffset(sf::Vector2i(-1, -1));
+  enemies[kraken_tent1->getActorId()] = kraken_tent1;
+  actors[kraken_tent1->getActorId()] = kraken_tent1;
+  
+  KrakenTentacle* kraken_tent2 = new KrakenTentacle(actor_id++);
+  kraken_tent2->initialize();
+  kraken_tent2->setPosition(sf::Vector2i(23, 16));
+  kraken_tent2->setPrevPos(sf::Vector2i(22, 16));
+  kraken_tent2->setLeader(kraken_head);
+  kraken_tent2->setFollowOffset(sf::Vector2i(-1, 1));
+  enemies[kraken_tent2->getActorId()] = kraken_tent2;
+  actors[kraken_tent2->getActorId()] = kraken_tent2;
+  
+  KrakenTentacle* kraken_tent3 = new KrakenTentacle(actor_id++);
+  kraken_tent3->initialize();
+  kraken_tent3->setPosition(sf::Vector2i(25, 14));
+  kraken_tent3->setPrevPos(sf::Vector2i(24, 14));
+  kraken_tent3->setLeader(kraken_head);
+  kraken_tent3->setFollowOffset(sf::Vector2i(1, -1));
+  enemies[kraken_tent3->getActorId()] = kraken_tent3;
+  actors[kraken_tent3->getActorId()] = kraken_tent3;
+  
+  KrakenTentacle* kraken_tent4 = new KrakenTentacle(actor_id++);
+  kraken_tent4->initialize();
+  kraken_tent4->setPosition(sf::Vector2i(25, 16));
+  kraken_tent4->setPrevPos(sf::Vector2i(24, 16));
+  kraken_tent4->setLeader(kraken_head);
+  kraken_tent4->setFollowOffset(sf::Vector2i(1, 1));
+  enemies[kraken_tent4->getActorId()] = kraken_tent4;
+  actors[kraken_tent4->getActorId()] = kraken_tent4;
 
   // Create and initialize all the ports
 
@@ -297,6 +339,7 @@ void GameLogic::AICmdEventHandler(const EventInterface& event) {
 	EnemyActor* enemy = enemies[ai_event->getActorId()];
 	if (enemy->getMoveTime() > enemy->getMinMoveTime() && map.isValidPosition(newPos)) {
 		enemy->setMoveTime(0.0);
+		bool otherEnemy = false;
 		enemy->setPrevPos(enemy->getPosition());
 		enemy->setPosition(newPos);
 		ActorMovedEvent* am_event = new ActorMovedEvent(enemy->getActorId(), newPos.x, newPos.y);

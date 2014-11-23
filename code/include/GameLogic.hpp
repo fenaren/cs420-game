@@ -15,6 +15,8 @@
 #include "EnemyActor.hpp"
 #include "Pirate.hpp"
 #include "Merchant.hpp"
+#include "KrakenHead.hpp"
+#include "KrakenTentacle.hpp"
 
 class GameLogic
 {
