@@ -1,41 +1,33 @@
 #include "Pirate.hpp"
-#include <iostream>
 
 Pirate::Pirate(ActorId actor_id) : EnemyActor(actor_id)
 {
+	
+}
+
+bool Pirate::initialize() {
 	setType(EnemyActor::Pirate);
 	setState(EnemyActor::Patrol);
 	setSeek(sf::Vector2i(getPositionX(), getPositionY()));
 	setPrevPos(getSeek());
 	setRumPenalty(2);
 	setMinMoveTime(1);
+	setPatrolTimerMin(20.0);
 	setAggroRange(4);
 	setNeedSeek(true);
-	recheckTimer = PATROL_TIMER;
-}
-
-bool Pirate::initialize() {
-	setNeedSeek(true);
-	recheckTimer = PATROL_TIMER;
 	freezeTimer = FREEZE_TIMER;
+	return true;
 }
 
 void Pirate::update(const sf::Time& delta_t) {
 	// causes the pirate to occasionally ask for a new patrol in case it gets stuck
-	Actor::update(delta_t);
+	EnemyActor::update(delta_t);
 	if (delta_t.asSeconds() == 0.0)
 		return;
-		
-	if (getState() == EnemyActor::Patrol)
-		recheckTimer -= delta_t.asSeconds();
 		
 	if (getState() == EnemyActor::Stop) 
 		freezeTimer -= delta_t.asSeconds();
 		
-	if (getState() == EnemyActor::Patrol && recheckTimer <= 0.0) {
-		setNeedSeek(true);
-		recheckTimer = PATROL_TIMER;
-	}
 	if (getState() == EnemyActor::Stop && freezeTimer <= 0.0) {
 		setState(EnemyActor::Patrol);
 		setNeedSeek(true);

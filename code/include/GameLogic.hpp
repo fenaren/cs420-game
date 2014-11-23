@@ -14,6 +14,7 @@
 #include "Port.hpp"
 #include "EnemyActor.hpp"
 #include "Pirate.hpp"
+#include "Merchant.hpp"
 
 class GameLogic
 {

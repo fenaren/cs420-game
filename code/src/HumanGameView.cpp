@@ -298,7 +298,7 @@ void HumanGameView::drawActors() {
 	const std::map<ActorId, EnemyActor*> *enemies = getGameLogic()->getEnemiesListPointer();
 	for (std::map<ActorId, EnemyActor*>::const_iterator i = enemies->begin(); i != enemies->end(); i++) {
 		EnemyActor* enemy = i->second;
-		if(enemy->getType() == EnemyActor::Pirate){
+		if(enemy->getType() == EnemyActor::Pirate || enemy->getType() == EnemyActor::Merchant){
 			int enemyShipSpriteY = 0;
 			if (enemy->getPrevPos().x > enemy->getPositionX()) {
 				enemyShipSpriteY = 25;
@@ -316,15 +316,20 @@ void HumanGameView::drawActors() {
 				enemyShipSpriteY = 0;
 			}
 			ship_sprite.setTextureRect(sf::IntRect(0,enemyShipSpriteY,25,25));
+			
+			// changes colors based on various states
 			if (enemy->getState() == EnemyActor::Pursue)
 				ship_sprite.setColor(sf::Color::Red);
-			else if (enemy->getState() == EnemyActor::Stop)
+			else if (enemy->getState() == EnemyActor::Stop || enemy->getRumPenalty() == 0.0)
 				ship_sprite.setColor(sf::Color::Blue);
-			else 
+			else if (enemy->getRumPenalty() > 0.0)
 				ship_sprite.setColor(sf::Color::Black);
+			else
+				ship_sprite.setColor(sf::Color::Green);
+			
+			ship_sprite.setPosition(sf::Vector2f(enemy->getPositionX() * map_tile_size + map_tl_wcoords.x, enemy->getPositionY() * map_tile_size + map_tl_wcoords.y));
+			App->draw(ship_sprite);
 		}
-		ship_sprite.setPosition(sf::Vector2f(enemy->getPositionX() * map_tile_size + map_tl_wcoords.x, enemy->getPositionY() * map_tile_size + map_tl_wcoords.y));
-		App->draw(ship_sprite);
 	}
 }
   

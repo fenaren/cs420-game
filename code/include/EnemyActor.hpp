@@ -9,7 +9,7 @@ class EnemyActor : public Actor {
 	
 public:
 	enum State { Patrol, Pursue, Flee, Follow, Stop };
-	enum Type { Pirate, Trader, Kraken, Tentacle };
+	enum Type { Pirate, Merchant, Kraken, Tentacle };
 	EnemyActor(ActorId actor_id);
 	~EnemyActor();
 	
@@ -73,6 +73,14 @@ public:
 	// leader setter
 	void setLeader(EnemyActor* new_leader);
 	
+	double getPatrolTimer();
+	
+	void setPatrolTimer(double new_pat_timer);
+	
+	double getPatrolTimerMin();
+	
+	double setPatrolTimerMin(double new_pat_min);
+	
 	// checks if given vector is within aggro range
 	// aggro range represents single tiles away from
 	// actor, so for example 4 range could mean 4 tiles
@@ -97,6 +105,9 @@ private:
 	EnemyActor* leader;
 	sf::Vector2i follow_offset;
 	bool need_seek;
+	
+	double patrolTimerMin;
+	double patrolTimer;
 };
 
 #endif

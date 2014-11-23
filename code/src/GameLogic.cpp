@@ -58,6 +58,13 @@ GameLogic::GameLogic() :
   pirate2->setPrevPos(sf::Vector2i(25,10));
   enemies[pirate2->getActorId()] = pirate2;
   actors[pirate2->getActorId()] = pirate2;
+  
+  Merchant* merchant = new Merchant(actor_id++);
+  merchant->initialize();
+  merchant->setPosition(sf::Vector2i(12, 18));
+  merchant->setPrevPos(sf::Vector2i(12, 17));
+  enemies[merchant->getActorId()] = merchant;
+  actors[merchant->getActorId()] = merchant;
 
 
   // Create and initialize all the ports
@@ -319,10 +326,10 @@ void GameLogic::CollisionEventHandler(const EventInterface& event) {
 	}
 	if (collision && !ship->getIsInvincible()) {
 		int rum_penalty = enemy->getRumPenalty();
-		ship->setIsInvincible(true);
 		if (enemy->getType() == EnemyActor::Pirate) 
 			enemy->setState(EnemyActor::Stop);
-		if (rum_penalty != 0) {
+		if (rum_penalty > 0) {
+			ship->setIsInvincible(true);
 			if (rum_penalty <= ship->getRum()) 
 				ship->setRum(ship->getRum() - rum_penalty);
 			else {
@@ -334,6 +341,13 @@ void GameLogic::CollisionEventHandler(const EventInterface& event) {
 				else 
 					ship->setGold(0);
 			}
+		}
+		else if (rum_penalty < 0) {
+			if (enemy->getType() == EnemyActor::Merchant)
+				enemy->setRumPenalty(0.0);
+			ship->setRum(ship->getRum() - rum_penalty);
+			if (ship->getRum() > ship->getMaxRum())
+				ship->setRum(ship->getMaxRum());
 		}
 	}
 }

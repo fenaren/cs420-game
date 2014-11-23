@@ -7,7 +7,9 @@ EnemyActor::EnemyActor(ActorId actor_id) :
   prev_pos(sf::Vector2i(0,0)),
   leader(this),
   need_seek(false),
-  follow_offset(sf::Vector2i(0,0))
+  follow_offset(sf::Vector2i(0,0)),
+  patrolTimer(0.0),
+  patrolTimerMin(0.0)
 {
 }
 
@@ -18,9 +20,20 @@ EnemyActor::~EnemyActor() {
 void EnemyActor::update(const sf::Time& delta_t)
 {
 	Actor::update(delta_t);
+	
+	if(delta_t.asSeconds() == 0.0)
+		return;
+		
+	if (getState() == EnemyActor::Patrol)
+		patrolTimer -= delta_t.asSeconds();
+	if (getState() == EnemyActor::Patrol && patrolTimer <= 0.0) {
+		setNeedSeek(true);
+		patrolTimer = patrolTimerMin;
+	}
 }
 
 bool EnemyActor::initialize() {
+	patrolTimer = patrolTimerMin;
 	return true;
 }
 
@@ -94,6 +107,23 @@ EnemyActor* EnemyActor::getLeader() {
 
 void EnemyActor::setLeader(EnemyActor* new_leader) {
 	leader = new_leader;
+}
+
+double EnemyActor::getPatrolTimer() {
+	return patrolTimer;
+}
+	
+void EnemyActor::setPatrolTimer(double new_pat_timer) {
+	patrolTimer = new_pat_timer;
+}
+	
+double EnemyActor::getPatrolTimerMin() {
+	return patrolTimerMin;
+}
+	
+double EnemyActor::setPatrolTimerMin(double new_pat_min) {
+	patrolTimerMin = new_pat_min;
+	patrolTimer = patrolTimerMin;
 }
 
 bool EnemyActor::checkAggroRange(sf::Vector2i pos_checker) {
