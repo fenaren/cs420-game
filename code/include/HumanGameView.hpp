@@ -123,9 +123,11 @@ private:
   // temp ints for storing transaction event data
   ActorId tc_shipid;
   ActorId tc_portid;
-  int tc_shipgold;
-  int tc_shiprum;
-  int tc_portrum;
+
+  unsigned int tc_shipgold;
+  unsigned int tc_shiprum;
+  unsigned int tc_portrum;
+  unsigned int tc_rum_price;
 };
 
 inline unsigned int HumanGameView::getMapTileSize() const

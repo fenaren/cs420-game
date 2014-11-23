@@ -11,9 +11,23 @@ class TransactionFailEvent : public EventInterface
 {
 public:
 
+  enum FailReason
+  {
+    BUY_EXCEEDS_MAX_SHIP_INVENTORY,
+    BUY_NOT_ENOUGH_PORT_INVENTORY,
+    BUY_NOT_ENOUGH_GOLD,
+    SELL_EXCEEDS_SHIP_INVENTORY,
+    SELL_EXCEEDS_MAX_PORT_INVENTORY
+  };
+
   TransactionFailEvent();
 
-  TransactionFailEvent(ActorId ship_id, ActorId port_id, double ship_gold, double ship_rum, double port_rum);
+  TransactionFailEvent(ActorId ship_id,
+		       ActorId port_id,
+		       unsigned int ship_gold,
+		       unsigned int ship_rum,
+		       unsigned int port_rum,
+		       FailReason fail_reason);
 
   virtual ~TransactionFailEvent();
 
@@ -32,22 +46,26 @@ public:
   ActorId getPortId() const;
 
   /* Ship gold setter */
-  void setShipGold(double x);
+  void setShipGold(unsigned int x);
 
   /* Ship gold getter */
-  double getShipGold() const;
+  unsigned int getShipGold() const;
 
   /* Ship rum setter */
-  void setShipRum(double y);
+  void setShipRum(unsigned int y);
 
   /* Ship rum getter */
-  double getShipRum() const;
+  unsigned int getShipRum() const;
   
   /* Port rum setter */
-  void setPortRum(double y);
+  void setPortRum(unsigned int y);
 
   /* Port rum getter */
-  double getPortRum() const;
+  unsigned int getPortRum() const;
+
+  void setFailReason(FailReason fail_reason);
+
+  FailReason getFailReason() const;
 
   /* TransactionFailEvent's event type */
   static const EventType event_type;
@@ -58,9 +76,12 @@ private:
   ActorId ship_id, port_id;
 
   /* Rum and gold of actors associated with this event */
-  double ship_gold;
-  double ship_rum;
-  double port_rum;
+  unsigned int ship_gold;
+  unsigned int ship_rum;
+  unsigned int port_rum;
+
+  // Why did the transaction fail?
+  FailReason fail_reason;
 };
 
 inline EventType TransactionFailEvent::getEventType() const
@@ -88,35 +109,47 @@ inline ActorId TransactionFailEvent::getPortId() const
   return port_id;
 }
 
-inline void TransactionFailEvent::setShipGold(double x)
+inline void TransactionFailEvent::setShipGold(unsigned int x)
 {
   this->ship_gold = x;
 }
 
-inline double TransactionFailEvent::getShipGold() const
+inline unsigned int TransactionFailEvent::getShipGold() const
 {
   return ship_gold;
 }
 
-inline void TransactionFailEvent::setShipRum(double y)
+inline void TransactionFailEvent::setShipRum(unsigned int y)
 {
   this->ship_rum = y;
 }
 
-inline double TransactionFailEvent::getShipRum() const
+inline unsigned int TransactionFailEvent::getShipRum() const
 {
   return ship_rum;
 }
 
-inline void TransactionFailEvent::setPortRum(double y)
+inline void TransactionFailEvent::setPortRum(unsigned int y)
 {
   this->port_rum= y;
 }
 
-inline double TransactionFailEvent::getPortRum() const
+inline unsigned int TransactionFailEvent::getPortRum() const
 {
   return port_rum;
 }
+
+inline void TransactionFailEvent::setFailReason(FailReason fail_reason)
+{
+  this->fail_reason = fail_reason;
+}
+
+inline
+TransactionFailEvent::FailReason TransactionFailEvent::getFailReason() const
+{
+  return fail_reason;
+}
+
 
 
 #endif

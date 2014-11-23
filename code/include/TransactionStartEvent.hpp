@@ -13,11 +13,12 @@ public:
 
   TransactionStartEvent();
 
-  TransactionStartEvent(ActorId ship_id,
-			ActorId port_id,
-			double ship_gold,
-			double ship_rum,
-			double port_rum);
+  TransactionStartEvent(ActorId      ship_id,
+			ActorId      port_id,
+			unsigned int ship_gold,
+			unsigned int ship_rum,
+			unsigned int port_rum,
+			unsigned int port_price);
 
   virtual ~TransactionStartEvent();
 
@@ -36,22 +37,26 @@ public:
   ActorId getPortId() const;
 
   /* Ship gold setter */
-  void setShipGold(double x);
+  void setShipGold(unsigned int x);
 
   /* Ship gold getter */
-  double getShipGold() const;
+  unsigned int getShipGold() const;
 
   /* Ship rum setter */
-  void setShipRum(double y);
+  void setShipRum(unsigned int y);
 
   /* Ship rum getter */
-  double getShipRum() const;
+  unsigned int getShipRum() const;
   
   /* Port rum setter */
-  void setPortRum(double y);
+  void setPortRum(unsigned int y);
 
   /* Port rum getter */
-  double getPortRum() const;
+  unsigned int getPortRum() const;
+
+  void setRumPrice(unsigned int rum_price);
+
+  unsigned int getRumPrice() const;
 
   /* TransactionStartEvent's event type */
   static const EventType event_type;
@@ -62,9 +67,10 @@ private:
   ActorId ship_id, port_id;
 
   /* Rum and gold of actors associated with this event */
-  double ship_gold;
-  double ship_rum;
-  double port_rum;
+  unsigned int ship_gold;
+  unsigned int ship_rum;
+  unsigned int port_rum;
+  unsigned int rum_price;
 };
 
 inline EventType TransactionStartEvent::getEventType() const
@@ -92,35 +98,44 @@ inline ActorId TransactionStartEvent::getPortId() const
   return port_id;
 }
 
-inline void TransactionStartEvent::setShipGold(double x)
+inline void TransactionStartEvent::setShipGold(unsigned int x)
 {
   this->ship_gold = x;
 }
 
-inline double TransactionStartEvent::getShipGold() const
+inline unsigned int TransactionStartEvent::getShipGold() const
 {
   return ship_gold;
 }
 
-inline void TransactionStartEvent::setShipRum(double y)
+inline void TransactionStartEvent::setShipRum(unsigned int y)
 {
   this->ship_rum = y;
 }
 
-inline double TransactionStartEvent::getShipRum() const
+inline unsigned int TransactionStartEvent::getShipRum() const
 {
   return ship_rum;
 }
 
-inline void TransactionStartEvent::setPortRum(double y)
+inline void TransactionStartEvent::setPortRum(unsigned int y)
 {
   this->port_rum= y;
 }
 
-inline double TransactionStartEvent::getPortRum() const
+inline unsigned int TransactionStartEvent::getPortRum() const
 {
   return port_rum;
 }
 
+inline void TransactionStartEvent::setRumPrice(unsigned int rum_price)
+{
+  this->rum_price = rum_price;
+}
+
+inline unsigned int TransactionStartEvent::getRumPrice() const
+{
+  return rum_price;
+}
 
 #endif

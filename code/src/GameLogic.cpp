@@ -6,6 +6,7 @@
 #include <string>
 
 #include "ActorMovedEvent.hpp"
+#include "AICmdEvent.hpp"
 #include "GameLogic.hpp"
 #include "ShipMoveCmdEvent.hpp"
 #include "TransactionCheckEvent.hpp"
@@ -36,9 +37,22 @@ GameLogic::GameLogic() :
   ship->setRum(5);
   ship->setMaxRum(10);
   ship->setRumRate(-0.1);
+  
 
   // Push the ship onto the list of actors
   actors[ship->getActorId()] = ship;
+  
+  // initializer for pirate 1
+  Pirate* pirate1 = new Pirate(actor_id++);
+  pirate1->setPosition(sf::Vector2i(0, 8));
+  enemies[pirate1->getActorId()] = pirate1;
+  actors[pirate1->getActorId()] = pirate1;
+  
+  // initializer for pirate 2
+  Pirate* pirate2 = new Pirate(actor_id++);
+  pirate2->setPosition(sf::Vector2i(26, 10));
+  enemies[pirate2->getActorId()] = pirate2;
+  actors[pirate2->getActorId()] = pirate2;
 
 
   // Create and initialize all the ports
@@ -174,6 +188,13 @@ bool GameLogic::initialize()
 			    this,
 			    std::placeholders::_1)),
     TransactionCheckEvent::event_type);
+	
+	// Register the proper handler for when the Actor Moved Event is triggered
+    event_manager.addDelegate(
+    EventDelegate(std::bind(&GameLogic::AICmdEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    AICmdEvent::event_type);
 
   return true;
 }
@@ -208,9 +229,8 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
 
   // does the move if target terrain is water (this ship can only move on water)
   // AND if enough time has passed
-  if (map.getTerrain(new_pos_x, new_pos_y) != 19 &&
-      new_pos_x < map.get_map_size_x() &&
-      new_pos_y < map.get_map_size_y() &&
+  sf::Vector2i newPos(new_pos_x, new_pos_y);
+  if (map.isValidPosition(newPos) &&
       ship->getMoveTime() > ship->getMinMoveTime())
   {
     // Reset the ship's move time, it's just about to move
@@ -244,6 +264,7 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
 	ts_event->setShipRum(ship->getRum());
 	ts_event->setPortId(i->second->getActorId());
 	ts_event->setPortRum(i->second->getRum());
+	ts_event->setRumPrice(i->second->getRumPrice());
 	
 	event_manager.queueEvent(ts_event);
       }
@@ -251,10 +272,41 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
   }
 }  
 
+void GameLogic::AICmdEventHandler(const EventInterface& event) {
+	const AICmdEvent* ai_event = dynamic_cast<const AICmdEvent*>(&event);  
+	sf::Vector2i newPos = ai_event->getPos();
+	EnemyActor* enemy = enemies[ai_event->getActorId()];
+	if (enemy->getMoveTime() > enemy->getMinMoveTime() && map.isValidPosition(newPos)) {
+		  enemy->setMoveTime(0.0);
+		  if (ship->getPosition() != newPos) {
+			enemy->setPrevPos(enemy->getPosition());
+			enemy->setPosition(newPos);
+			ActorMovedEvent* am_event = new ActorMovedEvent(enemy->getActorId(), newPos.x, newPos.y);
+			event_manager.queueEvent(am_event);
+		  }
+		  else {
+			int rum_penalty = enemy->getRumPenalty();
+			if (rum_penalty != 0) {
+				if (rum_penalty <= ship->getRum()) 
+					ship->setRum(ship->getRum() - rum_penalty);
+				else {
+					rum_penalty -= ship->getRum();
+					ship->setRum(0);
+					int gold_penalty = rum_penalty * 2;
+					if (gold_penalty <= ship->getGold()) 
+						ship->setGold(ship->getGold() - gold_penalty);
+					else 
+						ship->setGold(0);
+				}
+			}
+		}
+	}
+}
+
 void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
 {
   unsigned int shipid, portid, price, rum=1;
-  double shipgold, shiprum, portrum, rumrequest;
+  unsigned int shipgold, shiprum, shipmaxrum, portrum, rumrequest;
 
   const TransactionCheckEvent* tcheck_event =
     dynamic_cast<const TransactionCheckEvent*>(&event);
@@ -269,52 +321,133 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
   portid = tcheck_event->getPortId();
   shipgold = tcheck_event->getShipGold();
   shiprum = tcheck_event->getShipRum();
+  shipmaxrum = ship->getMaxRum();
   portrum = tcheck_event->getPortRum();
   rumrequest = tcheck_event->getRumRequest();
   
   price = ports[portid]->getRumPrice();
-  
-  if (ports[portid]->isBuyPort() && rumrequest <= portrum && rumrequest * price <= shipgold)
+
+  // Is this transaction being done with a buy port?
+  if (ports[portid]->isBuyPort())
   {
+    // Did the ship try to buy too much rum?
+    if (rumrequest + shiprum > shipmaxrum)
+    {
+      TransactionFailEvent* tfail_event =
+	new TransactionFailEvent(
+	  ship->getActorId(),
+	  portid,
+	  shipgold,
+	  shiprum,
+	  portrum,
+	  TransactionFailEvent::BUY_EXCEEDS_MAX_SHIP_INVENTORY);
+
+      // Queue the event, event manager takes ownership
+      event_manager.queueEvent(tfail_event);
+    }
+    // Is the ship trying to buy more rum than the port has?
+    else if (rumrequest > portrum)
+    {
+      TransactionFailEvent* tfail_event =
+	new TransactionFailEvent(
+	  ship->getActorId(),
+	  portid,
+	  shipgold,
+	  shiprum,
+	  portrum,
+	  TransactionFailEvent::BUY_NOT_ENOUGH_PORT_INVENTORY);
+
+      // Queue the event, event manager takes ownership
+      event_manager.queueEvent(tfail_event);
+    }
+    // Is the ship trying to buy more rum than it can afford?
+    else if (rumrequest * price > shipgold)
+    {
+      TransactionFailEvent* tfail_event =
+	new TransactionFailEvent(
+	  ship->getActorId(),
+	  portid,
+	  shipgold,
+	  shiprum,
+	  portrum,
+	  TransactionFailEvent::BUY_NOT_ENOUGH_GOLD);
+
+      // Queue the event, event manager takes ownership
+      event_manager.queueEvent(tfail_event);
+    }
+    else
+    {
+      // This buy transaction is okay
+
       ship->setGold(shipgold - (price * rumrequest));
-	  ship->setRum(shiprum + rumrequest);
-	  ports[portid]->setRum(portrum - rumrequest);
-	  // This transaction succeeds so signal that with the TransactionSuccessEvent
-    TransactionSuccessEvent* tsuccess_event =
-      new TransactionSuccessEvent(ship->getActorId(),
-				  portid,
-				  shipgold,
-				  shiprum,
-				  portrum);
+      ship->setRum(shiprum + rumrequest);
+      ports[portid]->setRum(portrum - rumrequest);
 
-    // Queue the event, event manager takes ownership
-    event_manager.queueEvent(tsuccess_event);
+      // This transaction succeeds so signal that with the
+      // TransactionSuccessEvent
+      TransactionSuccessEvent* tsuccess_event =
+	new TransactionSuccessEvent(ship->getActorId(),
+				    portid,
+				    shipgold,
+				    shiprum,
+				    portrum);
+
+      // Queue the event, event manager takes ownership
+      event_manager.queueEvent(tsuccess_event);
+    }
   }
-  else if (!ports[portid]->isBuyPort() && rumrequest <= shiprum)
+  // The transaction is being done with a sell port
+  else
   {
+    // Is the ship trying to sell more rum than it has?
+    if (rumrequest > shiprum)
+    {
+      TransactionFailEvent* tfail_event =
+	new TransactionFailEvent(
+	  ship->getActorId(),
+	  portid,
+	  shipgold,
+	  shiprum,
+	  portrum,
+	  TransactionFailEvent::SELL_EXCEEDS_SHIP_INVENTORY);
+
+      // Queue the event, event manager takes ownership
+      event_manager.queueEvent(tfail_event);
+    }
+    // Is the ship trying to sell more rum than the port can hold?
+    else if (rumrequest + portrum > ports[portid]->getMaxRum())
+    {
+      TransactionFailEvent* tfail_event =
+	new TransactionFailEvent(
+	  ship->getActorId(),
+	  portid,
+	  shipgold,
+	  shiprum,
+	  portrum,
+	  TransactionFailEvent::SELL_EXCEEDS_MAX_PORT_INVENTORY);
+
+      // Queue the event, event manager takes ownership
+      event_manager.queueEvent(tfail_event);
+    }
+    else
+    {
+      // This sell transaction is okay
+
       ship->setGold(shipgold + (price * rumrequest));
-	  ship->setRum(shiprum - rumrequest);
-	  ports[portid]->setRum(portrum + rumrequest);
-	  // This transaction succeeds so signal that with the TransactionSuccessEvent
-    TransactionSuccessEvent* tsuccess_event =
-      new TransactionSuccessEvent(ship->getActorId(),
-				  portid,
-				  shipgold,
-				  shiprum,
-				  portrum);
+      ship->setRum(shiprum - rumrequest);
+      ports[portid]->setRum(portrum + rumrequest);
 
-    // Queue the event, event manager takes ownership
-    event_manager.queueEvent(tsuccess_event);
-  }
-  else{
-    TransactionFailEvent* tfail_event =
-      new TransactionFailEvent(ship->getActorId(),
-			       portid,
-			       shipgold,
-			       shiprum,
-			       portrum);
+      // This transaction succeeds so signal that with the
+      // TransactionSuccessEvent
+      TransactionSuccessEvent* tsuccess_event =
+	new TransactionSuccessEvent(ship->getActorId(),
+				    portid,
+				    shipgold,
+				    shiprum,
+				    portrum);
 
-    // Queue the event, event manager takes ownership
-    event_manager.queueEvent(tfail_event);
+      // Queue the event, event manager takes ownership
+      event_manager.queueEvent(tsuccess_event);
+    }
   }
 }

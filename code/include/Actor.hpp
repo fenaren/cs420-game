@@ -2,6 +2,7 @@
 #define ACTOR_HPP
 
 #include <SFML/System/Time.hpp>
+#include <SFML/Graphics.hpp>
 
 #include "ActorId.hpp"
 
@@ -36,6 +37,10 @@ public:
   double getMinMoveTime() const;
 
   void setMinMoveTime(double min_move_time);
+  
+  sf::Vector2i getPosition() const;
+  
+  void setPosition(sf::Vector2i new_pos);
 
 private:
 
@@ -103,6 +108,15 @@ inline double Actor::getMinMoveTime() const
 inline void Actor::setMinMoveTime(double min_move_time)
 {
   this->min_move_time = min_move_time;
+}
+
+inline sf::Vector2i Actor::getPosition() const {
+	return sf::Vector2i((int) x, (int) y);
+}
+
+inline void Actor::setPosition(sf::Vector2i new_pos) {
+	x = new_pos.x;
+	y = new_pos.y;
 }
 
 #endif

@@ -11,7 +11,7 @@ void UITextInput::initialize(sf::Vector2f s, sf::Vector2u curRes, Orientation or
 	font.loadFromFile("Arial.ttf");
 	input = ":";
 	inputText.setFont(font);
-	inputText.setString(input);
+	inputText.setString('\n'+input);
 	inputText.setCharacterSize(20);
 	dialogue = "Rum Supply X\nPrice Y";
 	dialogueText.setFont(font);
@@ -38,14 +38,14 @@ void UITextInput::setDialogue(std::string str) {
 void UITextInput::inputPush(char c) {
 	if (input.length() < 7) {
 		input += c;
-		inputText.setString(input);
+		inputText.setString('\n'+input);
 	}
 }
 
 void UITextInput::inputPop() {
 	if (input.length() > 1) {
 		input.pop_back();
-		inputText.setString(input);
+		inputText.setString('\n'+input);
 	}
 }
 
@@ -55,7 +55,7 @@ int UITextInput::clearInput() {
 		input = input.substr(1, input.length());
 		sscanf(input.c_str(), "%d", &i);
 		input = ":";
-		inputText.setString(input);
+		inputText.setString('\n'+input);
 		return i;
 	}
 	return -1;
