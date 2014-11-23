@@ -87,6 +87,12 @@ private:
   // Convenience pointer to the player' ship
   Ship* ship;
 
+  // Convenience pointer to pirate ship 1
+  Pirate* pirate1;
+
+  // Convenience pointer to pirate ship 2
+  Pirate* pirate2;
+
   // The game map.  Contains terrain data.
   Map map;
 
@@ -96,6 +102,18 @@ private:
   // Should I queue another gameWon/gameLost event?
   // Check game_over
   unsigned int game_over;
+
+  // Initialize ship values
+  void initializeShip(unsigned int actor_id);
+
+  // Initialize pirate1 values
+  void initializePirate1(unsigned int actor_id);
+
+  // Initialize pirate2 values
+  void initializePirate2(unsigned int actor_id);
+
+  // Initialize port values
+  void initializePorts(unsigned int actor_id);
 
   // Resets starting positions and rum/gold values of ship/ports
   void resetStartValues();
