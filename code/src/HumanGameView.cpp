@@ -30,6 +30,12 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
 	if (!start_screen.loadFromFile("./data/title_screen.png")) {
 		std::cout << "ERROR START_SCREEN" << std::endl;
 	}
+	if (!lose_screen.loadFromFile("./data/lose_screen.png")) {
+		std::cout << "ERROR LOSE_SCREEN" << std::endl;
+	}
+	if (!win_screen.loadFromFile("./data/win_screen.png")) {
+		std::cout << "ERROR WIN_SCREEN" << std::endl;
+	}
 	currentRes = DEFAULT_RES;
 	resRatio = sf::Vector2f(1, 1);
 	aspectRatio = DEFAULT_RES.x / DEFAULT_RES.y;
@@ -113,14 +119,6 @@ bool HumanGameView::initialize()
 
   // Push the UI ship data element onto the element list
   uiList.push_back(new UIShipData());
-
-  // Push the UI win/lose message onto the element list
-  win_lose_message = new UITextField();
-  win_lose_message->setText(game_state);
-  win_lose_message->setPosition(sf::Vector2f(350,300));
-  win_lose_message->setCharacterSize(24);
-  win_lose_message->setStyle(sf::Text::Bold);
-  uiList.push_back(win_lose_message);
 
   // Push the UI game time element onto the element list
   uiList.push_back(new UIGameTime());
@@ -244,7 +242,6 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 				GameRestartEvent* gr_event = new GameRestartEvent();
 				getGameLogic()->getEventManager()->queueEvent(gr_event);
 				game_state = "";
-				win_lose_message->setText(game_state);
 		    }
 		    break;
 
@@ -410,6 +407,12 @@ void HumanGameView::drawScreen() {
 	if (game_state == "START_SCREEN") {
 		screen_sprite.setTexture(start_screen);
 	}
+	else if (game_state == "YOU LOSE") {
+		screen_sprite.setTexture(lose_screen);
+	}
+	else if (game_state == "YOU WIN") {
+		screen_sprite.setTexture(win_screen);
+	}
 	screen_sprite.setTextureRect(sf::IntRect(0,0,800,600));
 	screen_sprite.setPosition(sf::Vector2f(0,0));
 	screen_sprite.scale(x_scale,y_scale);
@@ -493,12 +496,10 @@ void HumanGameView::transactionStartEventHandler(const EventInterface& event) {
 
 void HumanGameView::gameLostEventHandler(const EventInterface& event) {
 	game_state = "YOU LOSE";
-	win_lose_message->setText(game_state + "\nPress [space] to play again");
 }
 
 void HumanGameView::gameWonEventHandler(const EventInterface& event) {
 	game_state = "YOU WIN";
-	win_lose_message->setText(game_state + "\nPress [space] to play again");
 }
 
 void HumanGameView::calculateMapWindowData()

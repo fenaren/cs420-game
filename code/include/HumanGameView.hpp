@@ -112,6 +112,12 @@ private:
   // texture to draw start_screen from
   sf::Texture start_screen;
 
+  // texture to draw losing screen from
+  sf::Texture lose_screen;
+
+  // texture to draw winning screen from
+  sf::Texture win_screen;
+
   // last known ship position, for animation
   unsigned int lastShipX;
   unsigned int lastShipY;
@@ -134,7 +140,6 @@ private:
   unsigned int tc_portrum;
   unsigned int tc_rum_price;
 
-  UITextField* win_lose_message;
   std::string game_state;
 };
 
