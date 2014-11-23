@@ -328,6 +328,13 @@ void HumanGameView::drawActors() {
 
 	sf::Sprite ship_sprite;
 	ship_sprite.setTexture(texture);
+	
+	sf::Sprite kraken_head;
+	kraken_head.setTexture(texture);
+	kraken_head.setTextureRect(sf::IntRect(96,239,25,25));
+	sf::Sprite kraken_tentacle;
+	kraken_tentacle.setTexture(texture);
+	kraken_tentacle.setTextureRect(sf::IntRect(121,239,25,25));
 
 	ship_sprite.scale(spriteScale,spriteScale);
 	const Ship* ship = getGameLogic()->getShip();
@@ -349,6 +356,9 @@ void HumanGameView::drawActors() {
 	else if (lastShipY < ship->getPositionY()) {
 		shipSpriteY = 0;
 	}
+	
+	if (ship->getIsInvincible())
+		ship_sprite.setColor(sf::Color::Yellow);
 
 	ship_sprite.setTextureRect(sf::IntRect(0,shipSpriteY,25,25));
 	App->draw(ship_sprite);
@@ -359,7 +369,7 @@ void HumanGameView::drawActors() {
 	const std::map<ActorId, EnemyActor*> *enemies = getGameLogic()->getEnemiesListPointer();
 	for (std::map<ActorId, EnemyActor*>::const_iterator i = enemies->begin(); i != enemies->end(); i++) {
 		EnemyActor* enemy = i->second;
-		if(enemy->getType() == EnemyActor::Pirate){
+		if(enemy->getType() == EnemyActor::Pirate || enemy->getType() == EnemyActor::Merchant){
 			int enemyShipSpriteY = 0;
 			if (enemy->getPrevPos().x > enemy->getPositionX()) {
 				enemyShipSpriteY = 25;
@@ -377,13 +387,32 @@ void HumanGameView::drawActors() {
 				enemyShipSpriteY = 0;
 			}
 			ship_sprite.setTextureRect(sf::IntRect(0,enemyShipSpriteY,25,25));
+			
+			// changes colors based on various states
 			if (enemy->getState() == EnemyActor::Pursue)
 				ship_sprite.setColor(sf::Color::Red);
-			else 
+			else if (enemy->getState() == EnemyActor::Stop)
+				ship_sprite.setColor(sf::Color::Blue);
+			else if (enemy->getRumPenalty() == 0.0)
+				ship_sprite.setColor(sf::Color::Cyan);
+			else if (enemy->getRumPenalty() > 0.0)
+				ship_sprite.setColor(sf::Color(84, 84, 84));
+			else
 				ship_sprite.setColor(sf::Color::Green);
+			
+			ship_sprite.setPosition(sf::Vector2f(enemy->getPositionX() * map_tile_size + map_tl_wcoords.x, enemy->getPositionY() * map_tile_size + map_tl_wcoords.y));
+			App->draw(ship_sprite);
 		}
-		ship_sprite.setPosition(sf::Vector2f(enemy->getPositionX() * map_tile_size + map_tl_wcoords.x, enemy->getPositionY() * map_tile_size + map_tl_wcoords.y));
-		App->draw(ship_sprite);
+		if (enemy->getType() == EnemyActor::Kraken) {
+			kraken_head.setPosition(sf::Vector2f(enemy->getPositionX() * map_tile_size + map_tl_wcoords.x, enemy->getPositionY() * map_tile_size + map_tl_wcoords.y));
+			App->draw(kraken_head);
+		}
+		if (enemy->getType() == EnemyActor::Tentacle) {
+			kraken_tentacle.setPosition(sf::Vector2f(enemy->getPositionX() * map_tile_size + map_tl_wcoords.x, enemy->getPositionY() * map_tile_size + map_tl_wcoords.y));
+			if (enemy->getState() == EnemyActor::Pursue)
+				kraken_tentacle.setColor(sf::Color::Red);
+			App->draw(kraken_tentacle);
+		}
 	}
 }
   

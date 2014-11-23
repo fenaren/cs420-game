@@ -14,6 +14,9 @@
 #include "Port.hpp"
 #include "EnemyActor.hpp"
 #include "Pirate.hpp"
+#include "Merchant.hpp"
+#include "KrakenHead.hpp"
+#include "KrakenTentacle.hpp"
 
 class GameLogic
 {
@@ -70,6 +73,9 @@ public:
   // Handles an ActorMoveEvent.  Makes sure based off map that it is a valid move
   // then moves the actor to that location
   void AICmdEventHandler(const EventInterface& event);
+  
+  // checks actor moves for collisions
+  void CollisionEventHandler(const EventInterface& event);
 
   // Handles the GameRestartEvent. This should reset all actor values.
   void GameRestartEventHandler(const EventInterface& event);
