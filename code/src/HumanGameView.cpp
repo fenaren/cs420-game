@@ -1,6 +1,10 @@
 #include <iostream>
 
+#include "GameLostEvent.hpp"
+#include "GameRestartEvent.hpp"
+#include "GameWonEvent.hpp"
 #include "HumanGameView.hpp"
+#include "UIGameTime.hpp"
 #include "UITextField.hpp"
 #include "UIShipData.hpp"
 
@@ -25,6 +29,7 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
 	lastShipX = 10;
 	lastShipY = 12;
 	shipSpriteY = 0;
+	game_state = "";
 }
 
 HumanGameView::~HumanGameView()
@@ -80,10 +85,31 @@ bool HumanGameView::initialize()
 			    std::placeholders::_1)),
     TransactionStartEvent::event_type);
 
+  getGameLogic()->getEventManager()->addDelegate(
+    EventDelegate(std::bind(&HumanGameView::gameLostEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    GameLostEvent::event_type);
+
+  getGameLogic()->getEventManager()->addDelegate(
+    EventDelegate(std::bind(&HumanGameView::gameWonEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    GameWonEvent::event_type);
 
   // Push the UI ship data element onto the element list
   uiList.push_back(new UIShipData());
 
+  // Push the UI win/lose message onto the element list
+  win_lose_message = new UITextField();
+  win_lose_message->setText(game_state);
+  win_lose_message->setPosition(sf::Vector2f(350,300));
+  win_lose_message->setCharacterSize(24);
+  win_lose_message->setStyle(sf::Text::Bold);
+  uiList.push_back(win_lose_message);
+
+  // Push the UI game time element onto the element list
+  uiList.push_back(new UIGameTime());
 
   // Grab a shortcut to the ports list
   const GameLogic::PortsList* ports_list = &getGameLogic()->getPortsList();
@@ -176,6 +202,14 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 						getGameLogic()->getEventManager()->queueEvent(tc_event);
 					}
 				}
+			}
+			if ((event.key.code == sf::Keyboard::Space) 
+				&& (game_state == "YOU LOSE" || game_state == "YOU WIN")) {
+			
+				GameRestartEvent* gr_event = new GameRestartEvent();
+				getGameLogic()->getEventManager()->queueEvent(gr_event);
+				game_state = "";
+				win_lose_message->setText(game_state);
 			}
 			break;
 
@@ -396,6 +430,16 @@ void HumanGameView::transactionStartEventHandler(const EventInterface& event) {
 	std::ostringstream oss;
 	oss << "Supply: " << tc_portrum << "\nPrice: " << tc_rum_price;
 	test->setDialogue(oss.str());
+}
+
+void HumanGameView::gameLostEventHandler(const EventInterface& event) {
+	game_state = "YOU LOSE";
+	win_lose_message->setText(game_state + "\nPress [space] to play again");
+}
+
+void HumanGameView::gameWonEventHandler(const EventInterface& event) {
+	game_state = "YOU WIN";
+	win_lose_message->setText(game_state + "\nPress [space] to play again");
 }
 
 void HumanGameView::calculateMapWindowData()
