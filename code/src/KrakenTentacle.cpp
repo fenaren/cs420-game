@@ -26,7 +26,7 @@ void KrakenTentacle::checkState(sf::Vector2i ship_pos) {
 		setPosition(getLeader()->getPosition());
 		setNeedSeek(true);
 	}
-	if (!checkAggroRange(getLeader()->getPosition())) {
+	if (!checkAggroRange(getLeader()->getPosition()) || !checkAggroRange(ship_pos)) {
 		setState(EnemyActor::Follow);
 		setNeedSeek(true);
 	}
