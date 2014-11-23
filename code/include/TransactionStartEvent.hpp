@@ -57,6 +57,10 @@ public:
   void setRumPrice(unsigned int rum_price);
 
   unsigned int getRumPrice() const;
+  
+  void setIsBuyPort(bool is_buy);
+  
+  bool getIsBuyPort() const;
 
   /* TransactionStartEvent's event type */
   static const EventType event_type;
@@ -71,6 +75,7 @@ private:
   unsigned int ship_rum;
   unsigned int port_rum;
   unsigned int rum_price;
+  bool isBuyPort;
 };
 
 inline EventType TransactionStartEvent::getEventType() const
@@ -136,6 +141,14 @@ inline void TransactionStartEvent::setRumPrice(unsigned int rum_price)
 inline unsigned int TransactionStartEvent::getRumPrice() const
 {
   return rum_price;
+}
+
+inline void TransactionStartEvent::setIsBuyPort(bool new_buy) {
+	isBuyPort = new_buy;
+}
+
+inline bool TransactionStartEvent::getIsBuyPort() const {
+	return isBuyPort;
 }
 
 #endif

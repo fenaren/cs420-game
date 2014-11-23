@@ -46,7 +46,7 @@ public:
 
   void setName(const std::string& name);
 
-  void setRum(unsigned int rum);
+  void setRum(unsigned int rum, unsigned int supply);
 
   void setGold(unsigned int gold);
 

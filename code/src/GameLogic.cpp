@@ -314,6 +314,7 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
 	ts_event->setPortId(i->second->getActorId());
 	ts_event->setPortRum(i->second->getRum());
 	ts_event->setRumPrice(i->second->getRumPrice());
+	ts_event->setIsBuyPort(i->second->isBuyPort());
 	
 	event_manager.queueEvent(ts_event);
       }

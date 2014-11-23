@@ -20,7 +20,7 @@ UIPortData::UIPortData(ActorId actor_id) :
 
   // Defaults
   setName("UIPortData");
-  setRum(0);
+  setRum(0, 0);
   setGold(0);
 
   // The name field is always bold
@@ -50,7 +50,7 @@ void UIPortData::update(HumanGameView* hgv)
   const Port* port = hgv->getGameLogic()->getPortsList().at(actor_id);
 
   setGold(port->getRumPrice());
-  setRum(port->getRum());
+  setRum(port->getRum(), port->getMaxRum());
   setCharacterSize(hgv->getMapTileSize() / 2);  // adjust for prettiness
 
   // Convert port position into vector
@@ -112,13 +112,16 @@ void UIPortData::loadFontFromFile(const std::string& font)
   }
 }
 
-void UIPortData::setRum(unsigned int rum)
+void UIPortData::setRum(unsigned int rum, unsigned int supply)
 {
   // Convert the given number into a string
   std::ostringstream num_to_str;
   num_to_str << rum;
   
-  std::string updated_string = "R: " + num_to_str.str();
+  std::string updated_string = "R: " + num_to_str.str() + "/";
+  num_to_str.str("");
+  num_to_str << supply;
+  updated_string += num_to_str.str();
 
   // Plow everything into the rum field
   rum_field.setText(updated_string);
