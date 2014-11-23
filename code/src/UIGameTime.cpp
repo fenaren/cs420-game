@@ -96,7 +96,9 @@ void UIGameTime::setTimer(int timer)
 {
   // Convert the given number into a string
   std::ostringstream num_to_str;
-  num_to_str << timer;
+  num_to_str << timer / 60;
+  num_to_str << ":";
+  num_to_str << timer % 60;
 
   timer_field.setText(num_to_str.str());
 }
