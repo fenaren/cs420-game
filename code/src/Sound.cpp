@@ -16,9 +16,6 @@ Sound::Sound(){
   if(!tSuccess.openFromFile("success.wav"))
     std::cout << "Transaction Success sound can't be found\n" << std::endl;
   
-  if(!gameFail.openFromFile("crazy-laugh.wav"))
-    std::cout << "Game Fail sound can't be found\n" << std::endl;
-  
   if(!gameWin.openFromFile("tada.wav"))
     std::cout << "Game Win sound can't be found\n" << std::endl;
   
@@ -30,8 +27,16 @@ Sound::~Sound(){
 
 }
 
-void Sound::playEffect(sf::Music music){
-  music.play(); 
+void Sound::playTStart(){
+  tStart.play(); 
+}
+
+void Sound::playTFail(){
+  tFail.play(); 
+}
+
+void Sound::playTSuccess(){
+  tSuccess.play(); 
 }
 
 void Sound::playTheme(){

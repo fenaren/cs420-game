@@ -45,7 +45,12 @@ public:
   void transactionFailEventHandler(const EventInterface& event);
   void transactionSuccessEventHandler(const EventInterface& event);
   void transactionStartEventHandler(const EventInterface& event);
-
+  
+  //Sound handlers
+  void transactionFailSoundHandler(const EventInterface& event);
+  void transactionStartSoundHandler(const EventInterface& event);
+  void transactionSuccessSoundHandler(const EventInterface& event);
+  
   // Takes a coordinate pair (map_coords) denoting a location on the game map
   // and returns a coordinate pair (window_coords) denoting where the top-left
   // point of that map location is in the window, given current map and window

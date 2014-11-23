@@ -10,7 +10,9 @@ public:
   Sound();
   ~Sound();
   
-  void playEffect(sf::Music music);
+  void playTStart();
+  void playTSuccess();
+  void playTFail();
   void playTheme();
   void pauseTheme();
   void stopTheme();
