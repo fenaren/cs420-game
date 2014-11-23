@@ -12,6 +12,7 @@
 #include "GameRestartEvent.hpp"
 #include "GameWonEvent.hpp"
 #include "ShipMoveCmdEvent.hpp"
+#include "TransactionCancelEvent.hpp"
 #include "TransactionCheckEvent.hpp"
 #include "TransactionFailEvent.hpp"
 #include "TransactionStartEvent.hpp"
@@ -362,6 +363,16 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
   if (tcheck_event == 0)
   {
     // This should never happen, but just in case
+    return;
+  }
+
+  // Does the user want to cancel the transaction?
+  if (tcheck_event->getCancel())
+  {
+    // Notify that transaction has been cancelled and return
+    TransactionCancelEvent* tc_event = new TransactionCancelEvent();
+    event_manager.queueEvent(tc_event);
+    
     return;
   }
 

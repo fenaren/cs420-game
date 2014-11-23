@@ -45,6 +45,7 @@ public:
   void transactionFailEventHandler(const EventInterface& event);
   void transactionSuccessEventHandler(const EventInterface& event);
   void transactionStartEventHandler(const EventInterface& event);
+  void transactionCancelEventHandler(const EventInterface& event);
   void gameLostEventHandler(const EventInterface& event);
   void gameWonEventHandler(const EventInterface& event);
 

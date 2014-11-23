@@ -10,6 +10,7 @@
 #include "HumanGameView.hpp"
 #include "AIGameView.hpp"
 #include "Map.hpp"
+#include "TransactionCancelEvent.hpp"
 #include "TransactionFailEvent.hpp"
 #include "TransactionStartEvent.hpp"
 #include "TransactionSuccessEvent.hpp"
@@ -138,10 +139,15 @@ int main(int argc, char** argv)
     EventDelegate(TransactionEndHandler),
     TransactionSuccessEvent::event_type);
 
+  event_manager->addDelegate(
+    EventDelegate(TransactionEndHandler),
+    TransactionCancelEvent::event_type);
+
   // Unpauses game after GameRestartEvent
   event_manager->addDelegate(
     EventDelegate(TransactionEndHandler),
     GameRestartEvent::event_type);
+
 
   // start main loop
   while(App.isOpen())
