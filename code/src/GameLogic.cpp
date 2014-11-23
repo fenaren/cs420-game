@@ -339,6 +339,7 @@ void GameLogic::AICmdEventHandler(const EventInterface& event) {
 	EnemyActor* enemy = enemies[ai_event->getActorId()];
 	if (enemy->getMoveTime() > enemy->getMinMoveTime() && map.isValidPosition(newPos)) {
 		enemy->setMoveTime(0.0);
+		enemy->setNeedSeek(false);
 		bool otherEnemy = false;
 		enemy->setPrevPos(enemy->getPosition());
 		enemy->setPosition(newPos);

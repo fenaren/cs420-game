@@ -79,7 +79,7 @@ public:
 	
 	double getPatrolTimerMin();
 	
-	double setPatrolTimerMin(double new_pat_min);
+	void setPatrolTimerMin(double new_pat_min);
 	
 	// checks if given vector is within aggro range
 	// aggro range represents single tiles away from
@@ -105,6 +105,8 @@ private:
 	EnemyActor* leader;
 	sf::Vector2i follow_offset;
 	bool need_seek;
+	
+	int size;
 	
 	double patrolTimerMin;
 	double patrolTimer;

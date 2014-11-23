@@ -78,7 +78,6 @@ void AIGameView::updateSeeks() {
 					enemy->setSeek(temp);
 					break;
 			}
-			enemy->setNeedSeek(false);
 		}
 	}
 }
@@ -104,12 +103,15 @@ sf::Vector2i AIGameView::minMaxMove(EnemyActor* enemy) {
 	sf::Vector2i test = curr;
 	int weight = 500;
 	Map *map = getGameLogic()->getMap();
-	sf::Vector2i diff = curr - prev;
-	-diff;
-	test = curr + diff;
-	if (test != prev && map->isValidPosition(test) && enemy->getPosDifference(test, seek) < weight) {
-		weight = enemy->getPosDifference(test, seek);
-		min = test;
+	// idea here is it checks the opposite of prev first to reduce chance of circles
+	if (!enemy->getNeedSeek()) {
+		sf::Vector2i diff = curr - prev;
+		-diff;
+		test = curr + diff;
+		if (test != prev && map->isValidPosition(test) && enemy->getPosDifference(test, seek) < weight) {
+			weight = enemy->getPosDifference(test, seek);
+			min = test;
+		}
 	}
 	test = curr;
 	test.y -= 1;

@@ -13,7 +13,7 @@ bool KrakenTentacle::initialize() {
 	setRumPenalty(3);
 	setMinMoveTime(1);
 	setPatrolTimerMin(2);
-	setAggroRange(0);
+	setAggroRange(3);
 	setNeedSeek(true);
 }
 
@@ -22,4 +22,16 @@ void KrakenTentacle::update(const sf::Time& delta_t) {
 }
 
 void KrakenTentacle::checkState(sf::Vector2i ship_pos) {
+	if (getPosDifference(getPosition(), getLeader()->getPosition()) > getAggroRange() * 2) {
+		setPosition(getLeader()->getPosition());
+		setNeedSeek(true);
+	}
+	if (!checkAggroRange(getLeader()->getPosition())) {
+		setState(EnemyActor::Follow);
+		setNeedSeek(true);
+	}
+	else if (checkAggroRange(ship_pos)) {
+		setState(EnemyActor::Pursue);
+		setNeedSeek(true);
+	}
 }

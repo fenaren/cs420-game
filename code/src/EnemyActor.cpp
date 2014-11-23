@@ -121,7 +121,7 @@ double EnemyActor::getPatrolTimerMin() {
 	return patrolTimerMin;
 }
 	
-double EnemyActor::setPatrolTimerMin(double new_pat_min) {
+void EnemyActor::setPatrolTimerMin(double new_pat_min) {
 	patrolTimerMin = new_pat_min;
 	patrolTimer = patrolTimerMin;
 }
