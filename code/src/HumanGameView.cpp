@@ -169,7 +169,7 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
   // handles ship movement;  note: it's not in the normal SFML event manager
   // because held keys are handled different in SFML than pressed keys
   if (!menuOpen) {
-	int x = 0;
+       	int x = 0;
 	int y = 0;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) 
 		y--;
