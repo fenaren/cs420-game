@@ -37,6 +37,7 @@ public:
   bool getIsInvincible() const;
   
   void setIsInvincible(bool new_invincible);
+  
   double getGoldRate() const;
 
   void setGoldRate(double gold_rate);
@@ -114,6 +115,8 @@ inline bool Ship::getIsInvincible() const {
 
 inline void Ship::setIsInvincible(bool new_invincible) {
 	invincible = new_invincible;
+}
+
 inline double Ship::getGoldRate() const
 {
   return gold_rate;
