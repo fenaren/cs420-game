@@ -37,6 +37,7 @@ GameLogic::GameLogic() :
   ship->setRum(5);
   ship->setMaxRum(10);
   ship->setRumRate(-0.1);
+  ship->initialize();
   
 
   // Push the ship onto the list of actors
