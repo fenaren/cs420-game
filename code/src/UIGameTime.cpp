@@ -1,67 +1,104 @@
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include <sstream>
+#include <string>
 
+#include "ActorId.hpp"
+#include "GameLogic.hpp"
 #include "HumanGameView.hpp"
 #include "UIGameTime.hpp"
 
 UIGameTime::UIGameTime() :
   UIElement()
 {
-  // Defaults
-  setPosition(sf::Vector2f(600, 0));
+  // timer data displayed in black
   setColor(sf::Color::White);
-  setStyle(sf::Text::Bold);
+
+  // timer data initially displayed in 10 pixel size
+  setCharacterSize(10);
+
+  // Defaults
+  setMessage("Time Until Loan Shark: ");
+  setTimer(0.0);
+
+  // both fields are always bold
+  message_field.setStyle(sf::Text::Bold);
+  timer_field.setStyle(sf::Text::Bold);
 }
 
 UIGameTime::~UIGameTime()
 {
 }
 
+void UIGameTime::draw(sf::RenderWindow* window)
+{
+  message_field.draw(window);
+  timer_field.draw(window);
+}
+
 void UIGameTime::initialize(sf::Vector2f s,
-                            sf::Vector2u curRes,
-                            Orientation  orient)
+			    sf::Vector2u curRes,
+			    Orientation  orient)
 {
 }
 
 void UIGameTime::update(HumanGameView* hgv)
 {
-  // Adjust for prettiness
-  setCharacterSize(static_cast<double>(hgv->getMapTileSize()) * 0.75);
+  // Grab a convenience pointer back to the port we're interested in
+  setTimer(hgv->getGameLogic()->getGameTime());
+  setCharacterSize(hgv->getMapTileSize() / 1.5);
 
-  setGameTime(hgv->getGameLogic()->getGameTime());
+  // Convert port position into vector
+  sf::Vector2f map_position(22, 0);
 
-  updateText();
+  sf::Vector2f window_position;
+  hgv->mapToWindow(map_position, window_position);
+
+  setPosition(window_position);
 }
 
 void UIGameTime::resize(sf::Vector2u curRes)
 {
 }
 
-void UIGameTime::draw(sf::RenderWindow* window)
+void UIGameTime::setPosition(const sf::Vector2f& position)
 {
-  text.draw(window);
+  message_field.setPosition(position);
+  
+  sf::Vector2f new_field_position = message_field.getPosition();
+  new_field_position.x += 12 * getCharacterSize();
+  timer_field.setPosition(new_field_position);
 }
 
-void UIGameTime::updateText()
+void UIGameTime::setCharacterSize(unsigned int size)
 {
-  // Will hold the text as it is formed
-  std::string updated_text;
+  // First off just set the field character sizes
+  message_field.setCharacterSize(size);
+  timer_field.setCharacterSize(size);
 
-  // Convert game time into minutes and seconds
-  unsigned int minutes = (game_time) / 60;
-  unsigned int seconds = (int) (game_time) % 60;
+  setPosition(getPosition());
+}
 
-  // Convert game time into text
-  std::ostringstream min_to_str;
-  min_to_str << minutes;
-  std::ostringstream sec_to_str;
-  sec_to_str << seconds;
-  if (seconds < 10) {
-    updated_text = "Time remaining " + min_to_str.str() + ":0" + sec_to_str.str();
+void UIGameTime::loadFontFromFile(const std::string& font)
+{
+  if (!message_field.loadFontFromFile(font))
+  {
+    std::cerr << "Couldn't load UIGameTime message font\n";
   }
-  else {
-    updated_text = "Time remaining " + min_to_str.str() + ":" + sec_to_str.str();
+
+  if (!timer_field.loadFontFromFile(font))
+  {
+    std::cerr << "Couldn't load UIGameTime timer font\n";
   }
-  
-  text.setText(updated_text);
+}
+
+void UIGameTime::setTimer(int timer)
+{
+  // Convert the given number into a string
+  std::ostringstream num_to_str;
+  num_to_str << timer / 60;
+  num_to_str << ":";
+  num_to_str << timer % 60;
+
+  timer_field.setText(num_to_str.str());
 }

@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "ActorId.hpp"
 #include "UIElement.hpp"
 #include "UITextField.hpp"
 
@@ -20,61 +21,65 @@ public:
 
   virtual ~UIGameTime();
 
+  virtual void draw(sf::RenderWindow* window);
+
   virtual void initialize(sf::Vector2f s,
-                          sf::Vector2u curRes,
-                          Orientation orient);
+			  sf::Vector2u curRes,
+			  Orientation  orient);
 
   virtual void update(HumanGameView* hgv);
 
   virtual void resize(sf::Vector2u curRes);
 
-  virtual void draw(sf::RenderWindow* window);
-
 
   void setPosition(const sf::Vector2f& position);
 
+  const sf::Vector2f& getPosition() const;
+
   void setCharacterSize(unsigned int size);
 
-  void setGameTime(double game_time);
+  unsigned int getCharacterSize() const;
 
   void setColor(const sf::Color& color);
 
-  void setStyle(sf::Text::Style style);
+  void loadFontFromFile(const std::string& font);
+
+  void setMessage(const std::string& message);
+
+  void setTimer(int timer);
 
 private:
 
-  void updateText();
+  // Text field for displaying the timer's text
+  UITextField message_field;
 
-  // Displays ship data
-  UITextField text;
-
-  // Game time to be displayed
-  double game_time;
+  // Text field for displaying timer's amount
+  UITextField timer_field;
 };
 
-inline void UIGameTime::setPosition(const sf::Vector2f& position)
+inline const sf::Vector2f& UIGameTime::getPosition() const
 {
-  text.setPosition(position);
+  // The name field draws at the top-left of this UI element so its position is
+  // the position of the whole thing
+  return message_field.getPosition();
 }
 
-inline void UIGameTime::setCharacterSize(unsigned int size)
+inline unsigned int UIGameTime::getCharacterSize() const
 {
-  text.setCharacterSize(size);
-}
-
-inline void UIGameTime::setGameTime(double game_time)
-{
-  this->game_time = game_time;
+  // Both fields are supposed to be set to the same character size, so just
+  // return the size from one of them
+  return message_field.getCharacterSize();
 }
 
 inline void UIGameTime::setColor(const sf::Color& color)
 {
-  text.setColor(color);
+  message_field.setColor(color);
+  timer_field.setColor(color);
 }
 
-inline void UIGameTime::setStyle(sf::Text::Style style)
+inline void UIGameTime::setMessage(const std::string& message)
 {
-  text.setStyle(style);
+  message_field.setText(message);
 }
 
 #endif
