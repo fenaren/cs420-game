@@ -1,26 +1,47 @@
 #include <iostream>
 #include "Sound.hpp"
-
 Sound::Sound(){
-  if(!buffer.loadFromFile("rumrunnerstheme.wav"))
+ if(!buffer.loadFromFile("./data/rumrunnerstheme.wav"))
     std::cout << "Theme can't be found\n" << std::endl;
+}
+
+Sound::Sound(GameLogic* game_logic){
   
-  if(!tStart.openFromFile("coin.wav"))
+  
+  if(!tStart.openFromFile("./data/coin.wav"))
     std::cout << "Transaction Start sound can't be found\n" << std::endl;
   
   
-  if(!tFail.openFromFile("error.wav"))
+  if(!tFail.openFromFile("./data/error.wav"))
     std::cout << "Transaction Fail sound can't be found\n" << std::endl;
   
   
-  if(!tSuccess.openFromFile("success.wav"))
+  if(!tSuccess.openFromFile("./data/success.wav"))
     std::cout << "Transaction Success sound can't be found\n" << std::endl;
   
-  if(!gameWin.openFromFile("tada.wav"))
+  if(!gameWin.openFromFile("./data/tada.wav"))
     std::cout << "Game Win sound can't be found\n" << std::endl;
   
   theme.setBuffer(buffer);
   theme.setLoop(true);
+  
+   getGameLogic()->getEventManager()->addDelegate(
+      EventDelegate(std::bind(&Sound::transactionFailSoundHandler,
+			      this,
+			      std::placeholders::_1)),
+      TransactionFailEvent::event_type);
+  
+    getGameLogic()->getEventManager()->addDelegate(
+      EventDelegate(std::bind(&Sound::transactionSuccessSoundHandler,
+			      this,
+			      std::placeholders::_1)),
+    TransactionSuccessEvent::event_type);
+    
+    getGameLogic()->getEventManager()->addDelegate(
+      EventDelegate(std::bind(&Sound::transactionStartSoundHandler,
+			      this,
+			      std::placeholders::_1)),
+      TransactionStartEvent::event_type);
 }
 
 Sound::~Sound(){
@@ -50,4 +71,19 @@ void Sound::pauseTheme(){
 
 void Sound::stopTheme(){
   theme.stop();  
+}
+
+//Plays sound for Transaction Start
+void Sound::transactionStartSoundHandler(const EventInterface& event) {
+  this->playTStart();
+}
+
+//Plays sound for Transaction Fail
+void Sound::transactionFailSoundHandler(const EventInterface& event) {
+  this->playTFail();
+}
+
+//Plays sound for Transaction Success
+void Sound::transactionSuccessSoundHandler(const EventInterface& event) {
+  this->playTSuccess();
 }

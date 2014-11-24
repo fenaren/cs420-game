@@ -66,33 +66,19 @@ bool HumanGameView::initialize()
 			      this,
 			      std::placeholders::_1)),
       TransactionFailEvent::event_type);
-    getGameLogic()->getEventManager()->addDelegate(
-      EventDelegate(std::bind(&HumanGameView::transactionFailSoundHandler,
-			      this,
-			      std::placeholders::_1)),
-      TransactionFailEvent::event_type);
     
     getGameLogic()->getEventManager()->addDelegate(
       EventDelegate(std::bind(&HumanGameView::transactionSuccessEventHandler,
 			      this,
 			      std::placeholders::_1)),
-      TransactionSuccessEvent::event_type);
-    getGameLogic()->getEventManager()->addDelegate(
-      EventDelegate(std::bind(&HumanGameView::transactionSuccessSoundHandler,
-			      this,
-			      std::placeholders::_1)),
-      TransactionFailEvent::event_type);
+     TransactionSuccessEvent::event_type);
     
     getGameLogic()->getEventManager()->addDelegate(
       EventDelegate(std::bind(&HumanGameView::transactionStartEventHandler,
 			      this,
 			      std::placeholders::_1)),
-      TransactionStartEvent::event_type);
-    getGameLogic()->getEventManager()->addDelegate(
-      EventDelegate(std::bind(&HumanGameView::transactionStartSoundHandler,
-			      this,
-			      std::placeholders::_1)),
-      TransactionStartEvent::event_type);
+     TransactionStartEvent::event_type);
+    
     // Push the UI ship data element onto the element list
     uiList.push_back(new UIShipData());
     
@@ -399,23 +385,7 @@ void HumanGameView::transactionStartEventHandler(const EventInterface& event) {
       oss << "Supply: " << tc_portrum << "\nPrice: " << tc_rum_price;
       test->setDialogue(oss.str());
 }
-//Plays sound for Transaction Start
-void HumanGameView::transactionStartSoundHandler(const EventInterface& event) {
-  sound.pauseTheme();  
-  sound.playTStart();
-}
 
-//Plays sound for Transaction Fail
-void HumanGameView::transactionFailSoundHandler(const EventInterface& event) {
-  sound.playTFail();
-  sound.playTheme();
-}
-
-//Plays sound for Transaction Success
-void HumanGameView::transactionSuccessSoundHandler(const EventInterface& event) {
-  sound.playTSuccess();
-  sound.playTheme();
-}
 
 void HumanGameView::calculateMapWindowData()
 {
