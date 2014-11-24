@@ -36,6 +36,9 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
 	if (!win_screen.loadFromFile("./data/win_screen.png")) {
 		std::cout << "ERROR WIN_SCREEN" << std::endl;
 	}
+	if (!story_screen.loadFromFile("./data/story_screen.png")) {
+		std::cout << "ERROR STORY_SCREEN" << std::endl;
+	}
 	currentRes = DEFAULT_RES;
 	resRatio = sf::Vector2f(1, 1);
 	aspectRatio = DEFAULT_RES.x / DEFAULT_RES.y;
@@ -238,10 +241,13 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 		    }
 
 		    if ((event.key.code == sf::Keyboard::Space) 
-			&& (game_state == "YOU LOSE" || game_state == "YOU WIN" || game_state == "START_SCREEN")) {
+			&& (game_state == "YOU LOSE" || game_state == "YOU WIN" || game_state == "STORY_SCREEN")) {
 				GameRestartEvent* gr_event = new GameRestartEvent();
 				getGameLogic()->getEventManager()->queueEvent(gr_event);
 				game_state = "";
+		    }
+		    if ((event.key.code == sf::Keyboard::Space) && (game_state == "START_SCREEN")) {
+				game_state = "STORY_SCREEN";
 		    }
 		    break;
 
@@ -412,6 +418,9 @@ void HumanGameView::drawScreen() {
 	}
 	else if (game_state == "YOU WIN") {
 		screen_sprite.setTexture(win_screen);
+	}
+	else if (game_state == "STORY_SCREEN") {
+		screen_sprite.setTexture(story_screen);
 	}
 	screen_sprite.setTextureRect(sf::IntRect(0,0,800,600));
 	screen_sprite.setPosition(sf::Vector2f(0,0));

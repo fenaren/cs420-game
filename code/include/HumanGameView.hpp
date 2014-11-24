@@ -118,6 +118,9 @@ private:
   // texture to draw winning screen from
   sf::Texture win_screen;
 
+  // texture to draw story screen from
+  sf::Texture story_screen;
+
   // last known ship position, for animation
   unsigned int lastShipX;
   unsigned int lastShipY;
