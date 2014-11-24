@@ -15,6 +15,7 @@ bool KrakenTentacle::initialize() {
 	setPatrolTimerMin(2);
 	setAggroRange(3);
 	setNeedSeek(true);
+	return true;
 }
 
 void KrakenTentacle::update(const sf::Time& delta_t) {

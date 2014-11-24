@@ -16,6 +16,7 @@ bool Merchant::initialize() {
 	setAggroRange(5);
 	setNeedSeek(true);
 	emptyTimer = EMPTY_TIMER;
+	return true;
 }
 
 void Merchant::update(const sf::Time& delta_t) {
