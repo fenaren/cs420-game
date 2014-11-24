@@ -121,6 +121,12 @@ private:
   // texture to draw story screen from
   sf::Texture story_screen;
 
+  // texture to draw actors screen from
+  sf::Texture actors_screen;
+
+  // texture to draw instructions screen from
+  sf::Texture instructions_screen;
+
   // last known ship position, for animation
   unsigned int lastShipX;
   unsigned int lastShipY;
