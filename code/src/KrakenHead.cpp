@@ -15,6 +15,7 @@ bool KrakenHead::initialize() {
 	setPatrolTimerMin(30.0);
 	setAggroRange(0);
 	setNeedSeek(true);
+	return true;
 }
 
 void KrakenHead::update(const sf::Time& delta_t) {
