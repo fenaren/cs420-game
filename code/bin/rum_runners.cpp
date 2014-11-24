@@ -7,6 +7,7 @@
 #include "HumanGameView.hpp"
 #include "AIGameView.hpp"
 #include "Map.hpp"
+#include "Sound.hpp"
 #include "TransactionFailEvent.hpp"
 #include "TransactionStartEvent.hpp"
 #include "TransactionSuccessEvent.hpp"
@@ -121,7 +122,12 @@ int main(int argc, char** argv)
 	return 0;  
   }
 
-
+  Sound sound(&game_logic);
+  if(!sound.initialize())
+  {
+    return 0;
+  }
+  
   // Pull event_manager from GameLogic
   EventManager* event_manager;
   event_manager = game_logic.getEventManager();

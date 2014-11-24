@@ -14,7 +14,6 @@
 #include "UIPortData.hpp"
 #include "Map.hpp"
 #include "ShipMoveCmdEvent.hpp"
-#include "Sound.hpp"
 #include "TransactionCheckEvent.hpp"
 #include "TransactionFailEvent.hpp"
 #include "TransactionStartEvent.hpp"
@@ -97,9 +96,6 @@ private:
   
   // a list of UI elements
   std::vector<UIElement*> uiList;
-  
-  // Sound
-  Sound sound;
   
   // temporary map to draw from
   Map tempMap;

@@ -99,8 +99,6 @@ bool HumanGameView::initialize()
       // Add the port data to the UI list
       uiList.push_back(new_ui_port_data);
     }
-    // Play main theme
-    sound.playTheme();
     return true;
 }
 

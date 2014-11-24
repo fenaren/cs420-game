@@ -1,13 +1,12 @@
 #include <iostream>
 #include "Sound.hpp"
-Sound::Sound(){
- if(!buffer.loadFromFile("./data/rumrunnerstheme.wav"))
-    std::cout << "Theme can't be found\n" << std::endl;
-}
+
 
 Sound::Sound(GameLogic* game_logic){
   
-  
+  if(!buffer.loadFromFile("./data/rumrunnerstheme.wav"))
+    std::cout << "Theme can't be found\n" << std::endl;
+   
   if(!tStart.openFromFile("./data/coin.wav"))
     std::cout << "Transaction Start sound can't be found\n" << std::endl;
   
@@ -24,7 +23,13 @@ Sound::Sound(GameLogic* game_logic){
   
   theme.setBuffer(buffer);
   theme.setLoop(true);
-  
+}
+
+Sound::~Sound(){
+
+}
+
+bool Sound::initialize(){
    getGameLogic()->getEventManager()->addDelegate(
       EventDelegate(std::bind(&Sound::transactionFailSoundHandler,
 			      this,
@@ -42,11 +47,13 @@ Sound::Sound(GameLogic* game_logic){
 			      this,
 			      std::placeholders::_1)),
       TransactionStartEvent::event_type);
+    
+    this->playTheme();
+    
+    return true;
 }
 
-Sound::~Sound(){
 
-}
 
 void Sound::playTStart(){
   tStart.play(); 

@@ -14,9 +14,10 @@
 
 class Sound{
 public:
-  Sound();
   Sound(GameLogic* game_logic);
   ~Sound();
+  
+  bool initialize();
   
   void playTStart();
   void playTSuccess();
