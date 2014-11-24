@@ -77,6 +77,13 @@ bool GameLogic::initialize()
 			    std::placeholders::_1)),
     GameRestartEvent::event_type);
 
+    // Register the proper handler for collision detection                     
+    event_manager.addDelegate(                                                     
+    EventDelegate(std::bind(&GameLogic::CollisionEventHandler,                     
+                            this,                                                  
+                            std::placeholders::_1)),                               
+    ActorMovedEvent::event_type);
+
   return true;
 }
 
