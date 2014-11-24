@@ -528,6 +528,10 @@ void HumanGameView::transactionStartEventHandler(const EventInterface& event) {
     tc_portrum = ts_event->getPortRum();
     tc_rum_price = ts_event->getRumPrice();
 	std::ostringstream oss;
+	if (ts_event->getIsBuyPort())
+		oss << "What're ya buyin?\n";
+	else
+		oss << "What're ya sellin?\n";
 	oss << "Supply: " << tc_portrum << "\nPrice: " << tc_rum_price;
 	test->setDialogue(oss.str());
 }
