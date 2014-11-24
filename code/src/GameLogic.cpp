@@ -130,6 +130,12 @@ void GameLogic::initializeActors()
 
   // Create and initialize all the ports
   initializePorts(actor_id++);
+
+  // Create and initialize merchant
+  initializeMerchant(actor_id++);
+
+  // Create and initialize kraken
+  initializeKraken(actor_id++);
 }
 
 void GameLogic::initializeShip(unsigned int actor_id)
@@ -143,6 +149,7 @@ void GameLogic::initializeShip(unsigned int actor_id)
   ship->setRum(5);
   ship->setMaxRum(10);
   ship->setRumRate(-0.1);
+  ship->initialize();
   ship->setGoldRate(0.0);
 
   // Push the ship onto the list of actors
@@ -153,7 +160,9 @@ void GameLogic::initializePirate1(unsigned int actor_id)
 {
   // initializer for pirate 1
   pirate1 = new Pirate(actor_id);
-  pirate1->setPosition(sf::Vector2i(0, 8));
+  pirate1->initialize();
+  pirate1->setPosition(sf::Vector2i(1, 8));
+  pirate1->setPrevPos(sf::Vector2i(0, 8));
   enemies[pirate1->getActorId()] = pirate1;
   actors[pirate1->getActorId()] = pirate1;
 }
@@ -162,13 +171,17 @@ void GameLogic::initializePirate2(unsigned int actor_id)
 {
   // initializer for pirate 2
   pirate2 = new Pirate(actor_id);
+  pirate2->initialize();
   pirate2->setPosition(sf::Vector2i(26, 10));
+  pirate2->setPrevPos(sf::Vector2i(25,10));
   enemies[pirate2->getActorId()] = pirate2;
   actors[pirate2->getActorId()] = pirate2;
 }
 
 void GameLogic::initializePorts(unsigned int actor_id)
 {
+  // Create and initialize all the ports
+
   // Open the port init file
   std::ifstream ports_init_file("./data/ports.txt");
 
@@ -274,6 +287,62 @@ void GameLogic::initializePorts(unsigned int actor_id)
   }
 }
 
+void GameLogic::initializeMerchant(unsigned int actor_id)
+{
+  Merchant* merchant = new Merchant(actor_id++);
+  merchant->initialize();
+  merchant->setPosition(sf::Vector2i(12, 18));
+  merchant->setPrevPos(sf::Vector2i(12, 17));
+  enemies[merchant->getActorId()] = merchant;
+  actors[merchant->getActorId()] = merchant;
+}
+
+void GameLogic::initializeKraken(unsigned int actor_id)
+{
+  KrakenHead* kraken_head = new KrakenHead(actor_id++);
+  kraken_head->initialize();
+  kraken_head->setPosition(sf::Vector2i(24, 15));
+  kraken_head->setPrevPos(sf::Vector2i(23, 15));
+  enemies[kraken_head->getActorId()] = kraken_head;
+  actors[kraken_head->getActorId()] = kraken_head;
+  
+  KrakenTentacle* kraken_tent1 = new KrakenTentacle(actor_id++);
+  kraken_tent1->initialize();
+  kraken_tent1->setPosition(sf::Vector2i(23, 14));
+  kraken_tent1->setPrevPos(sf::Vector2i(22, 14));
+  kraken_tent1->setLeader(kraken_head);
+  kraken_tent1->setFollowOffset(sf::Vector2i(-1, -1));
+  enemies[kraken_tent1->getActorId()] = kraken_tent1;
+  actors[kraken_tent1->getActorId()] = kraken_tent1;
+  
+  KrakenTentacle* kraken_tent2 = new KrakenTentacle(actor_id++);
+  kraken_tent2->initialize();
+  kraken_tent2->setPosition(sf::Vector2i(23, 16));
+  kraken_tent2->setPrevPos(sf::Vector2i(22, 16));
+  kraken_tent2->setLeader(kraken_head);
+  kraken_tent2->setFollowOffset(sf::Vector2i(-1, 1));
+  enemies[kraken_tent2->getActorId()] = kraken_tent2;
+  actors[kraken_tent2->getActorId()] = kraken_tent2;
+  
+  KrakenTentacle* kraken_tent3 = new KrakenTentacle(actor_id++);
+  kraken_tent3->initialize();
+  kraken_tent3->setPosition(sf::Vector2i(25, 14));
+  kraken_tent3->setPrevPos(sf::Vector2i(24, 14));
+  kraken_tent3->setLeader(kraken_head);
+  kraken_tent3->setFollowOffset(sf::Vector2i(1, -1));
+  enemies[kraken_tent3->getActorId()] = kraken_tent3;
+  actors[kraken_tent3->getActorId()] = kraken_tent3;
+  
+  KrakenTentacle* kraken_tent4 = new KrakenTentacle(actor_id++);
+  kraken_tent4->initialize();
+  kraken_tent4->setPosition(sf::Vector2i(25, 16));
+  kraken_tent4->setPrevPos(sf::Vector2i(24, 16));
+  kraken_tent4->setLeader(kraken_head);
+  kraken_tent4->setFollowOffset(sf::Vector2i(1, 1));
+  enemies[kraken_tent4->getActorId()] = kraken_tent4;
+  actors[kraken_tent4->getActorId()] = kraken_tent4;
+}
+
 void GameLogic::resetStartValues()
 {
   // Iterate over all the actors, deleting them
@@ -358,28 +427,60 @@ void GameLogic::AICmdEventHandler(const EventInterface& event) {
 	sf::Vector2i newPos = ai_event->getPos();
 	EnemyActor* enemy = enemies[ai_event->getActorId()];
 	if (enemy->getMoveTime() > enemy->getMinMoveTime() && map.isValidPosition(newPos)) {
-		  enemy->setMoveTime(0.0);
-		  if (ship->getPosition() != newPos) {
-			enemy->setPrevPos(enemy->getPosition());
-			enemy->setPosition(newPos);
-			ActorMovedEvent* am_event = new ActorMovedEvent(enemy->getActorId(), newPos.x, newPos.y);
-			event_manager.queueEvent(am_event);
-		  }
-		  else {
-			int rum_penalty = enemy->getRumPenalty();
-			if (rum_penalty != 0) {
-				if (rum_penalty <= ship->getRum()) 
-					ship->setRum(ship->getRum() - rum_penalty);
-				else {
-					rum_penalty -= ship->getRum();
-					ship->setRum(0);
-					int gold_penalty = rum_penalty * 2;
-					if (gold_penalty <= ship->getGold()) 
-						ship->setGold(ship->getGold() - gold_penalty);
-					else 
-						ship->setGold(0);
-				}
+		enemy->setMoveTime(0.0);
+		enemy->setNeedSeek(false);
+		bool otherEnemy = false;
+		enemy->setPrevPos(enemy->getPosition());
+		enemy->setPosition(newPos);
+		ActorMovedEvent* am_event = new ActorMovedEvent(enemy->getActorId(), newPos.x, newPos.y);
+		event_manager.queueEvent(am_event);
+	}
+}
+
+void GameLogic::CollisionEventHandler(const EventInterface& event) {
+	const ActorMovedEvent* am_event = dynamic_cast<const ActorMovedEvent*>(&event);  
+	bool collision = false;
+	EnemyActor *enemy;
+	if (am_event->getActorId() == ship->getActorId()) {
+		for (EnemiesList::iterator i = enemies.begin(); i != enemies.end() && !collision; i++) {
+			if (ship->getPosition() == i->second->getPosition()) {
+				enemy = i->second;
+				collision = true;
 			}
+		}
+	}
+	else {
+		EnemiesList::iterator i = enemies.find(am_event->getActorId()); 
+		if (i != enemies.end()) {
+			enemy = i->second;
+			if (enemy->getPosition() == ship->getPosition())
+				collision = true;
+		}
+	}
+	if (collision && !ship->getIsInvincible()) {
+		int rum_penalty = enemy->getRumPenalty();
+		if (enemy->getType() == EnemyActor::Pirate) 
+			enemy->setState(EnemyActor::Stop);
+		if (rum_penalty > 0) {
+			ship->setIsInvincible(true);
+			if (rum_penalty <= ship->getRum()) 
+				ship->setRum(ship->getRum() - rum_penalty);
+			else {
+				rum_penalty -= ship->getRum();
+				ship->setRum(0);
+				int gold_penalty = rum_penalty * 2;
+				if (gold_penalty <= ship->getGold()) 
+					ship->setGold(ship->getGold() - gold_penalty);
+				else 
+					ship->setGold(0);
+			}
+		}
+		else if (rum_penalty < 0) {
+			if (enemy->getType() == EnemyActor::Merchant)
+				enemy->setRumPenalty(0.0);
+			ship->setRum(ship->getRum() - rum_penalty);
+			if (ship->getRum() > ship->getMaxRum())
+				ship->setRum(ship->getMaxRum());
 		}
 	}
 }

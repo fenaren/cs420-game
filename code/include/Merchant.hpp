@@ -1,19 +1,19 @@
-#if !defined PIRATE_HPP
-#define PIRATE_HPP
+#if !defined MERCHANT_HPP
+#define MERCHANT_HPP
 
 #include "EnemyActor.hpp"
 
-class Pirate : public EnemyActor {
+class Merchant : public EnemyActor {
 	
 public:
-	Pirate(ActorId actor_id);
+	Merchant(ActorId actor_id);
 	virtual void checkState(sf::Vector2i ship_pos);
 	virtual bool initialize(); 
 	virtual void update(const sf::Time& delta_t);
 	
 private:
-	const double FREEZE_TIMER = 2.0;
-	double freezeTimer;
+	const double EMPTY_TIMER = 10.0;
+	double emptyTimer;
 };
 
 #endif
