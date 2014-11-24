@@ -474,23 +474,23 @@ void HumanGameView::transactionFailEventHandler(const EventInterface& event)
   switch(tf_event->getFailReason())
   {
   case TransactionFailEvent::BUY_EXCEEDS_MAX_SHIP_INVENTORY:
-    oss << "Your ship can't hold that much rum!";
+    oss << "Your ship ain't big enough for all this rum!";
     break;
 
   case TransactionFailEvent::BUY_NOT_ENOUGH_PORT_INVENTORY:
-    oss << "This port doesn't have that much rum!";
+    oss << "We don't have that much rum matey!";
     break;
 
   case TransactionFailEvent::BUY_NOT_ENOUGH_GOLD:
-    oss << "You don't have enough gold!";
+    oss << "Tryin to cheat me?  You don't have that much gold!";
     break;
 
   case TransactionFailEvent::SELL_EXCEEDS_SHIP_INVENTORY:
-    oss << "You don't have that much rum!";
+    oss << "There ain't that much rum on your ship!";
     break;
 
   case TransactionFailEvent::SELL_EXCEEDS_MAX_PORT_INVENTORY:
-    oss << "This port can't accept that much rum!";
+    oss << "Arr, we can't hold that much rum!";
   };
 
   oss << "\nSupply: " << tc_portrum << "\nPrice: " << tc_rum_price;
@@ -529,9 +529,9 @@ void HumanGameView::transactionStartEventHandler(const EventInterface& event) {
     tc_rum_price = ts_event->getRumPrice();
 	std::ostringstream oss;
 	if (ts_event->getIsBuyPort())
-		oss << "What're ya buyin?\n";
+		oss << "How much rum ya buyin?\n";
 	else
-		oss << "What're ya sellin?\n";
+		oss << "How much rum ya sellin?\n";
 	oss << "Supply: " << tc_portrum << "\nPrice: " << tc_rum_price;
 	test->setDialogue(oss.str());
 }
