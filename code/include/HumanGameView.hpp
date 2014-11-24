@@ -8,6 +8,7 @@
 
 #include "ActorId.hpp"
 #include "GameLogic.hpp"
+#include "GameLostEvent.hpp"
 #include "GameView.hpp"
 #include "UIElement.hpp"
 #include "UITextInput.hpp"
@@ -40,11 +41,16 @@ public:
   void drawActors();
   
   void drawUI();
+
+  void drawScreen();
   
   void transactionFailEventHandler(const EventInterface& event);
   void transactionSuccessEventHandler(const EventInterface& event);
   void transactionStartEventHandler(const EventInterface& event);
-  
+  void transactionCancelEventHandler(const EventInterface& event);
+  void gameLostEventHandler(const EventInterface& event);
+  void gameWonEventHandler(const EventInterface& event);
+
   // Takes a coordinate pair (map_coords) denoting a location on the game map
   // and returns a coordinate pair (window_coords) denoting where the top-left
   // point of that map location is in the window, given current map and window
@@ -103,6 +109,24 @@ private:
   // texture to draw sprites from
   sf::Texture texture;
 
+  // texture to draw start_screen from
+  sf::Texture start_screen;
+
+  // texture to draw losing screen from
+  sf::Texture lose_screen;
+
+  // texture to draw winning screen from
+  sf::Texture win_screen;
+
+  // texture to draw story screen from
+  sf::Texture story_screen;
+
+  // texture to draw actors screen from
+  sf::Texture actors_screen;
+
+  // texture to draw instructions screen from
+  sf::Texture instructions_screen;
+
   // last known ship position, for animation
   unsigned int lastShipX;
   unsigned int lastShipY;
@@ -124,6 +148,8 @@ private:
   unsigned int tc_shiprum;
   unsigned int tc_portrum;
   unsigned int tc_rum_price;
+
+  std::string game_state;
 };
 
 inline unsigned int HumanGameView::getMapTileSize() const

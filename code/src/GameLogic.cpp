@@ -8,26 +8,145 @@
 #include "ActorMovedEvent.hpp"
 #include "AICmdEvent.hpp"
 #include "GameLogic.hpp"
+#include "GameLostEvent.hpp"
+#include "GameRestartEvent.hpp"
+#include "GameWonEvent.hpp"
 #include "ShipMoveCmdEvent.hpp"
+#include "TransactionCancelEvent.hpp"
 #include "TransactionCheckEvent.hpp"
 #include "TransactionFailEvent.hpp"
 #include "TransactionStartEvent.hpp"
 #include "TransactionSuccessEvent.hpp"
 
-
 GameLogic::GameLogic() :
   ship(0)
 {
-  // Used for assigning actor IDs throughout this constructor
-  unsigned int actor_id = 0;
+  // Initialize game time
+  game_time = 300.0;
 
+  // Initialize game state
+  game_over = 0;
 
   // Initialize the map
   if(!map.createMap("./data/second_map.txt")){
     std::cout<<"Map failed to create"<<std::endl;
   }
 
+  // Initialize all actors
+  initializeActors();
+}
 
+GameLogic::~GameLogic()
+{
+  // Iterate over all the actors, deleting them
+  for (ActorList::iterator i = actors.begin();
+       i != actors.end();
+       i++)
+  {
+    delete i->second;
+  }
+}
+
+bool GameLogic::initialize()
+{
+  // Register the proper handler for when the ship move command is triggered
+  event_manager.addDelegate(
+    EventDelegate(std::bind(&GameLogic::ShipMoveCmdEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    ShipMoveCmdEvent::event_type);
+  
+  // Register the proper handler for when the transaction check is triggered
+  event_manager.addDelegate(
+    EventDelegate(std::bind(&GameLogic::TransactionCheckEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    TransactionCheckEvent::event_type);
+	
+	// Register the proper handler for when the Actor Moved Event is triggered
+    event_manager.addDelegate(
+    EventDelegate(std::bind(&GameLogic::AICmdEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    AICmdEvent::event_type);
+
+  // Register the proper handler for when the game is restarted
+  event_manager.addDelegate(
+    EventDelegate(std::bind(&GameLogic::GameRestartEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    GameRestartEvent::event_type);
+
+    // Register the proper handler for collision detection                     
+    event_manager.addDelegate(                                                     
+    EventDelegate(std::bind(&GameLogic::CollisionEventHandler,                     
+                            this,                                                  
+                            std::placeholders::_1)),                               
+    ActorMovedEvent::event_type);
+
+  return true;
+}
+
+void GameLogic::update(const sf::Time& delta_t)
+{  
+  // Trigger all queued events
+  event_manager.processEvents();
+
+  // Update all actors
+  for (ActorList::iterator i = actors.begin();
+       i != actors.end();
+       i++)
+  {
+    i->second->update(delta_t);
+  }
+
+  // Update game_time
+  game_time -= delta_t.asSeconds();
+
+  // Check for lose conditions
+  if (((ship->getGold() == 0 && ship->getRum() == 0)
+	|| game_time <= 0) && game_over == 0) 
+  {
+    GameLostEvent* gl_event = new GameLostEvent();
+    event_manager.queueEvent(gl_event);
+    game_over = 1;
+  }
+
+  // Check for win condition
+  if (ship->getGold() >= 500 && game_over == 0) 
+  {
+    GameWonEvent* gw_event = new GameWonEvent();
+    event_manager.queueEvent(gw_event);
+    game_over = 1;
+  }  
+}
+
+void GameLogic::initializeActors()
+{
+  // Used for assigning actor IDs throughout this initializer
+  unsigned int actor_id = 0;
+
+  // Initialize the ship
+  actor_id = initializeShip(actor_id);
+
+  // Create and initialize all the ports
+  actor_id = initializePorts(actor_id);
+
+  // Initialize pirate1
+  actor_id = initializePirate1(actor_id);
+
+  // Initialize pirate2
+  actor_id = initializePirate2(actor_id);
+
+  // Create and initialize merchant
+  actor_id = initializeMerchant(actor_id);
+
+  // Create and initialize kraken
+  actor_id = initializeKraken(actor_id);
+}
+
+unsigned int GameLogic::initializeShip(unsigned int actor_id)
+{
   // Create and initialize the ship
   ship = new Ship(actor_id++);
   ship->setPositionX(10);
@@ -37,24 +156,40 @@ GameLogic::GameLogic() :
   ship->setRum(5);
   ship->setMaxRum(10);
   ship->setRumRate(-0.1);
-  
+  ship->initialize();
+  ship->setGoldRate(0.0);
 
   // Push the ship onto the list of actors
   actors[ship->getActorId()] = ship;
-  
+  return actor_id;
+}
+
+unsigned int GameLogic::initializePirate1(unsigned int actor_id)
+{
   // initializer for pirate 1
-  Pirate* pirate1 = new Pirate(actor_id++);
-  pirate1->setPosition(sf::Vector2i(0, 8));
+  pirate1 = new Pirate(actor_id++);
+  pirate1->initialize();
+  pirate1->setPosition(sf::Vector2i(1, 8));
+  pirate1->setPrevPos(sf::Vector2i(0, 8));
   enemies[pirate1->getActorId()] = pirate1;
   actors[pirate1->getActorId()] = pirate1;
-  
+  return actor_id;
+}
+
+unsigned int GameLogic::initializePirate2(unsigned int actor_id)
+{
   // initializer for pirate 2
-  Pirate* pirate2 = new Pirate(actor_id++);
+  pirate2 = new Pirate(actor_id++);
+  pirate2->initialize();
   pirate2->setPosition(sf::Vector2i(26, 10));
+  pirate2->setPrevPos(sf::Vector2i(25,10));
   enemies[pirate2->getActorId()] = pirate2;
   actors[pirate2->getActorId()] = pirate2;
+  return actor_id;
+}
 
-
+unsigned int GameLogic::initializePorts(unsigned int actor_id)
+{
   // Create and initialize all the ports
 
   // Open the port init file
@@ -96,24 +231,24 @@ GameLogic::GameLogic() :
       bool pound_found = false;
       for (unsigned int i = 0; i < name.size(); i++)
       {
-	if (name[i] != ' ')
-	{
-	  if (name[i] == '#')
-	  {
-	    pound_found = true;
-	  }
+        if (name[i] != ' ')
+        {
+          if (name[i] == '#')
+          {
+            pound_found = true;
+          }
 
-	  // Go ahead and trim leading whitespace
-	  name = name.substr(i);
-	  break;
-	}
+          // Go ahead and trim leading whitespace
+          name = name.substr(i);
+          break;
+        }
       }
 
       if (pound_found)
       {
-	continue;
+        continue;
       }
-    
+
       // Used for consuming delimiters below
       std::string notused;
 
@@ -134,7 +269,7 @@ GameLogic::GameLogic() :
       // correctly, so we don't want to make a port based on it.
       if (line_stream.fail())
       {
-	continue;
+        continue;
       }
 
       // At this point we know we have a good set of port data, so go ahead and
@@ -160,9 +295,68 @@ GameLogic::GameLogic() :
     // Just print out some error text if the ports init file wasn't found
     std::cerr << "Port init file not found\n";
   }
+  return actor_id;
 }
 
-GameLogic::~GameLogic()
+unsigned int GameLogic::initializeMerchant(unsigned int actor_id)
+{
+  Merchant* merchant = new Merchant(actor_id++);
+  merchant->initialize();
+  merchant->setPosition(sf::Vector2i(12, 18));
+  merchant->setPrevPos(sf::Vector2i(12, 17));
+  enemies[merchant->getActorId()] = merchant;
+  actors[merchant->getActorId()] = merchant;
+  return actor_id;
+}
+
+unsigned int GameLogic::initializeKraken(unsigned int actor_id)
+{
+  KrakenHead* kraken_head = new KrakenHead(actor_id++);
+  kraken_head->initialize();
+  kraken_head->setPosition(sf::Vector2i(24, 15));
+  kraken_head->setPrevPos(sf::Vector2i(23, 15));
+  enemies[kraken_head->getActorId()] = kraken_head;
+  actors[kraken_head->getActorId()] = kraken_head;
+  
+  KrakenTentacle* kraken_tent1 = new KrakenTentacle(actor_id++);
+  kraken_tent1->initialize();
+  kraken_tent1->setPosition(sf::Vector2i(23, 14));
+  kraken_tent1->setPrevPos(sf::Vector2i(22, 14));
+  kraken_tent1->setLeader(kraken_head);
+  kraken_tent1->setFollowOffset(sf::Vector2i(-1, -1));
+  enemies[kraken_tent1->getActorId()] = kraken_tent1;
+  actors[kraken_tent1->getActorId()] = kraken_tent1;
+  
+  KrakenTentacle* kraken_tent2 = new KrakenTentacle(actor_id++);
+  kraken_tent2->initialize();
+  kraken_tent2->setPosition(sf::Vector2i(23, 16));
+  kraken_tent2->setPrevPos(sf::Vector2i(22, 16));
+  kraken_tent2->setLeader(kraken_head);
+  kraken_tent2->setFollowOffset(sf::Vector2i(-1, 1));
+  enemies[kraken_tent2->getActorId()] = kraken_tent2;
+  actors[kraken_tent2->getActorId()] = kraken_tent2;
+  
+  KrakenTentacle* kraken_tent3 = new KrakenTentacle(actor_id++);
+  kraken_tent3->initialize();
+  kraken_tent3->setPosition(sf::Vector2i(25, 14));
+  kraken_tent3->setPrevPos(sf::Vector2i(24, 14));
+  kraken_tent3->setLeader(kraken_head);
+  kraken_tent3->setFollowOffset(sf::Vector2i(1, -1));
+  enemies[kraken_tent3->getActorId()] = kraken_tent3;
+  actors[kraken_tent3->getActorId()] = kraken_tent3;
+  
+  KrakenTentacle* kraken_tent4 = new KrakenTentacle(actor_id++);
+  kraken_tent4->initialize();
+  kraken_tent4->setPosition(sf::Vector2i(25, 16));
+  kraken_tent4->setPrevPos(sf::Vector2i(24, 16));
+  kraken_tent4->setLeader(kraken_head);
+  kraken_tent4->setFollowOffset(sf::Vector2i(1, 1));
+  enemies[kraken_tent4->getActorId()] = kraken_tent4;
+  actors[kraken_tent4->getActorId()] = kraken_tent4;
+  return actor_id;
+}
+
+void GameLogic::resetStartValues()
 {
   // Iterate over all the actors, deleting them
   for (ActorList::iterator i = actors.begin();
@@ -171,46 +365,15 @@ GameLogic::~GameLogic()
   {
     delete i->second;
   }
-}
 
-bool GameLogic::initialize()
-{
-  // Register the proper handler for when the ship move command is triggered
-  event_manager.addDelegate(
-    EventDelegate(std::bind(&GameLogic::ShipMoveCmdEventHandler,
-			    this,
-			    std::placeholders::_1)),
-    ShipMoveCmdEvent::event_type);
-  
-  // Register the proper handler for when the transaction check is triggered
-  event_manager.addDelegate(
-    EventDelegate(std::bind(&GameLogic::TransactionCheckEventHandler,
-			    this,
-			    std::placeholders::_1)),
-    TransactionCheckEvent::event_type);
-	
-	// Register the proper handler for when the Actor Moved Event is triggered
-    event_manager.addDelegate(
-    EventDelegate(std::bind(&GameLogic::AICmdEventHandler,
-			    this,
-			    std::placeholders::_1)),
-    AICmdEvent::event_type);
+  // Reinitialize all actors
+  initializeActors();
 
-  return true;
-}
+  // Reset game time
+  game_time = 300.0;
 
-void GameLogic::update(const sf::Time& delta_t)
-{  
-  // Trigger all queued events
-  event_manager.processEvents();
-
-  // Update all actors
-  for (ActorList::iterator i = actors.begin();
-       i != actors.end();
-       i++)
-  {
-    i->second->update(delta_t);
-  }
+  // Reset game state
+  game_over = 0;
 }
 
 void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
@@ -265,6 +428,7 @@ void GameLogic::ShipMoveCmdEventHandler(const EventInterface& event)
 	ts_event->setPortId(i->second->getActorId());
 	ts_event->setPortRum(i->second->getRum());
 	ts_event->setRumPrice(i->second->getRumPrice());
+	ts_event->setIsBuyPort(i->second->isBuyPort());
 	
 	event_manager.queueEvent(ts_event);
       }
@@ -277,28 +441,60 @@ void GameLogic::AICmdEventHandler(const EventInterface& event) {
 	sf::Vector2i newPos = ai_event->getPos();
 	EnemyActor* enemy = enemies[ai_event->getActorId()];
 	if (enemy->getMoveTime() > enemy->getMinMoveTime() && map.isValidPosition(newPos)) {
-		  enemy->setMoveTime(0.0);
-		  if (ship->getPosition() != newPos) {
-			enemy->setPrevPos(enemy->getPosition());
-			enemy->setPosition(newPos);
-			ActorMovedEvent* am_event = new ActorMovedEvent(enemy->getActorId(), newPos.x, newPos.y);
-			event_manager.queueEvent(am_event);
-		  }
-		  else {
-			int rum_penalty = enemy->getRumPenalty();
-			if (rum_penalty != 0) {
-				if (rum_penalty <= ship->getRum()) 
-					ship->setRum(ship->getRum() - rum_penalty);
-				else {
-					rum_penalty -= ship->getRum();
-					ship->setRum(0);
-					int gold_penalty = rum_penalty * 2;
-					if (gold_penalty <= ship->getGold()) 
-						ship->setGold(ship->getGold() - gold_penalty);
-					else 
-						ship->setGold(0);
-				}
+		enemy->setMoveTime(0.0);
+		enemy->setNeedSeek(false);
+		bool otherEnemy = false;
+		enemy->setPrevPos(enemy->getPosition());
+		enemy->setPosition(newPos);
+		ActorMovedEvent* am_event = new ActorMovedEvent(enemy->getActorId(), newPos.x, newPos.y);
+		event_manager.queueEvent(am_event);
+	}
+}
+
+void GameLogic::CollisionEventHandler(const EventInterface& event) {
+	const ActorMovedEvent* am_event = dynamic_cast<const ActorMovedEvent*>(&event);  
+	bool collision = false;
+	EnemyActor *enemy;
+	if (am_event->getActorId() == ship->getActorId()) {
+		for (EnemiesList::iterator i = enemies.begin(); i != enemies.end() && !collision; i++) {
+			if (ship->getPosition() == i->second->getPosition()) {
+				enemy = i->second;
+				collision = true;
 			}
+		}
+	}
+	else {
+		EnemiesList::iterator i = enemies.find(am_event->getActorId()); 
+		if (i != enemies.end()) {
+			enemy = i->second;
+			if (enemy->getPosition() == ship->getPosition())
+				collision = true;
+		}
+	}
+	if (collision && !ship->getIsInvincible()) {
+		int rum_penalty = enemy->getRumPenalty();
+		if (enemy->getType() == EnemyActor::Pirate) 
+			enemy->setState(EnemyActor::Stop);
+		if (rum_penalty > 0) {
+			ship->setIsInvincible(true);
+			if (rum_penalty <= ship->getRum()) 
+				ship->setRum(ship->getRum() - rum_penalty);
+			else {
+				rum_penalty -= ship->getRum();
+				ship->setRum(0);
+				int gold_penalty = rum_penalty * 2;
+				if (gold_penalty <= ship->getGold()) 
+					ship->setGold(ship->getGold() - gold_penalty);
+				else 
+					ship->setGold(0);
+			}
+		}
+		else if (rum_penalty < 0) {
+			if (enemy->getType() == EnemyActor::Merchant)
+				enemy->setRumPenalty(0.0);
+			ship->setRum(ship->getRum() - rum_penalty);
+			if (ship->getRum() > ship->getMaxRum())
+				ship->setRum(ship->getMaxRum());
 		}
 	}
 }
@@ -314,6 +510,16 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
   if (tcheck_event == 0)
   {
     // This should never happen, but just in case
+    return;
+  }
+
+  // Does the user want to cancel the transaction?
+  if (tcheck_event->getCancel())
+  {
+    // Notify that transaction has been cancelled and return
+    TransactionCancelEvent* tc_event = new TransactionCancelEvent();
+    event_manager.queueEvent(tc_event);
+    
     return;
   }
 
@@ -450,4 +656,9 @@ void GameLogic::TransactionCheckEventHandler(const EventInterface& event)
       event_manager.queueEvent(tsuccess_event);
     }
   }
+}
+
+void GameLogic::GameRestartEventHandler(const EventInterface& event)
+{
+  resetStartValues();
 }

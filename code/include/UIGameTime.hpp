@@ -1,5 +1,5 @@
-#if !defined UI_PORT_DATA_HPP
-#define UI_PORT_DATA_HPP
+#if !defined UI_GAME_TIME_HPP
+#define UI_GAME_TIME_HPP
 
 #include <SFML/Graphics.hpp>
 
@@ -13,13 +13,13 @@
 // "circular include" type situation ...
 class HumanGameView;
 
-class UIPortData : public UIElement
+class UIGameTime : public UIElement
 {
 public:
 
-  UIPortData(ActorId actor_id);
+  UIGameTime();
 
-  virtual ~UIPortData();
+  virtual ~UIGameTime();
 
   virtual void draw(sf::RenderWindow* window);
 
@@ -44,51 +44,42 @@ public:
 
   void loadFontFromFile(const std::string& font);
 
-  void setName(const std::string& name);
+  void setMessage(const std::string& message);
 
-  void setRum(unsigned int rum, unsigned int supply);
-
-  void setGold(unsigned int gold);
+  void setTimer(int timer);
 
 private:
 
-  // The actor this is associated with
-  ActorId actor_id;
+  // Text field for displaying the timer's text
+  UITextField message_field;
 
-  // Text field for displaying the port's name
-  UITextField name_field;
-
-  // Text field for displaying rum amount
-  UITextField rum_field;
-
-  // Text field for displaying gold amount
-  UITextField gold_field;
+  // Text field for displaying timer's amount
+  UITextField timer_field;
 };
 
-inline const sf::Vector2f& UIPortData::getPosition() const
+inline const sf::Vector2f& UIGameTime::getPosition() const
 {
   // The name field draws at the top-left of this UI element so its position is
   // the position of the whole thing
-  return name_field.getPosition();
+  return message_field.getPosition();
 }
 
-inline unsigned int UIPortData::getCharacterSize() const
+inline unsigned int UIGameTime::getCharacterSize() const
 {
   // Both fields are supposed to be set to the same character size, so just
   // return the size from one of them
-  return name_field.getCharacterSize();
+  return message_field.getCharacterSize();
 }
 
-inline void UIPortData::setColor(const sf::Color& color)
+inline void UIGameTime::setColor(const sf::Color& color)
 {
-  name_field.setColor(color);
-  rum_field.setColor(color);
-  gold_field.setColor(color);
+  message_field.setColor(color);
+  timer_field.setColor(color);
 }
 
-inline void UIPortData::setName(const std::string& name)
+inline void UIGameTime::setMessage(const std::string& message)
 {
-  name_field.setText(name);
+  message_field.setText(message);
 }
 
 #endif

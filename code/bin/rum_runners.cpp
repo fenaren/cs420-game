@@ -4,10 +4,14 @@
 #include <vector>
 
 #include "GameLogic.hpp"
+#include "GameLostEvent.hpp"
+#include "GameRestartEvent.hpp"
+#include "GameWonEvent.hpp"
 #include "HumanGameView.hpp"
 #include "AIGameView.hpp"
 #include "Map.hpp"
 #include "Sound.hpp"
+#include "TransactionCancelEvent.hpp"
 #include "TransactionFailEvent.hpp"
 #include "TransactionStartEvent.hpp"
 #include "TransactionSuccessEvent.hpp"
@@ -30,7 +34,7 @@
   // 0 = game time is paused
   // >1 = game time is faster than real time
   // <0 = game time runs in reverse
-double GAME_TIME_FACTOR = 1.0;
+double GAME_TIME_FACTOR = 0.0;
 
 
 //Pauses game during TransactionStartEvent
@@ -51,18 +55,6 @@ int main(int argc, char** argv)
   // create main window
   sf::RenderWindow App(sf::VideoMode(800,600,32), "Rum Runners");
     
-    /*Map game_map = Map();
-    if(!game_map.createMap("first_map.txt"))
-    {
-        std::cout << "Map failed to create" << std::endl;
-    }
-    else
-    {
-        game_map.drawMap(&App);
-    }
-    App.display();*/
-
-
   // Clocks for managing frame time.  'processing_clock' is used to determine
   // how long the processing required by the game takes, 'update_clock' is used
   // to determine how much time actually passes between successive game updates
@@ -136,11 +128,31 @@ int main(int argc, char** argv)
   event_manager->addDelegate(
     EventDelegate(PauseStartHandler),
     TransactionStartEvent::event_type);
+
+  // PauseStartHandler: pauses game at GameLostEvent
+  event_manager->addDelegate(
+    EventDelegate(PauseStartHandler),
+    GameLostEvent::event_type);
+
+  // Pause game at GameWonEvent
+  event_manager->addDelegate(
+    EventDelegate(PauseStartHandler),
+    GameWonEvent::event_type);
+
   // Don't unpause after TransactionFailEvent
   // UnpauseSuccessHandler: unpauses game after TransactionSuccessEvent
   event_manager->addDelegate(
     EventDelegate(TransactionEndHandler),
     TransactionSuccessEvent::event_type);
+
+  event_manager->addDelegate(
+    EventDelegate(TransactionEndHandler),
+    TransactionCancelEvent::event_type);
+
+  // Unpauses game after GameRestartEvent
+  event_manager->addDelegate(
+    EventDelegate(TransactionEndHandler),
+    GameRestartEvent::event_type);
 
 
   // start main loop

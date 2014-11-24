@@ -8,11 +8,11 @@ void UITextInput::initialize(sf::Vector2f s, sf::Vector2u curRes, Orientation or
 	rectangle.setOutlineColor(sf::Color::White);
 	rectangle.setOutlineThickness(3);
 	rectangle.setFillColor(sf::Color::Black);
-	font.loadFromFile("Arial.ttf");
+	font.loadFromFile("treamd.ttf");
 	input = ":";
 	inputText.setFont(font);
 	inputText.setString('\n'+input);
-	inputText.setCharacterSize(20);
+	inputText.setCharacterSize(25);
 	dialogue = "Rum Supply X\nPrice Y";
 	dialogueText.setFont(font);
 	dialogueText.setCharacterSize(20);

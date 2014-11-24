@@ -38,6 +38,8 @@ public:
   void setGold(unsigned int gold);
 
   void setRum(unsigned int rum);
+  
+  void setSupply(unsigned int supply);
 
   void setColor(const sf::Color& color);
 
@@ -55,6 +57,9 @@ private:
 
   // Rum amount to be displayed
   unsigned int rum;
+  
+  // Rum supply to be displayed
+  unsigned int supply;
 };
 
 inline void UIShipData::setPosition(const sf::Vector2f& position)
@@ -75,6 +80,11 @@ inline void UIShipData::setGold(unsigned int gold)
 inline void UIShipData::setRum(unsigned int rum)
 {
   this->rum = rum;
+}
+
+inline void UIShipData::setSupply(unsigned int supply) 
+{
+	this->supply = supply;
 }
 
 inline void UIShipData::setColor(const sf::Color& color)

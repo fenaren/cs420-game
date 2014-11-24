@@ -1,5 +1,14 @@
 #include <iostream>
+
+#include "GameLostEvent.hpp"
+#include "GameRestartEvent.hpp"
+#include "GameWonEvent.hpp"
 #include "HumanGameView.hpp"
+#include "TransactionCancelEvent.hpp"
+#include "TransactionFailEvent.hpp"
+#include "TransactionStartEvent.hpp"
+#include "TransactionSuccessEvent.hpp"
+#include "UIGameTime.hpp"
 #include "UITextField.hpp"
 #include "UIShipData.hpp"
 
@@ -15,15 +24,34 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
   tc_portrum(0),
   tc_rum_price(0)
 {
-  if (!texture.loadFromFile("./data/sprites.png")) {
-    std::cout << "ERROR TEXTURE" << std::endl;
-  }
-  currentRes = DEFAULT_RES;
-  resRatio = sf::Vector2f(1, 1);
-  aspectRatio = DEFAULT_RES.x / DEFAULT_RES.y;
-  lastShipX = 10;
-  lastShipY = 12;
-  shipSpriteY = 0;
+	if (!texture.loadFromFile("./data/sprites.png")) {
+		std::cout << "ERROR TEXTURE" << std::endl;
+	}
+	if (!start_screen.loadFromFile("./data/title_screen.png")) {
+		std::cout << "ERROR START_SCREEN" << std::endl;
+	}
+	if (!lose_screen.loadFromFile("./data/lose_screen.png")) {
+		std::cout << "ERROR LOSE_SCREEN" << std::endl;
+	}
+	if (!win_screen.loadFromFile("./data/win_screen.png")) {
+		std::cout << "ERROR WIN_SCREEN" << std::endl;
+	}
+	if (!story_screen.loadFromFile("./data/story_screen.png")) {
+		std::cout << "ERROR STORY_SCREEN" << std::endl;
+	}
+	if (!actors_screen.loadFromFile("./data/actor_screen.png")) {
+		std::cout << "ERROR ACTORS_SCREEN" << std::endl;
+	}
+	if (!instructions_screen.loadFromFile("./data/instructions_screen.png")) {
+		std::cout << "ERROR INSTRUCTIONS_SCREEN" << std::endl;
+	}
+	currentRes = DEFAULT_RES;
+	resRatio = sf::Vector2f(1, 1);
+	aspectRatio = DEFAULT_RES.x / DEFAULT_RES.y;
+	lastShipX = 10;
+	lastShipY = 12;
+	shipSpriteY = 0;
+	game_state = "START_SCREEN";
 }
 
 HumanGameView::~HumanGameView()
@@ -52,43 +80,65 @@ HumanGameView::~HumanGameView()
   }
 
 bool HumanGameView::initialize()
-  {
-    test = new UITextInput();
-    
-    // Sized such that all transaction failure text fits within it
-    test->initialize(sf::Vector2f(350, 100), currentRes, UIElement::Center);
-    if (!tempMap.createMap("./data/second_map.txt")) {
-      std::cout << "ERROR MAP" << std::endl;
-    }
-    
-    getGameLogic()->getEventManager()->addDelegate(
-      EventDelegate(std::bind(&HumanGameView::transactionFailEventHandler,
-			      this,
-			      std::placeholders::_1)),
-      TransactionFailEvent::event_type);
-    
-    getGameLogic()->getEventManager()->addDelegate(
-      EventDelegate(std::bind(&HumanGameView::transactionSuccessEventHandler,
-			      this,
-			      std::placeholders::_1)),
-     TransactionSuccessEvent::event_type);
-    
-    getGameLogic()->getEventManager()->addDelegate(
-      EventDelegate(std::bind(&HumanGameView::transactionStartEventHandler,
-			      this,
-			      std::placeholders::_1)),
-     TransactionStartEvent::event_type);
-    
-    // Push the UI ship data element onto the element list
-    uiList.push_back(new UIShipData());
-    
-    // Grab a shortcut to the ports list
-    const GameLogic::PortsList* ports_list = &getGameLogic()->getPortsList();
-     
-    // Set up text fields for all the ports, their data will be displayed in these
-    for (GameLogic::PortsList::const_iterator i = ports_list->begin();
-	  i != ports_list->end();
-	  i++)
+{
+  test = new UITextInput();
+
+  // Sized such that all transaction failure text fits within it
+  test->initialize(sf::Vector2f(350, 100), currentRes, UIElement::Center);
+  if (!tempMap.createMap("./data/second_map.txt")) {
+	std::cout << "ERROR MAP" << std::endl;
+  }
+
+  getGameLogic()->getEventManager()->addDelegate(
+    EventDelegate(std::bind(&HumanGameView::transactionFailEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    TransactionFailEvent::event_type);
+
+  getGameLogic()->getEventManager()->addDelegate(
+    EventDelegate(std::bind(&HumanGameView::transactionSuccessEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    TransactionSuccessEvent::event_type);
+
+  getGameLogic()->getEventManager()->addDelegate(
+    EventDelegate(std::bind(&HumanGameView::transactionCancelEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    TransactionCancelEvent::event_type);
+
+
+  getGameLogic()->getEventManager()->addDelegate(
+    EventDelegate(std::bind(&HumanGameView::transactionStartEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    TransactionStartEvent::event_type);
+
+  getGameLogic()->getEventManager()->addDelegate(
+    EventDelegate(std::bind(&HumanGameView::gameLostEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    GameLostEvent::event_type);
+
+  getGameLogic()->getEventManager()->addDelegate(
+    EventDelegate(std::bind(&HumanGameView::gameWonEventHandler,
+			    this,
+			    std::placeholders::_1)),
+    GameWonEvent::event_type);
+
+  // Push the UI ship data element onto the element list
+  uiList.push_back(new UIShipData());
+
+  // Push the UI game time element onto the element list
+  uiList.push_back(new UIGameTime());
+
+  // Grab a shortcut to the ports list
+  const GameLogic::PortsList* ports_list = &getGameLogic()->getPortsList();
+
+  // Set up text fields for all the ports, their data will be displayed in these
+  for (GameLogic::PortsList::const_iterator i = ports_list->begin();
+       i != ports_list->end();
+       i++)
     {
       // Make a new UIPortData for this port
       UIPortData* new_ui_port_data = new UIPortData(i->first);
@@ -118,6 +168,8 @@ void HumanGameView::update(const sf::Time& delta_t)
   
   updateUI();
   drawUI();
+
+  drawScreen();
   
   // Can use App to draw in the game window
   App->display();
@@ -246,20 +298,29 @@ void HumanGameView::drawActors() {
   
   std::map<ActorId, Port*> ports = getGameLogic()->getPortsList();
   for (std::map<ActorId, Port*>::iterator i = ports.begin(); i != ports.end(); i++) {
-	if(i->second->isBuyPort()){
-	  port_sprite.setColor(sf::Color::Red);
+		if(i->second->isBuyPort()){
+			port_sprite.setColor(sf::Color::Red);
+		}
+		else {
+			port_sprite.setColor(sf::Color::Yellow);
+		}
+		port_sprite.setPosition(sf::Vector2f(i->second->getPositionX() * map_tile_size + map_tl_wcoords.x, i->second->getPositionY() * map_tile_size + map_tl_wcoords.y));
+		App->draw(port_sprite);
 	}
-	else {
-	  port_sprite.setColor(sf::Color::Yellow);
-	}
-	port_sprite.setPosition(sf::Vector2f(i->second->getPositionX() * map_tile_size + map_tl_wcoords.x, i->second->getPositionY() * map_tile_size + map_tl_wcoords.y));
-	App->draw(port_sprite);
-  }
-  sf::Sprite ship_sprite;
-  ship_sprite.setTexture(texture);
-  ship_sprite.scale(spriteScale,spriteScale);
-  const Ship* ship = getGameLogic()->getShip();
-  ship_sprite.setPosition(sf::Vector2f(ship->getPositionX() * map_tile_size + map_tl_wcoords.x, ship->getPositionY() * map_tile_size + map_tl_wcoords.y));
+
+	sf::Sprite ship_sprite;
+	ship_sprite.setTexture(texture);
+	
+	sf::Sprite kraken_head;
+	kraken_head.setTexture(texture);
+	kraken_head.setTextureRect(sf::IntRect(96,239,25,25));
+	sf::Sprite kraken_tentacle;
+	kraken_tentacle.setTexture(texture);
+	kraken_tentacle.setTextureRect(sf::IntRect(121,239,25,25));
+
+	ship_sprite.scale(spriteScale,spriteScale);
+	const Ship* ship = getGameLogic()->getShip();
+	ship_sprite.setPosition(sf::Vector2f(ship->getPositionX() * map_tile_size + map_tl_wcoords.x, ship->getPositionY() * map_tile_size + map_tl_wcoords.y));
   
   // ship moved left
   if (lastShipX > ship->getPositionX()) {
@@ -278,41 +339,63 @@ void HumanGameView::drawActors() {
 	  shipSpriteY = 0;
   }
   
-  ship_sprite.setTextureRect(sf::IntRect(0,shipSpriteY,25,25));
-  App->draw(ship_sprite);
-  
-  lastShipX = ship->getPositionX();
-  lastShipY = ship->getPositionY();
-  
-  const std::map<ActorId, EnemyActor*> *enemies = getGameLogic()->getEnemiesListPointer();
-  for (std::map<ActorId, EnemyActor*>::const_iterator i = enemies->begin(); i != enemies->end(); i++) {
-      EnemyActor* enemy = i->second;
-      if(enemy->getType() == EnemyActor::Pirate){
-      int enemyShipSpriteY = 0;
-      if (enemy->getPrevPos().x > enemy->getPositionX()) {
-	    enemyShipSpriteY = 25;
-      }
-      // ship moved right
-      else if (enemy->getPrevPos().x < enemy->getPositionX()) {
-	    enemyShipSpriteY = 50;
-      }
-      // ship moved up
-      else if (enemy->getPrevPos().y > enemy->getPositionY()) {
-	    enemyShipSpriteY = 75;
-      }
-      // ship moved down
-      else if (enemy->getPrevPos().y < enemy->getPositionY()) {
-	    enemyShipSpriteY = 0;
-      }
-	    ship_sprite.setTextureRect(sf::IntRect(0,enemyShipSpriteY,25,25));
-      if (enemy->getState() == EnemyActor::Pursue)
-	    ship_sprite.setColor(sf::Color::Red);
-      else
-	    ship_sprite.setColor(sf::Color::Green);
-      }
-  ship_sprite.setPosition(sf::Vector2f(enemy->getPositionX() * map_tile_size + map_tl_wcoords.x, enemy->getPositionY() * map_tile_size + map_tl_wcoords.y));
-  App->draw(ship_sprite);
-  }
+	if (ship->getIsInvincible())
+		ship_sprite.setColor(sf::Color::Yellow);
+
+	ship_sprite.setTextureRect(sf::IntRect(0,shipSpriteY,25,25));
+	App->draw(ship_sprite);
+
+	lastShipX = ship->getPositionX();
+	lastShipY = ship->getPositionY();
+	
+	const std::map<ActorId, EnemyActor*> *enemies = getGameLogic()->getEnemiesListPointer();
+	for (std::map<ActorId, EnemyActor*>::const_iterator i = enemies->begin(); i != enemies->end(); i++) {
+		EnemyActor* enemy = i->second;
+		if(enemy->getType() == EnemyActor::Pirate || enemy->getType() == EnemyActor::Merchant){
+			int enemyShipSpriteY = 0;
+			if (enemy->getPrevPos().x > enemy->getPositionX()) {
+				enemyShipSpriteY = 25;
+			}
+			// ship moved right
+			else if (enemy->getPrevPos().x < enemy->getPositionX()) {
+				enemyShipSpriteY = 50;
+			}
+			// ship moved up
+			else if (enemy->getPrevPos().y > enemy->getPositionY()) {
+				enemyShipSpriteY = 75;
+			}
+			// ship moved down
+			else if (enemy->getPrevPos().y < enemy->getPositionY()) {
+				enemyShipSpriteY = 0;
+			}
+			ship_sprite.setTextureRect(sf::IntRect(0,enemyShipSpriteY,25,25));
+			
+			// changes colors based on various states
+			if (enemy->getState() == EnemyActor::Pursue)
+				ship_sprite.setColor(sf::Color::Red);
+			else if (enemy->getState() == EnemyActor::Stop)
+				ship_sprite.setColor(sf::Color::Blue);
+			else if (enemy->getRumPenalty() == 0.0)
+				ship_sprite.setColor(sf::Color::Cyan);
+			else if (enemy->getRumPenalty() > 0.0)
+				ship_sprite.setColor(sf::Color(84, 84, 84));
+			else
+				ship_sprite.setColor(sf::Color::Green);
+			
+			ship_sprite.setPosition(sf::Vector2f(enemy->getPositionX() * map_tile_size + map_tl_wcoords.x, enemy->getPositionY() * map_tile_size + map_tl_wcoords.y));
+			App->draw(ship_sprite);
+		}
+		if (enemy->getType() == EnemyActor::Kraken) {
+			kraken_head.setPosition(sf::Vector2f(enemy->getPositionX() * map_tile_size + map_tl_wcoords.x, enemy->getPositionY() * map_tile_size + map_tl_wcoords.y));
+			App->draw(kraken_head);
+		}
+		if (enemy->getType() == EnemyActor::Tentacle) {
+			kraken_tentacle.setPosition(sf::Vector2f(enemy->getPositionX() * map_tile_size + map_tl_wcoords.x, enemy->getPositionY() * map_tile_size + map_tl_wcoords.y));
+			if (enemy->getState() == EnemyActor::Pursue)
+				kraken_tentacle.setColor(sf::Color::Red);
+			App->draw(kraken_tentacle);
+		}
+	}
 }
 
 // draws the elements in the UI list
@@ -322,6 +405,38 @@ void HumanGameView::drawUI() {
   }
 }
 
+
+// draws the screen that the player is on, if any
+void HumanGameView::drawScreen() {
+
+	sf::Vector2u window_size = App->getSize();
+	double x_scale = window_size.x / 800.0;
+	double y_scale = window_size.y / 600.0;
+
+	sf::Sprite screen_sprite;
+	if (game_state == "START_SCREEN") {
+		screen_sprite.setTexture(start_screen);
+	}
+	else if (game_state == "YOU LOSE") {
+		screen_sprite.setTexture(lose_screen);
+	}
+	else if (game_state == "YOU WIN") {
+		screen_sprite.setTexture(win_screen);
+	}
+	else if (game_state == "STORY_SCREEN") {
+		screen_sprite.setTexture(story_screen);
+	}
+	else if (game_state == "ACTORS_SCREEN") {
+		screen_sprite.setTexture(actors_screen);
+	}
+	else if (game_state == "INSTRUCTIONS_SCREEN") {
+		screen_sprite.setTexture(instructions_screen);
+	}
+	screen_sprite.setTextureRect(sf::IntRect(0,0,800,600));
+	screen_sprite.setPosition(sf::Vector2f(0,0));
+	screen_sprite.scale(x_scale,y_scale);
+	App->draw(screen_sprite);
+}
 
 // handles transaction fails
 void HumanGameView::transactionFailEventHandler(const EventInterface& event)
@@ -338,19 +453,23 @@ void HumanGameView::transactionFailEventHandler(const EventInterface& event)
   switch(tf_event->getFailReason())
   {
   case TransactionFailEvent::BUY_EXCEEDS_MAX_SHIP_INVENTORY:
-    oss << "Your ship can't hold that much rum!";
-  break;
+    oss << "Your ship ain't big enough for all this rum!";
+    break;
+
   case TransactionFailEvent::BUY_NOT_ENOUGH_PORT_INVENTORY:
-    oss << "This port doesn't have that much rum!";
-  break;
+    oss << "We don't have that much rum matey!";
+    break;
+
   case TransactionFailEvent::BUY_NOT_ENOUGH_GOLD:
-    oss << "You don't have enough gold!";
-  break;
+    oss << "Tryin to cheat me?  You don't have that much gold!";
+    break;
+
   case TransactionFailEvent::SELL_EXCEEDS_SHIP_INVENTORY:
-    oss << "You don't have that much rum!";
-  break;
+    oss << "There ain't that much rum on your ship!";
+    break;
+
   case TransactionFailEvent::SELL_EXCEEDS_MAX_PORT_INVENTORY:
-    oss << "This port can't accept that much rum!";
+    oss << "Arr, we can't hold that much rum!";
   };
   oss << "\nSupply: " << tc_portrum << "\nPrice: " << tc_rum_price;
   test->setDialogue(oss.str());
@@ -361,29 +480,47 @@ void HumanGameView::transactionSuccessEventHandler(const EventInterface& event) 
       std::vector<UIElement*>::iterator position = std::find(uiList.begin(), uiList.end(), test);
       if (position != uiList.end())
 	uiList.erase(position);
-	menuOpen = false;
-      }
-      
-// handles transaction start
-void HumanGameView::transactionStartEventHandler(const EventInterface& event) {
-      if (!menuOpen) {
-	test->resize(currentRes);
-	uiList.push_back(test);
-	menuOpen = true;
-      }
-      const TransactionStartEvent* ts_event =
-      dynamic_cast<const TransactionStartEvent*>(&event);
-      tc_shipid = ts_event->getShipId();
-      tc_portid = ts_event->getPortId();
-      tc_shipgold = ts_event->getShipGold();
-      tc_shiprum = ts_event->getShipRum();
-      tc_portrum = ts_event->getPortRum();
-      tc_rum_price = ts_event->getRumPrice();
-      std::ostringstream oss;
-      oss << "Supply: " << tc_portrum << "\nPrice: " << tc_rum_price;
-      test->setDialogue(oss.str());
+      menuOpen = false;
 }
 
+void HumanGameView::transactionCancelEventHandler(const EventInterface& event) {
+	std::vector<UIElement*>::iterator position = std::find(uiList.begin(), uiList.end(), test);
+	if (position != uiList.end())
+		uiList.erase(position);
+	menuOpen = false;
+}
+
+// handles transaction start
+void HumanGameView::transactionStartEventHandler(const EventInterface& event) {
+	if (!menuOpen) {
+		test->resize(currentRes);
+		uiList.push_back(test);
+		menuOpen = true;
+	}
+	const TransactionStartEvent* ts_event =
+		dynamic_cast<const TransactionStartEvent*>(&event);
+	tc_shipid = ts_event->getShipId();
+    tc_portid = ts_event->getPortId();
+    tc_shipgold = ts_event->getShipGold();
+    tc_shiprum = ts_event->getShipRum();
+    tc_portrum = ts_event->getPortRum();
+    tc_rum_price = ts_event->getRumPrice();
+	std::ostringstream oss;
+	if (ts_event->getIsBuyPort())
+		oss << "How much rum ya buyin?\n";
+	else
+		oss << "How much rum ya sellin?\n";
+	oss << "Supply: " << tc_portrum << "\nPrice: " << tc_rum_price;
+	test->setDialogue(oss.str());
+}
+
+void HumanGameView::gameLostEventHandler(const EventInterface& event) {
+	game_state = "YOU LOSE";
+}
+
+void HumanGameView::gameWonEventHandler(const EventInterface& event) {
+	game_state = "YOU WIN";
+}
 
 void HumanGameView::calculateMapWindowData()
 {
