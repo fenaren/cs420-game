@@ -98,6 +98,8 @@ void UIGameTime::setTimer(int timer)
   std::ostringstream num_to_str;
   num_to_str << timer / 60;
   num_to_str << ":";
+  if (timer % 60 < 10)
+	num_to_str << "0";
   num_to_str << timer % 60;
 
   timer_field.setText(num_to_str.str());
