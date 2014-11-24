@@ -41,6 +41,8 @@ public:
   void drawActors();
   
   void drawUI();
+
+  void drawScreen();
   
   void transactionFailEventHandler(const EventInterface& event);
   void transactionSuccessEventHandler(const EventInterface& event);
@@ -107,6 +109,18 @@ private:
   // texture to draw sprites from
   sf::Texture texture;
 
+  // texture to draw start_screen from
+  sf::Texture start_screen;
+
+  // texture to draw losing screen from
+  sf::Texture lose_screen;
+
+  // texture to draw winning screen from
+  sf::Texture win_screen;
+
+  // texture to draw story screen from
+  sf::Texture story_screen;
+
   // last known ship position, for animation
   unsigned int lastShipX;
   unsigned int lastShipY;
@@ -129,7 +143,6 @@ private:
   unsigned int tc_portrum;
   unsigned int tc_rum_price;
 
-  UITextField* win_lose_message;
   std::string game_state;
 };
 

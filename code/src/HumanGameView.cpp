@@ -27,13 +27,25 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
 	if (!texture.loadFromFile("./data/sprites.png")) {
 		std::cout << "ERROR TEXTURE" << std::endl;
 	}
+	if (!start_screen.loadFromFile("./data/title_screen.png")) {
+		std::cout << "ERROR START_SCREEN" << std::endl;
+	}
+	if (!lose_screen.loadFromFile("./data/lose_screen.png")) {
+		std::cout << "ERROR LOSE_SCREEN" << std::endl;
+	}
+	if (!win_screen.loadFromFile("./data/win_screen.png")) {
+		std::cout << "ERROR WIN_SCREEN" << std::endl;
+	}
+	if (!story_screen.loadFromFile("./data/story_screen.png")) {
+		std::cout << "ERROR STORY_SCREEN" << std::endl;
+	}
 	currentRes = DEFAULT_RES;
 	resRatio = sf::Vector2f(1, 1);
 	aspectRatio = DEFAULT_RES.x / DEFAULT_RES.y;
 	lastShipX = 10;
 	lastShipY = 12;
 	shipSpriteY = 0;
-	game_state = "";
+	game_state = "START_SCREEN";
 }
 
 HumanGameView::~HumanGameView()
@@ -111,14 +123,6 @@ bool HumanGameView::initialize()
   // Push the UI ship data element onto the element list
   uiList.push_back(new UIShipData());
 
-  // Push the UI win/lose message onto the element list
-  win_lose_message = new UITextField();
-  win_lose_message->setText(game_state);
-  win_lose_message->setPosition(sf::Vector2f(350,300));
-  win_lose_message->setCharacterSize(24);
-  win_lose_message->setStyle(sf::Text::Bold);
-  uiList.push_back(win_lose_message);
-
   // Push the UI game time element onto the element list
   uiList.push_back(new UIGameTime());
 
@@ -159,6 +163,8 @@ void HumanGameView::update(const sf::Time& delta_t)
 
   updateUI();
   drawUI();
+
+  drawScreen();
 
   // Can use App to draw in the game window
   
@@ -235,11 +241,13 @@ void HumanGameView::readInputs(const sf::Time& delta_t) {
 		    }
 
 		    if ((event.key.code == sf::Keyboard::Space) 
-			&& (game_state == "YOU LOSE" || game_state == "YOU WIN")) {
+			&& (game_state == "YOU LOSE" || game_state == "YOU WIN" || game_state == "STORY_SCREEN")) {
 				GameRestartEvent* gr_event = new GameRestartEvent();
 				getGameLogic()->getEventManager()->queueEvent(gr_event);
 				game_state = "";
-				win_lose_message->setText(game_state);
+		    }
+		    if ((event.key.code == sf::Keyboard::Space) && (game_state == "START_SCREEN")) {
+				game_state = "STORY_SCREEN";
 		    }
 		    break;
 
@@ -423,6 +431,32 @@ void HumanGameView::drawUI() {
 	}
 }
 
+// draws the screen that the player is on, if any
+void HumanGameView::drawScreen() {
+
+	sf::Vector2u window_size = App->getSize();
+	double x_scale = window_size.x / 800.0;
+	double y_scale = window_size.y / 600.0;
+
+	sf::Sprite screen_sprite;
+	if (game_state == "START_SCREEN") {
+		screen_sprite.setTexture(start_screen);
+	}
+	else if (game_state == "YOU LOSE") {
+		screen_sprite.setTexture(lose_screen);
+	}
+	else if (game_state == "YOU WIN") {
+		screen_sprite.setTexture(win_screen);
+	}
+	else if (game_state == "STORY_SCREEN") {
+		screen_sprite.setTexture(story_screen);
+	}
+	screen_sprite.setTextureRect(sf::IntRect(0,0,800,600));
+	screen_sprite.setPosition(sf::Vector2f(0,0));
+	screen_sprite.scale(x_scale,y_scale);
+	App->draw(screen_sprite);
+}
+
 // handles transaction fails
 void HumanGameView::transactionFailEventHandler(const EventInterface& event)
 {
@@ -500,12 +534,10 @@ void HumanGameView::transactionStartEventHandler(const EventInterface& event) {
 
 void HumanGameView::gameLostEventHandler(const EventInterface& event) {
 	game_state = "YOU LOSE";
-	win_lose_message->setText(game_state + "\nPress [space] to play again");
 }
 
 void HumanGameView::gameWonEventHandler(const EventInterface& event) {
 	game_state = "YOU WIN";
-	win_lose_message->setText(game_state + "\nPress [space] to play again");
 }
 
 void HumanGameView::calculateMapWindowData()

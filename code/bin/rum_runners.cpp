@@ -33,7 +33,7 @@
   // 0 = game time is paused
   // >1 = game time is faster than real time
   // <0 = game time runs in reverse
-double GAME_TIME_FACTOR = 1.0;
+double GAME_TIME_FACTOR = 0.0;
 
 
 //Pauses game during TransactionStartEvent
