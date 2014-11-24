@@ -127,28 +127,28 @@ void GameLogic::initializeActors()
   unsigned int actor_id = 0;
 
   // Initialize the ship
-  initializeShip(actor_id++);
-
-  // Initialize pirate1
-  initializePirate1(actor_id++);
-
-  // Initialize pirate2
-  initializePirate2(actor_id++);
+  actor_id = initializeShip(actor_id);
 
   // Create and initialize all the ports
-  initializePorts(actor_id++);
+  actor_id = initializePorts(actor_id);
+
+  // Initialize pirate1
+  actor_id = initializePirate1(actor_id);
+
+  // Initialize pirate2
+  actor_id = initializePirate2(actor_id);
 
   // Create and initialize merchant
-  initializeMerchant(actor_id++);
+  actor_id = initializeMerchant(actor_id);
 
   // Create and initialize kraken
-  initializeKraken(actor_id++);
+  actor_id = initializeKraken(actor_id);
 }
 
-void GameLogic::initializeShip(unsigned int actor_id)
+unsigned int GameLogic::initializeShip(unsigned int actor_id)
 {
   // Create and initialize the ship
-  ship = new Ship(actor_id);
+  ship = new Ship(actor_id++);
   ship->setPositionX(10);
   ship->setPositionY(12);
   ship->setMinMoveTime(0.5);
@@ -161,31 +161,34 @@ void GameLogic::initializeShip(unsigned int actor_id)
 
   // Push the ship onto the list of actors
   actors[ship->getActorId()] = ship;
+  return actor_id;
 }
 
-void GameLogic::initializePirate1(unsigned int actor_id)
+unsigned int GameLogic::initializePirate1(unsigned int actor_id)
 {
   // initializer for pirate 1
-  pirate1 = new Pirate(actor_id);
+  pirate1 = new Pirate(actor_id++);
   pirate1->initialize();
   pirate1->setPosition(sf::Vector2i(1, 8));
   pirate1->setPrevPos(sf::Vector2i(0, 8));
   enemies[pirate1->getActorId()] = pirate1;
   actors[pirate1->getActorId()] = pirate1;
+  return actor_id;
 }
 
-void GameLogic::initializePirate2(unsigned int actor_id)
+unsigned int GameLogic::initializePirate2(unsigned int actor_id)
 {
   // initializer for pirate 2
-  pirate2 = new Pirate(actor_id);
+  pirate2 = new Pirate(actor_id++);
   pirate2->initialize();
   pirate2->setPosition(sf::Vector2i(26, 10));
   pirate2->setPrevPos(sf::Vector2i(25,10));
   enemies[pirate2->getActorId()] = pirate2;
   actors[pirate2->getActorId()] = pirate2;
+  return actor_id;
 }
 
-void GameLogic::initializePorts(unsigned int actor_id)
+unsigned int GameLogic::initializePorts(unsigned int actor_id)
 {
   // Create and initialize all the ports
 
@@ -292,9 +295,10 @@ void GameLogic::initializePorts(unsigned int actor_id)
     // Just print out some error text if the ports init file wasn't found
     std::cerr << "Port init file not found\n";
   }
+  return actor_id;
 }
 
-void GameLogic::initializeMerchant(unsigned int actor_id)
+unsigned int GameLogic::initializeMerchant(unsigned int actor_id)
 {
   Merchant* merchant = new Merchant(actor_id++);
   merchant->initialize();
@@ -302,9 +306,10 @@ void GameLogic::initializeMerchant(unsigned int actor_id)
   merchant->setPrevPos(sf::Vector2i(12, 17));
   enemies[merchant->getActorId()] = merchant;
   actors[merchant->getActorId()] = merchant;
+  return actor_id;
 }
 
-void GameLogic::initializeKraken(unsigned int actor_id)
+unsigned int GameLogic::initializeKraken(unsigned int actor_id)
 {
   KrakenHead* kraken_head = new KrakenHead(actor_id++);
   kraken_head->initialize();
@@ -348,6 +353,7 @@ void GameLogic::initializeKraken(unsigned int actor_id)
   kraken_tent4->setFollowOffset(sf::Vector2i(1, 1));
   enemies[kraken_tent4->getActorId()] = kraken_tent4;
   actors[kraken_tent4->getActorId()] = kraken_tent4;
+  return actor_id;
 }
 
 void GameLogic::resetStartValues()
