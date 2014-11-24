@@ -113,22 +113,22 @@ private:
   void initializeActors();
 
   // Initialize ship values
-  void initializeShip(unsigned int actor_id);
+  unsigned int initializeShip(unsigned int actor_id);
 
   // Initialize pirate1 values
-  void initializePirate1(unsigned int actor_id);
+  unsigned int initializePirate1(unsigned int actor_id);
 
   // Initialize pirate2 values
-  void initializePirate2(unsigned int actor_id);
+  unsigned int initializePirate2(unsigned int actor_id);
 
   // Initialize port values
-  void initializePorts(unsigned int actor_id);
+  unsigned int initializePorts(unsigned int actor_id);
 
   // Initialize merchant
-  void initializeMerchant(unsigned int actor_id);
+  unsigned int initializeMerchant(unsigned int actor_id);
 
   // Initialize kraken
-  void initializeKraken(unsigned int actor_id);
+  unsigned int initializeKraken(unsigned int actor_id);
 
   // Resets starting positions and rum/gold values of ship/ports
   void resetStartValues();
