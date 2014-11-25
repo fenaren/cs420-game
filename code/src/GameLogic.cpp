@@ -149,7 +149,7 @@ unsigned int GameLogic::initializeShip(unsigned int actor_id)
 {
   // Create and initialize the ship
   ship = new Ship(actor_id++);
-  ship->setPositionX(10);
+  ship->setPositionX(14);
   ship->setPositionY(12);
   ship->setMinMoveTime(0.5);
   ship->setGold(10);
@@ -169,8 +169,8 @@ unsigned int GameLogic::initializePirate1(unsigned int actor_id)
   // initializer for pirate 1
   pirate1 = new Pirate(actor_id++);
   pirate1->initialize();
-  pirate1->setPosition(sf::Vector2i(1, 8));
-  pirate1->setPrevPos(sf::Vector2i(0, 8));
+  pirate1->setPosition(sf::Vector2i(1, 1));
+  pirate1->setPrevPos(sf::Vector2i(0, 1));
   enemies[pirate1->getActorId()] = pirate1;
   actors[pirate1->getActorId()] = pirate1;
   return actor_id;
@@ -181,8 +181,8 @@ unsigned int GameLogic::initializePirate2(unsigned int actor_id)
   // initializer for pirate 2
   pirate2 = new Pirate(actor_id++);
   pirate2->initialize();
-  pirate2->setPosition(sf::Vector2i(26, 10));
-  pirate2->setPrevPos(sf::Vector2i(25,10));
+  pirate2->setPosition(sf::Vector2i(28, 1));
+  pirate2->setPrevPos(sf::Vector2i(28,2));
   enemies[pirate2->getActorId()] = pirate2;
   actors[pirate2->getActorId()] = pirate2;
   return actor_id;
@@ -302,8 +302,8 @@ unsigned int GameLogic::initializeMerchant(unsigned int actor_id)
 {
   Merchant* merchant = new Merchant(actor_id++);
   merchant->initialize();
-  merchant->setPosition(sf::Vector2i(12, 18));
-  merchant->setPrevPos(sf::Vector2i(12, 17));
+  merchant->setPosition(sf::Vector2i(26, 23));
+  merchant->setPrevPos(sf::Vector2i(27, 24));
   enemies[merchant->getActorId()] = merchant;
   actors[merchant->getActorId()] = merchant;
   return actor_id;
@@ -313,15 +313,15 @@ unsigned int GameLogic::initializeKraken(unsigned int actor_id)
 {
   KrakenHead* kraken_head = new KrakenHead(actor_id++);
   kraken_head->initialize();
-  kraken_head->setPosition(sf::Vector2i(24, 15));
-  kraken_head->setPrevPos(sf::Vector2i(23, 15));
+  kraken_head->setPosition(sf::Vector2i(1, 22));
+  kraken_head->setPrevPos(sf::Vector2i(1, 23));
   enemies[kraken_head->getActorId()] = kraken_head;
   actors[kraken_head->getActorId()] = kraken_head;
   
   KrakenTentacle* kraken_tent1 = new KrakenTentacle(actor_id++);
   kraken_tent1->initialize();
-  kraken_tent1->setPosition(sf::Vector2i(23, 14));
-  kraken_tent1->setPrevPos(sf::Vector2i(22, 14));
+  kraken_tent1->setPosition(sf::Vector2i(0, 21));
+  kraken_tent1->setPrevPos(sf::Vector2i(0, 22));
   kraken_tent1->setLeader(kraken_head);
   kraken_tent1->setFollowOffset(sf::Vector2i(-1, -1));
   enemies[kraken_tent1->getActorId()] = kraken_tent1;
@@ -329,8 +329,8 @@ unsigned int GameLogic::initializeKraken(unsigned int actor_id)
   
   KrakenTentacle* kraken_tent2 = new KrakenTentacle(actor_id++);
   kraken_tent2->initialize();
-  kraken_tent2->setPosition(sf::Vector2i(23, 16));
-  kraken_tent2->setPrevPos(sf::Vector2i(22, 16));
+  kraken_tent2->setPosition(sf::Vector2i(0, 23));
+  kraken_tent2->setPrevPos(sf::Vector2i(0, 24));
   kraken_tent2->setLeader(kraken_head);
   kraken_tent2->setFollowOffset(sf::Vector2i(-1, 1));
   enemies[kraken_tent2->getActorId()] = kraken_tent2;
@@ -338,8 +338,8 @@ unsigned int GameLogic::initializeKraken(unsigned int actor_id)
   
   KrakenTentacle* kraken_tent3 = new KrakenTentacle(actor_id++);
   kraken_tent3->initialize();
-  kraken_tent3->setPosition(sf::Vector2i(25, 14));
-  kraken_tent3->setPrevPos(sf::Vector2i(24, 14));
+  kraken_tent3->setPosition(sf::Vector2i(2, 21));
+  kraken_tent3->setPrevPos(sf::Vector2i(2, 22));
   kraken_tent3->setLeader(kraken_head);
   kraken_tent3->setFollowOffset(sf::Vector2i(1, -1));
   enemies[kraken_tent3->getActorId()] = kraken_tent3;
@@ -347,8 +347,8 @@ unsigned int GameLogic::initializeKraken(unsigned int actor_id)
   
   KrakenTentacle* kraken_tent4 = new KrakenTentacle(actor_id++);
   kraken_tent4->initialize();
-  kraken_tent4->setPosition(sf::Vector2i(25, 16));
-  kraken_tent4->setPrevPos(sf::Vector2i(24, 16));
+  kraken_tent4->setPosition(sf::Vector2i(2, 23));
+  kraken_tent4->setPrevPos(sf::Vector2i(2, 24));
   kraken_tent4->setLeader(kraken_head);
   kraken_tent4->setFollowOffset(sf::Vector2i(1, 1));
   enemies[kraken_tent4->getActorId()] = kraken_tent4;
