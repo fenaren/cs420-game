@@ -66,6 +66,7 @@ void UIShipData::updateText()
   num_to_str.str("");
   num_to_str << gold;
   updated_text +=" Gold: " + num_to_str.str();
+  updated_text += "/500";
 
   text.setText(updated_text);
 }
