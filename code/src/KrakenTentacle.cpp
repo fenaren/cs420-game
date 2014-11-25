@@ -13,7 +13,7 @@ bool KrakenTentacle::initialize() {
 	setRumPenalty(3);
 	setMinMoveTime(1);
 	setPatrolTimerMin(2);
-	setAggroRange(3);
+	setAggroRange(4);
 	setNeedSeek(true);
 	return true;
 }

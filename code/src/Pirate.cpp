@@ -13,7 +13,7 @@ bool Pirate::initialize() {
 	setRumPenalty(2);
 	setMinMoveTime(1);
 	setPatrolTimerMin(20.0);
-	setAggroRange(4);
+	setAggroRange(5);
 	setNeedSeek(true);
 	freezeTimer = FREEZE_TIMER;
 	return true;

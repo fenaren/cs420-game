@@ -10,7 +10,7 @@ bool Merchant::initialize() {
 	setState(EnemyActor::Patrol);
 	setSeek(sf::Vector2i(getPositionX(), getPositionY()));
 	setPrevPos(getSeek());
-	setRumPenalty(-2);
+	setRumPenalty(-4);
 	setMinMoveTime(1);
 	setPatrolTimerMin(20.0);
 	setAggroRange(5);
@@ -25,7 +25,7 @@ void Merchant::update(const sf::Time& delta_t) {
 		emptyTimer -= delta_t.asSeconds();
 		if (emptyTimer <= 0.0) {
 			emptyTimer = EMPTY_TIMER;
-			setRumPenalty(-2);
+			setRumPenalty(-4);
 		}
 	}
 }
