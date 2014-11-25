@@ -15,6 +15,7 @@
 #include "UIPortData.hpp"
 #include "Map.hpp"
 #include "ShipMoveCmdEvent.hpp"
+#include "Sound.hpp"
 #include "TransactionCheckEvent.hpp"
 #include "TransactionFailEvent.hpp"
 #include "TransactionStartEvent.hpp"
@@ -150,6 +151,8 @@ private:
   unsigned int tc_rum_price;
 
   std::string game_state;
+   
+  Sound sound;
 };
 
 inline unsigned int HumanGameView::getMapTileSize() const

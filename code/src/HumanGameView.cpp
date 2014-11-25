@@ -4,6 +4,7 @@
 #include "GameRestartEvent.hpp"
 #include "GameWonEvent.hpp"
 #include "HumanGameView.hpp"
+#include "Sound.hpp"
 #include "TransactionCancelEvent.hpp"
 #include "TransactionFailEvent.hpp"
 #include "TransactionStartEvent.hpp"
@@ -22,7 +23,8 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
   tc_shipgold(0),
   tc_shiprum(0),
   tc_portrum(0),
-  tc_rum_price(0)
+  tc_rum_price(0),
+  sound(game_logic)
 {
 	if (!texture.loadFromFile("./data/sprites.png")) {
 		std::cout << "ERROR TEXTURE" << std::endl;
@@ -52,6 +54,7 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
 	lastShipY = 12;
 	shipSpriteY = 0;
 	game_state = "START_SCREEN";
+	
 }
 
 HumanGameView::~HumanGameView()
@@ -149,7 +152,8 @@ bool HumanGameView::initialize()
     // Add the port data to the UI list
     uiList.push_back(new_ui_port_data);
   }
-
+  sound.initialize();
+  sound.playTheme();
   return true;
 }
 
