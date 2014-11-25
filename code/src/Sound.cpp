@@ -2,7 +2,9 @@
 #include "Sound.hpp"
 
 
-Sound::Sound(GameLogic* game_logic){
+Sound::Sound(GameLogic* game_logic):
+  game_logic(game_logic)
+{
   
   if(!buffer.loadFromFile("./data/rumrunnerstheme.wav"))
     std::cout << "Theme can't be found\n" << std::endl;
@@ -48,8 +50,12 @@ bool Sound::initialize(){
 			      std::placeholders::_1)),
       TransactionStartEvent::event_type);
     
-    this->playTheme();
-    
+    getGameLogic()->getEventManager()->addDelegate(
+      EventDelegate(std::bind(&Sound::gameWonSoundHandler,
+			      this,
+			      std::placeholders::_1)),
+      GameWonEvent::event_type);
+          
     return true;
 }
 
@@ -70,6 +76,10 @@ void Sound::playTSuccess(){
 void Sound::playTheme(){
   
   theme.play();  
+}
+
+void Sound::playGameWin(){
+  gameWin.play(); 
 }
 
 void Sound::pauseTheme(){
@@ -93,4 +103,9 @@ void Sound::transactionFailSoundHandler(const EventInterface& event) {
 //Plays sound for Transaction Success
 void Sound::transactionSuccessSoundHandler(const EventInterface& event) {
   this->playTSuccess();
+}
+
+//Plays sound for Game Won
+void Sound::gameWonSoundHandler(const EventInterface& event) {
+  this->playGameWin();
 }

@@ -7,6 +7,7 @@
 
 #include "EventManager.hpp"
 #include "GameLogic.hpp"
+#include "GameWonEvent.hpp"
 #include "TransactionCheckEvent.hpp"
 #include "TransactionFailEvent.hpp"
 #include "TransactionStartEvent.hpp"
@@ -23,6 +24,7 @@ public:
   void playTSuccess();
   void playTFail();
   void playTheme();
+  void playGameWin();
   void pauseTheme();
   void stopTheme();
   
@@ -30,6 +32,8 @@ public:
   void transactionFailSoundHandler(const EventInterface& event);
   void transactionStartSoundHandler(const EventInterface& event);
   void transactionSuccessSoundHandler(const EventInterface& event);
+  void gameWonSoundHandler(const EventInterface& event);
+  //void gameLose(const EventInterface& event);
   
   EventManager* getEventManager();
   
