@@ -52,6 +52,7 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
 	lastShipY = 12;
 	shipSpriteY = 0;
 	game_state = "START_SCREEN";
+	
 }
 
 HumanGameView::~HumanGameView()
@@ -148,6 +149,11 @@ bool HumanGameView::initialize()
 
     // Add the port data to the UI list
     uiList.push_back(new_ui_port_data);
+  }
+  Sound sound(getGameLogic());
+  if(!sound.initialize())
+  { 
+    return 0;
   }
 
   return true;

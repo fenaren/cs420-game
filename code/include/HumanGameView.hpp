@@ -15,6 +15,7 @@
 #include "UIPortData.hpp"
 #include "Map.hpp"
 #include "ShipMoveCmdEvent.hpp"
+#include "Sound.hpp"
 #include "TransactionCheckEvent.hpp"
 #include "TransactionFailEvent.hpp"
 #include "TransactionStartEvent.hpp"
