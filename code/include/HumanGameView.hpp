@@ -151,6 +151,9 @@ private:
   unsigned int tc_rum_price;
 
   std::string game_state;
+  
+  GameLogic* game_logic;  
+  Sound sound(GameLogic* game_logic);
 };
 
 inline unsigned int HumanGameView::getMapTileSize() const

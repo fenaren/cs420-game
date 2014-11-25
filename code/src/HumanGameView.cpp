@@ -22,7 +22,8 @@ HumanGameView::HumanGameView(GameLogic* game_logic, sf::RenderWindow* App) :
   tc_shipgold(0),
   tc_shiprum(0),
   tc_portrum(0),
-  tc_rum_price(0)
+  tc_rum_price(0),
+  game_logic(game_logic)
 {
 	if (!texture.loadFromFile("./data/sprites.png")) {
 		std::cout << "ERROR TEXTURE" << std::endl;
@@ -150,7 +151,7 @@ bool HumanGameView::initialize()
     // Add the port data to the UI list
     uiList.push_back(new_ui_port_data);
   }
-  Sound sound(getGameLogic());
+  Sound sound(game_logic);
   if(!sound.initialize())
   { 
     return 0;
