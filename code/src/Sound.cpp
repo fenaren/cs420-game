@@ -24,7 +24,7 @@ Sound::Sound(GameLogic* game_logic):
     std::cout << "Game Win sound can't be found\n" << std::endl;
   
    if(!gameFail.openFromFile("./data/evil-laugh.wav"))
-    std::cout << "Game Win sound can't be found\n" << std::endl;
+    std::cout << "Game fail sound can't be found\n" << std::endl;
   
   theme.setBuffer(buffer);
   theme.setLoop(true);
