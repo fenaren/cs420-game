@@ -23,6 +23,9 @@ Sound::Sound(GameLogic* game_logic):
   if(!gameWin.openFromFile("./data/tada.wav"))
     std::cout << "Game Win sound can't be found\n" << std::endl;
   
+   if(!gameFail.openFromFile("./data/evil-laugh.wav"))
+    std::cout << "Game Win sound can't be found\n" << std::endl;
+  
   theme.setBuffer(buffer);
   theme.setLoop(true);
 }
@@ -55,6 +58,12 @@ bool Sound::initialize(){
 			      this,
 			      std::placeholders::_1)),
       GameWonEvent::event_type);
+    
+    getGameLogic()->getEventManager()->addDelegate(
+      EventDelegate(std::bind(&Sound::gameLostSoundHandler,
+			      this,
+			      std::placeholders::_1)),
+      GameLostEvent::event_type);
           
     return true;
 }
@@ -80,6 +89,10 @@ void Sound::playTheme(){
 
 void Sound::playGameWin(){
   gameWin.play(); 
+}
+
+void Sound::playGameFail(){
+  gameFail.play(); 
 }
 
 void Sound::pauseTheme(){
@@ -108,4 +121,9 @@ void Sound::transactionSuccessSoundHandler(const EventInterface& event) {
 //Plays sound for Game Won
 void Sound::gameWonSoundHandler(const EventInterface& event) {
   this->playGameWin();
+}
+
+//Plays sound for Game Lost
+void Sound::gameLostSoundHandler(const EventInterface& event) {
+  this->playGameFail();
 }
